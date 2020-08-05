@@ -1,6 +1,6 @@
-package PizzaTimeManager
+package GameManager
 
-import PizzaTimeManager.observers.ViewObserver
+import GameManager.observers.ViewObserver
 
 class GameManager extends ViewObserver {
   /** Notifies that the game has started */

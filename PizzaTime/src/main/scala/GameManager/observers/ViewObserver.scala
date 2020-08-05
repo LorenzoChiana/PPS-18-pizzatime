@@ -1,4 +1,4 @@
-package PizzaTimeManager.observers
+package GameManager.observers
 
 
 /** Represents an observer for the view */
