@@ -6,4 +6,4 @@ import utilities.Position
  *
  *  @param position its initial [[Position]]
  */
-case class Bullet(var position: Position) extends MovableEntity {
+case class Bullet(var position: Position) extends MovableEntity
