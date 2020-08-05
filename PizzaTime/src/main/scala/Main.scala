@@ -1,5 +1,5 @@
-import GameManager.GameManager
-import GameManager.observers.ViewObserver
+import gamemanager.GameManager
+import gamemanager.observers.ViewObserver
 
 class Main {
    def start(): Unit = {

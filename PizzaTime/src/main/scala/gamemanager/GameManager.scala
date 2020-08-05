@@ -1,6 +1,6 @@
-package GameManager
+package gamemanager
 
-import GameManager.observers.ViewObserver
+import gamemanager.observers.ViewObserver
 
 class GameManager extends ViewObserver {
   /** Notifies that the game has started */

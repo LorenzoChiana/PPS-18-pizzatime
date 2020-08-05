@@ -1,4 +1,4 @@
-package GameManager.observers
+package gamemanager.observers
 
 
 /** Represents an observer for the view */
