@@ -6,4 +6,4 @@ import gameview.scene.MainScene
 /**
  * Controller of the main scene
  */
-trait MainSceneController extends MainSceneObserver with Controller[MainScene]
+trait MainSceneController extends MainSceneObserver with SceneController[MainScene]

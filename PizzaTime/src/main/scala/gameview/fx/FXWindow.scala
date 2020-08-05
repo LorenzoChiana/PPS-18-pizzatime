@@ -1,9 +1,9 @@
 package gameview.fx
 
 import gameview.Window
-import gameview.controller.{MainSceneController, MainSceneControllerImpl}
+import gameview.controller.{CreditsSceneController, CreditsSceneControllerImpl, MainSceneController, MainSceneControllerImpl}
 import gameview.observer.ViewObserver
-import gameview.scene.{MainScene, SceneType}
+import gameview.scene.{CreditsScene, MainScene, SceneType}
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.Alert.AlertType
@@ -60,7 +60,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     intent.sceneType match {
       case SceneType.MainScene => setMainScene()
       case SceneType.SettingScene => ???
-      case SceneType.CreditsScene => ???
+      case SceneType.CreditsScene => setCreditsScene()
       case SceneType.GameScene => ???
     }
 
@@ -82,6 +82,18 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
       Platform.runLater(() => {
         windowContent.setCenter(mainScene.asInstanceOf[FXMainScene])
+      })
+    }
+
+    def setCreditsScene(): Unit = {
+      val creditsScene: CreditsScene = FXCreditsScene(this)
+      val creditsSceneController: CreditsSceneController = CreditsSceneControllerImpl()
+
+      creditsScene.addObserver(creditsSceneController)
+      creditsSceneController.setView(creditsScene)
+
+      Platform.runLater(() => {
+        windowContent.setCenter(creditsScene.asInstanceOf[FXCreditsScene])
       })
     }
   }
