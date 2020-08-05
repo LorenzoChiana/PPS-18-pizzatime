@@ -82,6 +82,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
       Platform.runLater(() => {
         windowContent.setCenter(mainScene.asInstanceOf[FXMainScene])
+        Animations.Fade.fadeIn(mainScene.asInstanceOf[FXMainScene])
       })
     }
 
@@ -94,6 +95,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
       Platform.runLater(() => {
         windowContent.setCenter(creditsScene.asInstanceOf[FXCreditsScene])
+        Animations.Fade.fadeIn(creditsScene.asInstanceOf[FXCreditsScene])
       })
     }
   }

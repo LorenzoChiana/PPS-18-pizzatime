@@ -6,4 +6,6 @@ package gameview.observer
 trait MainSceneObserver extends ViewObserver {
   def onStartGame(): Unit
   def onSettings(): Unit
+  def onCredits(): Unit
+  def onExit(): Unit
 }
