@@ -16,6 +16,7 @@ case class FXMainScene(override val windowManager: Window) extends FXView(Some("
   @FXML protected var creditsButton: Button = _
   @FXML protected var exitButton: Button = _
 
+  settingsButton.setOnMouseClicked(_ => observers.foreach(_.onSettings()))
   creditsButton.setOnMouseClicked(_ => observers.foreach(_.onCredits()))
   exitButton.setOnMouseClicked(_ => observers.foreach(_.onExit()))
 }

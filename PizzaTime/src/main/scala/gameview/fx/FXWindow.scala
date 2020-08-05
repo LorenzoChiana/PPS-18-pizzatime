@@ -1,9 +1,9 @@
 package gameview.fx
 
 import gameview.Window
-import gameview.controller.{CreditsSceneController, CreditsSceneControllerImpl, MainSceneController, MainSceneControllerImpl}
-import gameview.observer.ViewObserver
-import gameview.scene.{CreditsScene, MainScene, SceneType}
+import gameview.controller.{CreditsSceneController, CreditsSceneControllerImpl, MainSceneController, MainSceneControllerImpl, SettingsSceneController}
+import gameview.observer.{SettingsSceneObserver, ViewObserver}
+import gameview.scene.{CreditsScene, MainScene, SceneType, SettingsScene}
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.Alert.AlertType
@@ -59,7 +59,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
     intent.sceneType match {
       case SceneType.MainScene => setMainScene()
-      case SceneType.SettingScene => ???
+      case SceneType.SettingScene => setSettingsScene()
       case SceneType.CreditsScene => setCreditsScene()
       case SceneType.GameScene => ???
     }
@@ -83,6 +83,20 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       Platform.runLater(() => {
         windowContent.setCenter(mainScene.asInstanceOf[FXMainScene])
         Animations.Fade.fadeIn(mainScene.asInstanceOf[FXMainScene])
+      })
+    }
+
+    def setSettingsScene(): Unit = {
+      val settingsScene: SettingsScene = FXSettingsScene(this)
+      val settingsSceneObserver: SettingsSceneObserver = SettingsSceneController()
+
+      settingsScene.addObserver(settingsSceneObserver)
+      settingsSceneObserver.setView(settingsScene)
+      settingsSceneObserver.init()
+
+      Platform.runLater(() => {
+        windowContent.setCenter(settingsScene.asInstanceOf[FXSettingsScene])
+        Animations.Fade.fadeIn(settingsScene.asInstanceOf[FXSettingsScene])
       })
     }
 
