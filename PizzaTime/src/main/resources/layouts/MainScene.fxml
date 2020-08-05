@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import java.lang.Double?>
+
+<fx:root type="javafx.scene.layout.BorderPane"
+         xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         stylesheets="@../styles/MainStyle.css, @../styles/DialogStyle.css" >
+
+    <fx:define>
+        <Double fx:id="buttonWidth" fx:value="220"/>
+        <Double fx:id="defaultMargin" fx:value="10"/>
+    </fx:define>
+
+        <center>
+            <VBox alignment="CENTER" HBox.hgrow="ALWAYS" spacing="35">
+                <Label id="title" text="PizzaTime"/>
+                <VBox alignment="CENTER" spacing="10">
+                    <Button fx:id="startGameButton" text="Start game" minWidth="$buttonWidth" maxWidth="$buttonWidth" prefWidth="$buttonWidth"/>
+                    <Button fx:id="settingsButton" text="Settings" minWidth="$buttonWidth" maxWidth="$buttonWidth" prefWidth="$buttonWidth"/>
+                    <Button fx:id="creditsButton" text="Credits" minWidth="$buttonWidth" maxWidth="$buttonWidth" prefWidth="$buttonWidth"/>
+                    <Button fx:id="exitButton" text="Exit to Desktop" minWidth="$buttonWidth" maxWidth="$buttonWidth" prefWidth="$buttonWidth"/>
+                </VBox>
+            </VBox>
+        </center>
+</fx:root>

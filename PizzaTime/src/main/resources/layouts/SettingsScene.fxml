@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.Double?>
+
+<fx:root type="javafx.scene.layout.BorderPane"
+         xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         stylesheets="@../styles/MainStyle.css, @../styles/DialogStyle.css" >
+
+    <fx:define>
+        <Double fx:id="labelWidth" fx:value="200" />
+        <Double fx:id="controlWidth" fx:value="120" />
+    </fx:define>
+    
+        <center>
+            <VBox id="mainContainer" alignment="CENTER" spacing="30">
+                <VBox spacing="15">
+                    <HBox alignment="CENTER" spacing="5">
+                        <Label fx:id="playerNameLabel" text="Player name:" minWidth="$labelWidth" maxWidth="$labelWidth" prefWidth="$labelWidth"/>
+
+                        <TextField fx:id="playerNameField" text="Player1" minWidth="$controlWidth" maxWidth="$controlWidth" prefWidth="$controlWidth"/>
+
+                    </HBox>
+
+                    <HBox alignment="CENTER" spacing="5">
+                        <Label text="Difficulty:" minWidth="$labelWidth" maxWidth="$labelWidth" prefWidth="$labelWidth"/>
+                        <ComboBox fx:id="difficultyComboBox" minWidth="$controlWidth" maxWidth="$controlWidth" prefWidth="$controlWidth"/>
+                    </HBox>
+                </VBox>
+
+                <HBox alignment="CENTER" spacing="20">
+                    <Button fx:id="backButton" text="Back"/>
+                    <Button fx:id="applyButton" text="Apply"/>
+                </HBox>
+            </VBox>
+        </center>
+</fx:root>

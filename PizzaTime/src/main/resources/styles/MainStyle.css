@@ -1,0 +1,156 @@
+* {
+	/* Some general colors */
+	backgroundColor: rgb(237,237,237);
+	backgroundColorDark: derive(backgroundColor, -80%);
+
+	buttonColor: rgb(146,222,52);
+	buttonColorHover: derive(buttonColor, +15%);
+	buttonColorPressed: derive(buttonColorHover, +15%);
+
+	textButtonColor: #025600;
+
+	startButtonColor: rgb(146,222,52);
+    startButtonColorHover: derive(startButtonColor, +15%);
+    startButtonColorPressed: derive(startButtonColorHover, +15%);
+
+    smallButtonColor: rgb(146,222,52);
+    smallButtonColorHover: derive(smallButtonColor, +15%);
+    smallButtonColorPressed: derive(smallButtonColorHover, +15%);
+
+	progressColor: #4286f4;
+	darkTextColor: rgb(15,15,15);
+	lightTextColor: rgb(240,240,240);
+}
+
+#mainDecoratedContainer {
+    -fx-background-color: backgroundColor;
+    -fx-background-image: url("../images/background.jpg");
+    -fx-background-repeat: stretch;
+    -fx-background-position: bottom;
+}
+
+#mainUndecoratedContainer {
+    -fx-background-color: backgroundColor;
+}
+
+#mainContainer {
+    -fx-background-color: rgba(255,255,255,0.5)
+}
+
+#roundedBox {
+    -fx-border-width: 1px;
+    -fx-border-color: lightgray;
+    -fx-border-radius: 10 10 10 10;
+    -fx-background-radius: 10 10 10 10;
+    -fx-padding: 1em 1em 1em 1em;
+    -fx-background-color: white;
+}
+
+#test1 {
+    -fx-background-color: yellow;
+}
+
+.text-field:error {
+  -fx-text-box-border: red;
+  -fx-focus-color: red;
+}
+
+.combo-box-base:error {
+  -fx-outer-border: red;
+}
+
+.label {
+    -fx-font-weight: bold;
+    -fx-text-fill: textButtonColor;
+}
+
+.label#marked {
+    -fx-padding: 5 10;
+    -fx-font-style: italic;
+    -fx-text-fill: white;
+    -fx-stroke-width: 1;
+    -fx-stroke: black;
+}
+
+.label#title {
+    -fx-font-size: 40px;
+    -fx-stroke: textButtonColor;
+    -fx-stroke-width: 1;
+}
+
+.label:selected {
+    -fx-background-color: yellow;
+}
+
+.label#bigText {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.label#biggerText {
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+}
+
+.label#error {
+    -fx-text-fill: red;
+    -fx-font-style: italic;
+}
+
+#backgrounded {
+    -fx-background-color: backgroundColorDark;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+}
+
+/* General buttons */
+.button, #startButton, #smallButton, #smallSpecialButton {
+    -fx-padding: 10 25 10 25;
+    -fx-border-width: 0;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-background-color: buttonColor;
+    -fx-font-weight: bold;
+    -fx-text-fill: textButtonColor;
+}
+
+.button:hover, #smallSpecialBtn:hover {
+    -fx-background-color: buttonColorHover;
+}
+
+.button:pressed, .button:default:hover:pressed, #smallSpecialBtn:pressed, #smallSpecialBtn:default:hover:pressed  {
+  -fx-background-color: buttonColorPressed;
+}
+
+/* Start button */
+#startButton {
+    -fx-background-color: startButtonColor;
+}
+
+#startButton:hover {
+    -fx-background-color: startButtonColorHover;
+}
+
+#startButton:pressed, #startButton:default:hover:pressed {
+    -fx-background-color: startButtonColorPressed;
+}
+
+/* Small button */
+#smallSpecialButton {
+    -fx-padding: 2 12 2 12;
+}
+#smallButton {
+    -fx-padding: 2 5 2 5;
+}
+
+#smallButton {
+    -fx-background-color: smallButtonColor;
+}
+
+#smallButton:hover {
+    -fx-background-color: smallButtonColorHover;
+}
+
+#smallButton:pressed, #startButton:default:hover:pressed {
+    -fx-background-color: smallButtonColorPressed;
+}
