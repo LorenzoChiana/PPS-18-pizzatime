@@ -2,8 +2,8 @@ package gamelogic
 
 import utilities.Position
 
-class Obstacle(var position: Position) extends Entity
-
-object Obstacle {
-  def apply(position: Position): Obstacle = new Obstacle(position)
-}
+/** An obstacle placed on the [[Floor]].
+ *
+ *  @param position its [[Position]]
+ */
+case class Obstacle(var position: Position) extends Entity

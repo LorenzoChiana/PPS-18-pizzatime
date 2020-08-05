@@ -2,8 +2,8 @@ package gamelogic
 
 import utilities.Position
 
-class Wall(var position: Position) extends Entity
-
-object Wall {
-  def apply(position: Position): Wall = new Wall(position)
-}
+/** The [[GameMap]]'s wall, situated on its bounds.
+ *
+ *  @param position its [[Position]]
+ */
+case class Wall(var position: Position) extends Entity
