@@ -1,7 +1,9 @@
 package gameview.fx
 
 import gameview.Window
+import gameview.controller.{MainSceneController, MainSceneControllerImpl}
 import gameview.observer.ViewObserver
+import gameview.scene.{MainScene, SceneType}
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.Alert.AlertType
@@ -21,6 +23,7 @@ import scala.collection.immutable
  */
 case class FXWindow(stage: Stage, title: String) extends Window {
   private val windowContent = new BorderPane()
+  private var currentScene: Option[SceneType.Value] = None
 
   Platform.runLater(() => {
     stage.setResizable(false)
@@ -48,6 +51,40 @@ case class FXWindow(stage: Stage, title: String) extends Window {
   }
 
   override def isShowing: Boolean = stage.isShowing
+
+  override def scene: Option[SceneType.Value] = currentScene
+
+  override def scene_(intent: Intent): Unit = {
+    currentScene = Some(intent.sceneType)
+
+    intent.sceneType match {
+      case SceneType.MainScene => setMainScene()
+      case SceneType.SettingScene => ???
+      case SceneType.CreditsScene => ???
+      case SceneType.GameScene => ???
+    }
+
+    if (currentScene.isDefined) {
+      Platform.runLater(() => {
+        stage.setMinHeight(WindowSize.Menu.height)
+        stage.setMinWidth(WindowSize.Menu.width)
+        windowContent.setId("mainDecoratedContainer")
+        centerOnScreen()
+      })
+    }
+
+    def setMainScene(): Unit = {
+      val mainScene: MainScene = FXMainScene(this)
+      val mainSceneController: MainSceneController = MainSceneControllerImpl()
+
+      mainScene.addObserver(mainSceneController)
+      mainSceneController.setView(mainScene)
+
+      Platform.runLater(() => {
+        windowContent.setCenter(mainScene.asInstanceOf[FXMainScene])
+      })
+    }
+  }
 
   override def showMessage(message: String, messageType: MessageTypes.MessageType): Unit = {
     showMessageHelper(None, message, messageType)

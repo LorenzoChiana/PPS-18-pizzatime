@@ -1,5 +1,7 @@
 package gameview
 
+import gameview.scene.SceneType
+import utilities.Intent
 import utilities.MessageTypes.MessageType
 
 /** A generic window */
@@ -16,6 +18,18 @@ trait Window {
    * @return true if window is visible, false if window is not visible
    */
   def isShowing: Boolean
+
+  /**
+   * Gets the current scene inside of the window
+   * @return a [[SceneType.Value]] if there is a visible scene, [[None]] if there is not a visible scene
+   */
+  def scene: Option[SceneType.Value]
+
+  /**
+   * Sets the scene inside of the window
+   * @param intent the intent to change current scene into another
+   */
+  def scene_(intent: Intent)
 
   /**
    * Shows a message to the user without a title
