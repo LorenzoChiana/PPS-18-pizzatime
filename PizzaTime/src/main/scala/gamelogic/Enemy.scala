@@ -2,6 +2,6 @@ package gamelogic
 
 import utilities.Position
 
-class Enemy(val id: String, var position: Position) extends EnemyCharacter {
+class Enemy(var position: Position) extends EnemyCharacter {
 
 }
