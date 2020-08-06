@@ -13,9 +13,10 @@ class Main extends Application {
   }
 
   private def initializeGame(primaryStage: Stage) {
-    val observers: Set[ViewObserver] = Set(new GameManager())
     Platform.runLater(() => {
       val view: Window = FXWindow(primaryStage, "PizzaTime")
+      val observers: Set[ViewObserver] = Set(new GameManager(view))
+
       view.scene_(new Intent(SceneType.MainScene))
       view.showView()
     })
