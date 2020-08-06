@@ -1,7 +1,7 @@
 package gameview.fx
 
 import gameview.Window
-import gameview.scene.SettingsScene
+import gameview.scene.Scene
 import javafx.application.Platform
 import javafx.collections.{FXCollections, ObservableList}
 import javafx.fxml.FXML
@@ -10,7 +10,7 @@ import utilities.{Difficulty, SettingPreferences}
 
 import scala.jdk.CollectionConverters
 
-case class FXSettingsScene(override val windowManager: Window) extends FXView(Some("SettingsScene.fxml")) with SettingsScene {
+case class FXSettingsScene(override val windowManager: Window) extends FXView(Some("SettingsScene.fxml")) with Scene {
   @FXML protected var playerNameField: TextField = _
   @FXML protected var difficultyComboBox: ComboBox[Difficulty.Value] = _
   @FXML protected var backButton, applyButton: Button = _
@@ -22,7 +22,7 @@ case class FXSettingsScene(override val windowManager: Window) extends FXView(So
     //difficultyComboBox.getSelectionModel.selectFirst()
   })
 
-  backButton.setOnMouseClicked(_ => observers.foreach(observer => observer.onBack()))
+  backButton.setOnMouseClicked(_ => FXWindow.observers.foreach(observer => observer.onBack()))
 
   applyButton.setOnMouseClicked(_ => {
     val selection = difficultyComboBox.getSelectionModel
@@ -31,7 +31,7 @@ case class FXSettingsScene(override val windowManager: Window) extends FXView(So
     observers.foreach(_.onApply(SettingPreferences(playerName = playerNameField.getText, selection.getSelectedItem)))
   })
 
-  override def showCurrentPreferences(settingPreferences: SettingPreferences): Unit = {
+  def showCurrentPreferences(settingPreferences: SettingPreferences): Unit = {
     playerNameField.setText(settingPreferences.playerName)
     difficultyComboBox.getSelectionModel.select(settingPreferences.difficulty)
   }

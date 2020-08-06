@@ -1,8 +1,13 @@
 package gamemanager
 
-import gamemanager.observers.ViewObserver
+import gameview.scene.{Scene, SceneType}
+import utilities.{Intent, SettingPreferences}
 
 class GameManager extends ViewObserver {
+
+  var endGame: Boolean = false
+  var numCycle: Int = 0
+
   /** Notifies that the game has started */
   override def notifyStartGame(): Unit = ???
 
@@ -12,18 +17,45 @@ class GameManager extends ViewObserver {
   /** Notifies that the player has moved */
   override def notifyMovement(): Unit = ???
 
+  override def notifySettings(): Unit = ???
+
   /** Notifies the transition to the game scene */
-  override def onStartGame(): Unit = ???
+  override def onStartGame(): Unit = {
+    require(GameManager.view.isDefined)
+    GameManager.view.get.windowManager.scene_(new Intent(SceneType.GameScene))
+  }
 
   /** Notifies the transition to the settings scene */
-  override def onSettings(): Unit = ???
+  override def onSettings(): Unit = {
+    require(GameManager.view.isDefined)
+    GameManager.view.get.windowManager.scene_(new Intent(SceneType.SettingScene))
+  }
 
   /** Notifies the transition to the credits scene */
-  override def onCredits(): Unit = ???
+  override def onCredits(): Unit = {
+    require(GameManager.view.isDefined)
+    GameManager.view.get.windowManager.scene_(new Intent(SceneType.CreditsScene))
+  }
 
   /** Notifies the intent to exit from game */
-  override def OnExit(): Unit = ???
+  override def onExit(): Unit = GameManager.view.get.windowManager.closeView()
+
 
   /** Notifies to go back to the previous scene */
-  override def onBack(): Unit = ???
+  override def onBack(): Unit = {
+    require(GameManager.view.isDefined)
+    GameManager.view.get.windowManager.scene_(new Intent(SceneType.MainScene))
+  }
+
+  /** Notifies to save new game settings */
+  override def onApply(settingPreferences: SettingPreferences): Unit = ???
+
+  override def init(): Unit = ???
+
+}
+
+object GameManager {
+  var view: Option[Scene] = None
+
+  def view_(view: Scene): Unit = this.view = Some(view)
 }

@@ -1,9 +1,8 @@
 package gameview.fx
 
+import gamemanager.{GameManager, ViewObserver}
 import gameview.Window
-import gameview.controller.{CreditsSceneController, CreditsSceneControllerImpl, MainSceneController, MainSceneControllerImpl, SettingsSceneController}
-import gameview.observer.{SettingsSceneObserver, ViewObserver}
-import gameview.scene.{CreditsScene, MainScene, SceneType, SettingsScene}
+import gameview.scene.SceneType
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.Alert.AlertType
@@ -74,11 +73,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setMainScene(): Unit = {
-      val mainScene: MainScene = FXMainScene(this)
-      val mainSceneController: MainSceneController = MainSceneControllerImpl()
-
-      mainScene.addObserver(mainSceneController)
-      mainSceneController.setView(mainScene)
+      val mainScene: gameview.scene.Scene = FXMainScene(this)
+      GameManager.view_(mainScene)
 
       Platform.runLater(() => {
         windowContent.setCenter(mainScene.asInstanceOf[FXMainScene])
@@ -87,12 +83,11 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setSettingsScene(): Unit = {
-      val settingsScene: SettingsScene = FXSettingsScene(this)
-      val settingsSceneObserver: SettingsSceneObserver = SettingsSceneController()
+      val settingsScene: gameview.scene.Scene = FXSettingsScene(this)
+      val settingsObserver: ViewObserver = new GameManager()
 
-      settingsScene.addObserver(settingsSceneObserver)
-      settingsSceneObserver.setView(settingsScene)
-      settingsSceneObserver.init()
+      GameManager.view_(settingsScene)
+      settingsObserver.init()
 
       Platform.runLater(() => {
         windowContent.setCenter(settingsScene.asInstanceOf[FXSettingsScene])
@@ -101,11 +96,10 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setCreditsScene(): Unit = {
-      val creditsScene: CreditsScene = FXCreditsScene(this)
-      val creditsSceneController: CreditsSceneController = CreditsSceneControllerImpl()
-
-      creditsScene.addObserver(creditsSceneController)
-      creditsSceneController.setView(creditsScene)
+      val creditsScene: gameview.scene.Scene = FXCreditsScene(this)
+      //val creditsSceneObserver: CreditsSceneObserver = CreditsSceneController()
+      //creditsScene.addObserver(creditsSceneObserver)
+      GameManager.view_(creditsScene)
 
       Platform.runLater(() => {
         windowContent.setCenter(creditsScene.asInstanceOf[FXCreditsScene])

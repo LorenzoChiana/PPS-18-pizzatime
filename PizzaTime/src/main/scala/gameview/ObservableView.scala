@@ -1,6 +1,6 @@
 package gameview
 
-import gameview.observer.ViewObserver
+import gamemanager.ViewObserver
 
 trait ObservableView[Observer <: ViewObserver] {
   protected var observers: Set[Observer] = Set.empty

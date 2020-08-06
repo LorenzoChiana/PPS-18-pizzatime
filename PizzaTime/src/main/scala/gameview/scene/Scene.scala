@@ -1,7 +1,8 @@
 package gameview.scene
 
-import gameview.Window
+import gamemanager.ViewObserver
+import gameview.{ObservableView, Window}
 
-trait Scene {
+trait Scene extends ObservableView[ViewObserver]{
   val windowManager: Window
 }

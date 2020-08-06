@@ -1,8 +1,7 @@
-import gamemanager.GameManager
-import gamemanager.observers.ViewObserver
+import gamemanager.{GameManager, ViewObserver}
 import gameview.Window
 import gameview.fx.FXWindow
-import gameview.scene.SceneType
+import gameview.scene.SceneType._
 import javafx.application.{Application, Platform}
 import javafx.stage.Stage
 import utilities.Intent
@@ -14,9 +13,10 @@ class Main extends Application {
 
   private def initializeGame(primaryStage: Stage) {
     val observers: Set[ViewObserver] = Set(new GameManager())
+    FXWindow.addObserver(observers)
     Platform.runLater(() => {
       val view: Window = FXWindow(primaryStage, "PizzaTime")
-      view.scene_(new Intent(SceneType.MainScene))
+      view.scene_(new Intent(MainScene))
       view.showView()
     })
   }
