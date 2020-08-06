@@ -1,0 +1,5 @@
+package gamemanager
+
+class GameLoop {
+
+}
