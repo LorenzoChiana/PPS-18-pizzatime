@@ -1,6 +1,9 @@
 package gamemanager
 
+import gamemanager.handlers.PreferencesHandler
+import gameview.fx.FXSettingsScene
 import gameview.scene.{Scene, SceneType}
+import utilities.MessageTypes.Info
 import utilities.{Intent, SettingPreferences}
 
 class GameManager extends ViewObserver {
@@ -48,9 +51,22 @@ class GameManager extends ViewObserver {
   }
 
   /** Notifies to save new game settings */
-  override def onApply(settingPreferences: SettingPreferences): Unit = ???
+  override def onApply(settingPreferences: SettingPreferences): Unit = {
+    require(GameManager.view.isDefined)
 
-  override def init(): Unit = ???
+    PreferencesHandler.setName(settingPreferences.playerName)
+    PreferencesHandler.setDifficulty(settingPreferences.difficulty)
+
+    GameManager.view.get.windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
+  }
+
+  override  def  init () :  Unit  =  GameManager.view match {
+    case v if v.isInstanceOf[Option[FXSettingsScene]] => v.asInstanceOf[FXSettingsScene].showCurrentPreferences(SettingPreferences (
+      PreferencesHandler.getName,
+      PreferencesHandler.getDifficulty
+    ))
+    case _ =>
+  }
 
 }
 
