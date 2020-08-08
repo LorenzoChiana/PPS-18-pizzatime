@@ -33,5 +33,4 @@ trait ViewObserver {
 
   def onApply(settingPreferences: SettingPreferences): Unit
 
-  def init(): Unit
 }

@@ -1,5 +1,6 @@
 package gameview.fx
 
+import gamemanager.handlers.PreferencesHandler
 import gamemanager.{GameManager, ViewObserver}
 import gameview.Window
 import gameview.scene.SceneType
@@ -74,36 +75,42 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
     def setMainScene(): Unit = {
       val mainScene: gameview.scene.Scene = FXMainScene(this)
+      val fxMainScene = mainScene.asInstanceOf[FXMainScene]
       GameManager.view_(mainScene)
 
       Platform.runLater(() => {
-        windowContent.setCenter(mainScene.asInstanceOf[FXMainScene])
-        Animations.Fade.fadeIn(mainScene.asInstanceOf[FXMainScene])
+        windowContent.setCenter(fxMainScene)
+        Animations.Fade.fadeIn(fxMainScene)
       })
     }
 
     def setSettingsScene(): Unit = {
       val settingsScene: gameview.scene.Scene = FXSettingsScene(this)
+      val fxSettingsScene = settingsScene.asInstanceOf[FXSettingsScene]
       val settingsObserver: ViewObserver = new GameManager()
 
       GameManager.view_(settingsScene)
-      settingsObserver.init()
+      fxSettingsScene.showCurrentPreferences(SettingPreferences(
+        PreferencesHandler.playerName,
+        PreferencesHandler.difficulty
+      ))
 
       Platform.runLater(() => {
-        windowContent.setCenter(settingsScene.asInstanceOf[FXSettingsScene])
-        Animations.Fade.fadeIn(settingsScene.asInstanceOf[FXSettingsScene])
+        windowContent.setCenter(fxSettingsScene)
+        Animations.Fade.fadeIn(fxSettingsScene)
       })
     }
 
     def setCreditsScene(): Unit = {
       val creditsScene: gameview.scene.Scene = FXCreditsScene(this)
+      val fxCreditsScene = creditsScene.asInstanceOf[FXCreditsScene]
       //val creditsSceneObserver: CreditsSceneObserver = CreditsSceneController()
       //creditsScene.addObserver(creditsSceneObserver)
       GameManager.view_(creditsScene)
 
       Platform.runLater(() => {
-        windowContent.setCenter(creditsScene.asInstanceOf[FXCreditsScene])
-        Animations.Fade.fadeIn(creditsScene.asInstanceOf[FXCreditsScene])
+        windowContent.setCenter(fxCreditsScene)
+        Animations.Fade.fadeIn(fxCreditsScene)
       })
     }
   }

@@ -1,5 +1,6 @@
 package gameview.fx
 
+import gamemanager.handlers.PreferencesHandler
 import gameview.Window
 import gameview.scene.Scene
 import javafx.application.Platform
@@ -19,7 +20,6 @@ case class FXSettingsScene(override val windowManager: Window) extends FXView(So
     val difficultyList: ObservableList[Difficulty.Value] = FXCollections.observableArrayList[Difficulty.Value]
     difficultyList.addAll(CollectionConverters.SeqHasAsJava(Difficulty.allDifficulty).asJava)
     difficultyComboBox.setItems(difficultyList)
-    //difficultyComboBox.getSelectionModel.selectFirst()
   })
 
   backButton.setOnMouseClicked(_ => FXWindow.observers.foreach(observer => observer.onBack()))
