@@ -61,7 +61,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       case SceneType.MainScene => setMainScene()
       case SceneType.SettingScene => setSettingsScene()
       case SceneType.CreditsScene => setCreditsScene()
-      case SceneType.GameScene => ???
+      case SceneType.GameScene => setGameScene()
     }
 
     if (currentScene.isDefined) {
@@ -111,6 +111,18 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       Platform.runLater(() => {
         windowContent.setCenter(fxCreditsScene)
         Animations.Fade.fadeIn(fxCreditsScene)
+      })
+    }
+
+    def setGameScene(): Unit = {
+      val gameScene: gameview.scene.Scene = FXGameScene(this)
+      val fxGameScene = gameScene.asInstanceOf[FXGameScene]
+
+      GameManager.view_(gameScene)
+
+      Platform.runLater(() => {
+        windowContent.setCenter(fxGameScene)
+        Animations.Fade.fadeIn(fxGameScene)
       })
     }
   }
