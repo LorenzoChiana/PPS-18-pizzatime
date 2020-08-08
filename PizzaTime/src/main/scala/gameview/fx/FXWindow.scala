@@ -87,7 +87,6 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     def setSettingsScene(): Unit = {
       val settingsScene: gameview.scene.Scene = FXSettingsScene(this)
       val fxSettingsScene = settingsScene.asInstanceOf[FXSettingsScene]
-      val settingsObserver: ViewObserver = new GameManager()
 
       GameManager.view_(settingsScene)
       fxSettingsScene.showCurrentPreferences(SettingPreferences(

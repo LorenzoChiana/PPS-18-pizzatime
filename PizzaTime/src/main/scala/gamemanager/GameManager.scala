@@ -53,7 +53,7 @@ class GameManager extends ViewObserver {
   }
 
   /** Notifies to save new game settings */
-  override def onApply(settingPreferences: SettingPreferences): Unit = {
+  override def onSave(settingPreferences: SettingPreferences): Unit = {
     require(GameManager.view.isDefined)
 
     PreferencesHandler.playerName_(settingPreferences.playerName)

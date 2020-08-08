@@ -31,6 +31,6 @@ trait ViewObserver {
 
   def notifySettings(): Unit
 
-  def onApply(settingPreferences: SettingPreferences): Unit
+  def onSave(settingPreferences: SettingPreferences): Unit
 
 }

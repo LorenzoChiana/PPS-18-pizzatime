@@ -1,6 +1,5 @@
 package gameview.fx
 
-import gamemanager.handlers.PreferencesHandler
 import gameview.Window
 import gameview.scene.Scene
 import javafx.application.Platform
@@ -28,7 +27,7 @@ case class FXSettingsScene(override val windowManager: Window) extends FXView(So
     val selection = difficultyComboBox.getSelectionModel
     if(selection.isEmpty) selection.selectFirst()
 
-    observers.foreach(_.onApply(SettingPreferences(playerName = playerNameField.getText, selection.getSelectedItem)))
+    observers.foreach(_.onSave(SettingPreferences(playerName = playerNameField.getText, selection.getSelectedItem)))
   })
 
   def showCurrentPreferences(settingPreferences: SettingPreferences): Unit = {
