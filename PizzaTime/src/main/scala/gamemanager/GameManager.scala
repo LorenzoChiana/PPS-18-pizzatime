@@ -5,11 +5,14 @@ import gameview.fx.FXSettingsScene
 import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes.Info
 import utilities.{Intent, SettingPreferences}
+import SceneType._
+import gameview.Window
 
 class GameManager extends ViewObserver {
 
   var endGame: Boolean = false
   var numCycle: Int = 0
+  lazy val windowManager: Window = GameManager.view.get.windowManager
 
   /** Notifies that the game has started */
   override def notifyStartGame(): Unit = ???
@@ -25,48 +28,41 @@ class GameManager extends ViewObserver {
   /** Notifies the transition to the game scene */
   override def onStartGame(): Unit = {
     require(GameManager.view.isDefined)
-    GameManager.view.get.windowManager.scene_(new Intent(SceneType.GameScene))
+    windowManager.scene_(new Intent(GameScene))
   }
 
   /** Notifies the transition to the settings scene */
   override def onSettings(): Unit = {
     require(GameManager.view.isDefined)
-    GameManager.view.get.windowManager.scene_(new Intent(SceneType.SettingScene))
+    windowManager.scene_(new Intent(SettingScene))
   }
 
   /** Notifies the transition to the credits scene */
   override def onCredits(): Unit = {
     require(GameManager.view.isDefined)
-    GameManager.view.get.windowManager.scene_(new Intent(SceneType.CreditsScene))
+    windowManager.scene_(new Intent(CreditsScene))
   }
 
   /** Notifies the intent to exit from game */
-  override def onExit(): Unit = GameManager.view.get.windowManager.closeView()
-
+  override def onExit(): Unit = windowManager.closeView()
 
   /** Notifies to go back to the previous scene */
   override def onBack(): Unit = {
     require(GameManager.view.isDefined)
-    GameManager.view.get.windowManager.scene_(new Intent(SceneType.MainScene))
+    windowManager.scene_(new Intent(MainScene))
   }
 
   /** Notifies to save new game settings */
-  override def onApply(settingPreferences: SettingPreferences): Unit = {
+  override def onSave(settingPreferences: SettingPreferences): Unit = {
     require(GameManager.view.isDefined)
 
-    PreferencesHandler.setName(settingPreferences.playerName)
-    PreferencesHandler.setDifficulty(settingPreferences.difficulty)
+    PreferencesHandler.playerName_(settingPreferences.playerName)
+    PreferencesHandler.difficulty_(settingPreferences.difficulty)
 
-    GameManager.view.get.windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
+    windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
   }
 
-  override  def  init () :  Unit  =  GameManager.view match {
-    case v if v.isInstanceOf[Option[FXSettingsScene]] => v.asInstanceOf[FXSettingsScene].showCurrentPreferences(SettingPreferences (
-      PreferencesHandler.getName,
-      PreferencesHandler.getDifficulty
-    ))
-    case _ =>
-  }
+
 
 }
 

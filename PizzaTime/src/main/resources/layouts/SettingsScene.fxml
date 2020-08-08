@@ -32,7 +32,7 @@
 
                 <HBox alignment="CENTER" spacing="20">
                     <Button fx:id="backButton" text="Back"/>
-                    <Button fx:id="applyButton" text="Apply"/>
+                    <Button fx:id="applyButton" text="Save"/>
                 </HBox>
             </VBox>
         </center>

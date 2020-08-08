@@ -19,7 +19,6 @@ case class FXSettingsScene(override val windowManager: Window) extends FXView(So
     val difficultyList: ObservableList[Difficulty.Value] = FXCollections.observableArrayList[Difficulty.Value]
     difficultyList.addAll(CollectionConverters.SeqHasAsJava(Difficulty.allDifficulty).asJava)
     difficultyComboBox.setItems(difficultyList)
-    //difficultyComboBox.getSelectionModel.selectFirst()
   })
 
   backButton.setOnMouseClicked(_ => FXWindow.observers.foreach(observer => observer.onBack()))
@@ -28,7 +27,7 @@ case class FXSettingsScene(override val windowManager: Window) extends FXView(So
     val selection = difficultyComboBox.getSelectionModel
     if(selection.isEmpty) selection.selectFirst()
 
-    observers.foreach(_.onApply(SettingPreferences(playerName = playerNameField.getText, selection.getSelectedItem)))
+    observers.foreach(_.onSave(SettingPreferences(playerName = playerNameField.getText, selection.getSelectedItem)))
   })
 
   def showCurrentPreferences(settingPreferences: SettingPreferences): Unit = {
