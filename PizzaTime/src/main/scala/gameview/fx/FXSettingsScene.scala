@@ -13,7 +13,7 @@ import scala.jdk.CollectionConverters
 case class FXSettingsScene(override val windowManager: Window) extends FXView(Some("SettingsScene.fxml")) with Scene {
   @FXML protected var playerNameField: TextField = _
   @FXML protected var difficultyComboBox: ComboBox[Difficulty.Value] = _
-  @FXML protected var backButton, applyButton: Button = _
+  @FXML protected var backButton, saveButton: Button = _
 
   Platform.runLater(() => {
     val difficultyList: ObservableList[Difficulty.Value] = FXCollections.observableArrayList[Difficulty.Value]
@@ -23,7 +23,7 @@ case class FXSettingsScene(override val windowManager: Window) extends FXView(So
 
   backButton.setOnMouseClicked(_ => FXWindow.observers.foreach(observer => observer.onBack()))
 
-  applyButton.setOnMouseClicked(_ => {
+  saveButton.setOnMouseClicked(_ => {
     val selection = difficultyComboBox.getSelectionModel
     if(selection.isEmpty) selection.selectFirst()
 
