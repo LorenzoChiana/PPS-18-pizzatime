@@ -1,12 +1,24 @@
-import gamemanager.GameManager
-import gamemanager.observers.ViewObserver
+import gamemanager.{GameManager, ViewObserver}
+import gameview.Window
+import gameview.fx.FXWindow
+import gameview.scene.SceneType._
+import javafx.application.{Application, Platform}
+import javafx.stage.Stage
+import utilities.Intent
 
-class Main {
-   def start(): Unit = {
-    initializeGame()
+class Main extends Application {
+  override def start(primaryStage: Stage): Unit = {
+    initializeGame(primaryStage)
   }
 
-  private def initializeGame() {
+  private def initializeGame(primaryStage: Stage) {
     val observers: Set[ViewObserver] = Set(new GameManager())
+    FXWindow.addObserver(observers)
+    Platform.runLater(() => {
+      val view: Window = FXWindow(primaryStage, "PizzaTime")
+      view.scene_(new Intent(MainScene))
+      view.showView()
+    })
   }
+
 }

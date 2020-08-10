@@ -1,5 +1,6 @@
-package gamemanager.observers
+package gamemanager
 
+import utilities.SettingPreferences
 
 /** Represents an observer for the view */
 trait ViewObserver {
@@ -23,9 +24,13 @@ trait ViewObserver {
   def onCredits(): Unit
 
   /** Notifies the intent to exit from game */
-  def OnExit(): Unit
+  def onExit(): Unit
 
   /** Notifies to go back to the previous scene */
   def onBack(): Unit
+
+  def notifySettings(): Unit
+
+  def onSave(settingPreferences: SettingPreferences): Unit
 
 }

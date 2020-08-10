@@ -2,6 +2,8 @@ package gamelogic
 
 import utilities.Position
 
-class Player(var position: Position) extends MovableEntity {
-
-}
+/** The main character.
+ *
+ *  @param position its starting position
+ */
+case class Player(var position: Position) extends MovableEntity
