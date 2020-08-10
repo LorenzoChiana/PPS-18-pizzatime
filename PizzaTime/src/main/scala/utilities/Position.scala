@@ -1,3 +1,3 @@
 package utilities
 
-case class Position(p: Point, dir: Direction)
+case class Position(p: Point, dir: Option[Direction])
