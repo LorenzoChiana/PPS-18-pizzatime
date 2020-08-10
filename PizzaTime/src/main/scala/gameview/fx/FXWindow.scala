@@ -61,7 +61,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       case SceneType.MainScene => setMainScene()
       case SceneType.SettingScene => setSettingsScene()
       case SceneType.CreditsScene => setCreditsScene()
-      case SceneType.GameScene => setGameScene()
+      case SceneType.GameScene => setGameScene(stage)
     }
 
     if (currentScene.isDefined) {
@@ -113,8 +113,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       })
     }
 
-    def setGameScene(): Unit = {
-      val gameScene: gameview.scene.Scene = FXGameScene(this)
+    def setGameScene(stage: Stage): Unit = {
+      val gameScene: gameview.scene.Scene = FXGameScene(this, stage)
       val fxGameScene = gameScene.asInstanceOf[FXGameScene]
 
       GameManager.view_(gameScene)
