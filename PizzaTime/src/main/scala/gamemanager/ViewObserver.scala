@@ -1,5 +1,6 @@
 package gamemanager
 
+import utilities.Direction
 import utilities.SettingPreferences
 
 /** Represents an observer for the view */
@@ -12,7 +13,7 @@ trait ViewObserver {
   def notifyShoot(): Unit
 
   /** Notifies that the player has moved */
-  def notifyMovement(): Unit
+  def notifyMovement(direction: Direction): Unit
 
   /** Notifies the transition to the game scene */
   def onStartGame(): Unit

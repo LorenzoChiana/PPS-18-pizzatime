@@ -1,7 +1,9 @@
 package gamemanager
 
+import utilities.Direction
+import scala.language.postfixOps
+import scala.collection.mutable.ListBuffer
 import gamemanager.handlers.PreferencesHandler
-import gameview.fx.FXSettingsScene
 import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes.Info
 import utilities.{Intent, SettingPreferences}
@@ -9,19 +11,22 @@ import SceneType._
 import gameview.Window
 
 class GameManager extends ViewObserver {
-
-  var endGame: Boolean = false
-  var numCycle: Int = 0
   lazy val windowManager: Window = GameManager.view.get.windowManager
 
   /** Notifies that the game has started */
-  override def notifyStartGame(): Unit = ???
+  override def notifyStartGame(): Unit = {
+    val gameCycle: GameLoop = new GameLoop()
+    gameCycle initGame;
+    gameCycle run
+  }
 
   /** Notifies that there's a shoot */
-  override def notifyShoot(): Unit = ???
+  override def notifyShoot(): Unit = GameManager.playerShoots = GameManager.playerShoots + 1
 
   /** Notifies that the player has moved */
-  override def notifyMovement(): Unit = ???
+  override def notifyMovement(direction: Direction): Unit = {
+    GameManager.playerMoves :+ direction
+  }
 
   override def notifySettings(): Unit = ???
 
@@ -61,13 +66,16 @@ class GameManager extends ViewObserver {
 
     windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
   }
-
-
-
 }
 
 object GameManager {
   var view: Option[Scene] = None
-
   def view_(view: Scene): Unit = this.view = Some(view)
+  //Flag for the end of game
+  var endGame: Boolean = false
+  //Array che tiene traccia di movimenti
+  val playerMoves = ListBuffer[Direction]()
+  //Variabile che tiene traccia degli spari
+  var playerShoots: Int = 0
+  var numCycle: Int = 0
 }

@@ -12,6 +12,7 @@ class Main extends Application {
   }
 
   private def initializeGame(primaryStage: Stage) {
+
     val observers: Set[ViewObserver] = Set(new GameManager())
     FXWindow.addObserver(observers)
     Platform.runLater(() => {
