@@ -1,9 +1,9 @@
 package gameview.fx
 
+import gamemanager.handlers.PreferencesHandler
+import gamemanager.{GameManager, ViewObserver}
 import gameview.Window
-import gameview.controller.{CreditsSceneController, CreditsSceneControllerImpl, MainSceneController, MainSceneControllerImpl, SettingsSceneController}
-import gameview.observer.{SettingsSceneObserver, ViewObserver}
-import gameview.scene.{CreditsScene, MainScene, SceneType, SettingsScene}
+import gameview.scene.SceneType
 import javafx.application.Platform
 import javafx.scene.Scene
 import javafx.scene.control.Alert.AlertType
@@ -61,7 +61,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       case SceneType.MainScene => setMainScene()
       case SceneType.SettingScene => setSettingsScene()
       case SceneType.CreditsScene => setCreditsScene()
-      case SceneType.GameScene => ???
+      case SceneType.GameScene => setGameScene(stage)
     }
 
     if (currentScene.isDefined) {
@@ -74,42 +74,54 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setMainScene(): Unit = {
-      val mainScene: MainScene = FXMainScene(this)
-      val mainSceneController: MainSceneController = MainSceneControllerImpl()
-
-      mainScene.addObserver(mainSceneController)
-      mainSceneController.setView(mainScene)
+      val mainScene: gameview.scene.Scene = FXMainScene(this)
+      val fxMainScene = mainScene.asInstanceOf[FXMainScene]
+      GameManager.view_(mainScene)
 
       Platform.runLater(() => {
-        windowContent.setCenter(mainScene.asInstanceOf[FXMainScene])
-        Animations.Fade.fadeIn(mainScene.asInstanceOf[FXMainScene])
+        windowContent.setCenter(fxMainScene)
+        Animations.Fade.fadeIn(fxMainScene)
       })
     }
 
     def setSettingsScene(): Unit = {
-      val settingsScene: SettingsScene = FXSettingsScene(this)
-      val settingsSceneObserver: SettingsSceneObserver = SettingsSceneController()
+      val settingsScene: gameview.scene.Scene = FXSettingsScene(this)
+      val fxSettingsScene = settingsScene.asInstanceOf[FXSettingsScene]
 
-      settingsScene.addObserver(settingsSceneObserver)
-      settingsSceneObserver.setView(settingsScene)
-      settingsSceneObserver.init()
+      GameManager.view_(settingsScene)
+      fxSettingsScene.showCurrentPreferences(SettingPreferences(
+        PreferencesHandler.playerName,
+        PreferencesHandler.difficulty
+      ))
 
       Platform.runLater(() => {
-        windowContent.setCenter(settingsScene.asInstanceOf[FXSettingsScene])
-        Animations.Fade.fadeIn(settingsScene.asInstanceOf[FXSettingsScene])
+        windowContent.setCenter(fxSettingsScene)
+        Animations.Fade.fadeIn(fxSettingsScene)
       })
     }
 
     def setCreditsScene(): Unit = {
-      val creditsScene: CreditsScene = FXCreditsScene(this)
-      val creditsSceneController: CreditsSceneController = CreditsSceneControllerImpl()
-
-      creditsScene.addObserver(creditsSceneController)
-      creditsSceneController.setView(creditsScene)
+      val creditsScene: gameview.scene.Scene = FXCreditsScene(this)
+      val fxCreditsScene = creditsScene.asInstanceOf[FXCreditsScene]
+      //val creditsSceneObserver: CreditsSceneObserver = CreditsSceneController()
+      //creditsScene.addObserver(creditsSceneObserver)
+      GameManager.view_(creditsScene)
 
       Platform.runLater(() => {
-        windowContent.setCenter(creditsScene.asInstanceOf[FXCreditsScene])
-        Animations.Fade.fadeIn(creditsScene.asInstanceOf[FXCreditsScene])
+        windowContent.setCenter(fxCreditsScene)
+        Animations.Fade.fadeIn(fxCreditsScene)
+      })
+    }
+
+    def setGameScene(stage: Stage): Unit = {
+      val gameScene: gameview.scene.Scene = FXGameScene(this, stage)
+      val fxGameScene = gameScene.asInstanceOf[FXGameScene]
+
+      GameManager.view_(gameScene)
+
+      Platform.runLater(() => {
+        windowContent.setCenter(fxGameScene)
+        Animations.Fade.fadeIn(fxGameScene)
       })
     }
   }

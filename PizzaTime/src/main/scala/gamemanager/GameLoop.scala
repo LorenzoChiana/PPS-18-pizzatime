@@ -4,15 +4,15 @@ import scala.collection.mutable.ListBuffer
 import utilities.Direction
 /*ci andrà anche la view quando sarà presente*/
 
-class GameCycle(gameManager: GameManager)  extends Thread  {
+class GameLoop()  extends Thread  {
 
   def initGame():Unit = ???
 
   override def run(): Unit = {
     notifyModelDoStep()
 
-    if (gameManager.playerShoots > 0 )  notifyModelPlayerShoot()
-    if (!gameManager.playerMoves.isEmpty) notifyModelPlayerMoves(gameManager.playerMoves); gameManager.playerMoves.clear()
+    if (GameManager.playerShoots > 0 )  notifyModelPlayerShoot()
+    if (!GameManager.playerMoves.isEmpty) notifyModelPlayerMoves(GameManager.playerMoves); GameManager.playerMoves.clear()
 
     //Update view
   }
