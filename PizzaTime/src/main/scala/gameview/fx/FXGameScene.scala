@@ -1,6 +1,5 @@
 package gameview.fx
 
-import gamemanager.handlers.PreferencesHandler
 import gameview.Window
 import gameview.scene.Scene
 import javafx.application.Platform
@@ -8,6 +7,8 @@ import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
+import gamelogic.GameState._
+import gameview.fx.FXGameScene.{tileHeight, tileWidth}
 
 /**
  * Represents the scene that appears when you start playing
@@ -17,9 +18,6 @@ import utilities.WindowSize.Game
 case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
   private var floorImage: Image = _
   private var wallImage: Image = _
-  private val arenaWidth = PreferencesHandler.difficulty.arenaWidth
-  private val arenaHeight = PreferencesHandler.difficulty.arenaHeight
-
   Platform.runLater(() => {
     floorImage = new Image("https://i.pinimg.com/originals/a4/22/9a/a4229a483cf76e0b5458450c2e591ff3.png")
     wallImage = new Image("https://i.pinimg.com/originals/cc/bc/92/ccbc92a6cdd9b42d856933c2fbf00677.jpg")
@@ -34,31 +32,57 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   })
 
   private def initGrid(nRows: Int, nCols: Int):Array[Array[Image]] = {
-    val arena = Array.tabulate(nRows,nCols)( (_,_) => floorImage )
-    for (
-      x <- 0 until nRows ;//by tileWidth.toInt;
-      y <- 0 until nCols //by tileHeight.toInt
-    ) {
-      if ((x == 0) || ((x == nRows - 1) || (y == 0) || (y == nCols - 1))) {
-        arena(x)(y) = wallImage
-      }
-    }
-    arena
+    val walls = arena.get.walls
+    val grid = Array.tabulate(nRows,nCols)( (_,_) => floorImage )
+
+    walls.foreach(wall => {
+      grid(wall.position.point.x)(wall.position.point.y) = wallImage
+      /*
+      val x: Int = pointToPixel(wall.position.point)._1.intValue()
+      val y: Int = pointToPixel(wall.position.point)._2.intValue()
+      grid(x)(y) = wallImage
+       */
+    })
+    grid
   }
 
+
+  /**
+   * Draws entities within the game arena
+   *
+   * @return a new [[GridPane]] with all the game entities initialized to be displayed in the view
+   */
   private def createArena(grid: Array[Array[Image]]): GridPane = {
     val gridPane = new GridPane
-    gridPane.setHgap(1)
-    gridPane.setVgap(1)
+    // questo è da canc mi serve solo per capire se ho generato bene i quadrati
+    /*gridPane.setHgap(1)
+    gridPane.setVgap(1)*/
     for (
-      x <- 0 until arenaWidth ;
-      y <- 0 until arenaHeight
+      x <- 0 until arenaWidth ;//by tileWidth.toInt;
+      y <- 0 until arenaHeight //by tileHeight.toInt
     ) {
       val imageView: ImageView = new ImageView(grid(x)(y))
-      imageView.setFitWidth(Game.width / arenaWidth)
-      imageView.setFitHeight(Game.height / arenaHeight)
+      imageView.setFitWidth(tileWidth)
+      imageView.setFitHeight(tileHeight)
       gridPane.add(imageView, x, y)
     }
     gridPane
   }
+}
+
+/** Factory for [[FXGameScene]] instances. */
+object FXGameScene {
+  /**
+   * Defines the width of each tile that will make up the arena
+   *
+   * @return the width of the tile
+   */
+  def tileWidth: Double = Game.width / arenaWidth
+
+  /**
+   * Defines the height of each tile that will make up the arena
+   *
+   * @return the height of the tile
+   */
+  def tileHeight: Double = Game.height / arenaHeight
 }

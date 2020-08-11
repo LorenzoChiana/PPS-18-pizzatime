@@ -14,10 +14,10 @@ class GameLoop()  extends Thread  {
   }
 
   override def run(): Unit = {
-    notifyModelDoStep()
+    //notifyModelDoStep()
 
-    if (GameManager.playerShoots > 0 )  notifyModelPlayerShoot()
-    if (!GameManager.playerMoves.isEmpty) notifyModelPlayerMoves(GameManager.playerMoves); GameManager.playerMoves.clear()
+   // if (GameManager.playerShoots > 0 )  notifyModelPlayerShoot()
+   // if (!GameManager.playerMoves.isEmpty) notifyModelPlayerMoves(GameManager.playerMoves); GameManager.playerMoves.clear()
 
     //Update view
   }

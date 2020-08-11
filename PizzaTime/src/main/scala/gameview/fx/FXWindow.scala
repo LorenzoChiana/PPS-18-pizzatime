@@ -3,6 +3,7 @@ package gameview.fx
 import gamemanager.handlers.PreferencesHandler
 import gamemanager.{GameManager, ViewObserver}
 import gameview.Window
+import gameview.fx.FXWindow.observers
 import gameview.scene.SceneType
 import javafx.application.Platform
 import javafx.scene.Scene
@@ -114,6 +115,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setGameScene(stage: Stage): Unit = {
+      observers.foreach(observer => observer.notifyStartGame())
       val gameScene: gameview.scene.Scene = FXGameScene(this, stage)
       val fxGameScene = gameScene.asInstanceOf[FXGameScene]
 

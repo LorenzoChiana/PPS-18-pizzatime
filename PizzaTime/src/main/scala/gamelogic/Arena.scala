@@ -70,5 +70,5 @@ object Arena {
    *  @param p the [[Point]] to check
    *  @return true if the [[Point]] is clear
    */
-  def isClearFloor(p: Point): Boolean = arena.get.allEntities.forall(e => !e.position.p.equals(p))
+  def isClearFloor(p: Point): Boolean = arena.get.allEntities.forall(e => !e.position.point.equals(p))
 }
