@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
-import gameview.fx.FXGameScene.{tileHeight, tileWidth}
+import gameview.fx.FXGameScene.{createTile, tileHeight, tileWidth}
 
 /**
  * Represents the scene that appears when you start playing
@@ -22,50 +22,26 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     floorImage = new Image("https://i.pinimg.com/originals/a4/22/9a/a4229a483cf76e0b5458450c2e591ff3.png")
     wallImage = new Image("https://i.pinimg.com/originals/cc/bc/92/ccbc92a6cdd9b42d856933c2fbf00677.jpg")
 
-    val grid = initGrid(arenaWidth, arenaHeight)
-    val gridPane = createArena(grid)
-
-    val scene: javafx.scene.Scene = new javafx.scene.Scene(gridPane)
+    val arenaArea: GridPane = createArena()
+    val scene: javafx.scene.Scene = new javafx.scene.Scene(arenaArea)
 
     stage.setScene(scene)
     stage.show()
   })
-
-  private def initGrid(nRows: Int, nCols: Int):Array[Array[Image]] = {
-    val walls = arena.get.walls
-    val grid = Array.tabulate(nRows,nCols)( (_,_) => floorImage )
-
-    walls.foreach(wall => {
-      grid(wall.position.point.x)(wall.position.point.y) = wallImage
-      /*
-      val x: Int = pointToPixel(wall.position.point)._1.intValue()
-      val y: Int = pointToPixel(wall.position.point)._2.intValue()
-      grid(x)(y) = wallImage
-       */
-    })
-    grid
-  }
-
 
   /**
    * Draws entities within the game arena
    *
    * @return a new [[GridPane]] with all the game entities initialized to be displayed in the view
    */
-  private def createArena(grid: Array[Array[Image]]): GridPane = {
+  private def createArena(): GridPane = {
     val gridPane = new GridPane
-    // questo è da canc mi serve solo per capire se ho generato bene i quadrati
-    /*gridPane.setHgap(1)
-    gridPane.setVgap(1)*/
-    for (
-      x <- 0 until arenaWidth ;//by tileWidth.toInt;
-      y <- 0 until arenaHeight //by tileHeight.toInt
-    ) {
-      val imageView: ImageView = new ImageView(grid(x)(y))
-      imageView.setFitWidth(tileWidth)
-      imageView.setFitHeight(tileHeight)
-      gridPane.add(imageView, x, y)
-    }
+
+    for (floor <- arena.get.floor) gridPane.add(createTile(floorImage), floor.position.point.x, floor.position.point.y)
+    for (wall <- arena.get.walls) gridPane.add(createTile(wallImage), wall.position.point.x, wall.position.point.y)
+
+    gridPane.setGridLinesVisible(false)
+
     gridPane
   }
 }
@@ -85,4 +61,16 @@ object FXGameScene {
    * @return the height of the tile
    */
   def tileHeight: Double = Game.height / arenaHeight
+
+  /**
+   * Creates a tile sprite
+   * @param image the sprite image
+   * @return an [[ImageView]] that represents the sprite of the tile
+   */
+  def createTile(image: Image): ImageView = {
+    val tile: ImageView = new ImageView(image)
+    tile.setFitWidth(tileWidth)
+    tile.setFitHeight(tileHeight)
+    tile
+  }
 }
