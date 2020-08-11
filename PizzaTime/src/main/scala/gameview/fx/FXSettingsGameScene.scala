@@ -1,7 +1,7 @@
 package gameview.fx
 
 import gameview.Window
-import gameview.scene.Scene
+import gameview.scene.GameScene
 import javafx.application.Platform
 import javafx.collections.{FXCollections, ObservableList}
 import javafx.fxml.FXML
@@ -10,7 +10,7 @@ import utilities.{Difficulty, SettingPreferences}
 
 import scala.jdk.CollectionConverters
 
-case class FXSettingsScene(override val windowManager: Window) extends FXView(Some("SettingsScene.fxml")) with Scene {
+case class FXSettingsGameScene(override val windowManager: Window) extends FXView(Some("SettingsScene.fxml")) with GameScene {
   @FXML protected var playerNameField: TextField = _
   @FXML protected var difficultyComboBox: ComboBox[Difficulty.Value] = _
   @FXML protected var backButton, saveButton: Button = _

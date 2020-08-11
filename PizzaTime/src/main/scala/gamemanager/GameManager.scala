@@ -4,7 +4,7 @@ import utilities.Direction
 import scala.language.postfixOps
 import scala.collection.mutable.ListBuffer
 import gamemanager.handlers.PreferencesHandler
-import gameview.scene.{Scene, SceneType}
+import gameview.scene.{GameScene, SceneType}
 import utilities.MessageTypes.Info
 import utilities.{Intent, SettingPreferences}
 import SceneType._
@@ -69,8 +69,8 @@ class GameManager extends ViewObserver {
 }
 
 object GameManager {
-  var view: Option[Scene] = None
-  def view_(view: Scene): Unit = this.view = Some(view)
+  var view: Option[GameScene] = None
+  def view_(view: GameScene): Unit = this.view = Some(view)
   //Flag for the end of game
   var endGame: Boolean = false
   //Array che tiene traccia di movimenti
