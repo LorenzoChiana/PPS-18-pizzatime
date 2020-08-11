@@ -1,12 +1,17 @@
 package gamemanager
 
+import gamelogic.GameState
+
 import scala.collection.mutable.ListBuffer
 import utilities.Direction
 /*ci andrà anche la view quando sarà presente*/
 
 class GameLoop()  extends Thread  {
 
-  def initGame():Unit = ???
+  def initGame():Unit = {
+    GameState.startGame("Player1")
+    this.start()
+  }
 
   override def run(): Unit = {
     notifyModelDoStep()
