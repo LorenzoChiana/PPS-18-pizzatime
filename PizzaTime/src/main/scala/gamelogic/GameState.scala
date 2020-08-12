@@ -1,5 +1,7 @@
 package gamelogic
 
+import utilities.Direction
+
 /** Represents the game's logical state. */
 object GameState {
   var arena: Option[GameMap] = None
@@ -10,6 +12,6 @@ object GameState {
     arena = Some(Arena(playerName))
   }
 
-  def nextStep(): Unit = ???
+  def nextStep(Movement: Option[Direction]): Unit = ???
 }
 

@@ -1,6 +1,7 @@
 package gamemanager
 
 import gamelogic.GameState
+import gameview.fx.FXGameScene
 
 import scala.collection.mutable.ListBuffer
 import utilities.Direction
@@ -13,22 +14,21 @@ class GameLoop()  extends Thread  {
     this.start()
   }
 
-  override def run(): Unit = {
-    //notifyModelDoStep()
+  override def run(): Unit = gameLoop()
 
-   // if (GameManager.playerShoots > 0 )  notifyModelPlayerShoot()
-   // if (!GameManager.playerMoves.isEmpty) notifyModelPlayerMoves(GameManager.playerMoves); GameManager.playerMoves.clear()
+  def gameLoop(): Unit = if (GameManager.endGame) {
+    finishGame()
+  } else {
+ //   GameState.nextStep(GameManager.checkNewMovement())
+    GameManager.numCycle = GameManager.numCycle + 1
 
-    //Update view
+    /** Update view */
+    if (GameManager.view.get.isInstanceOf[FXGameScene])
+      GameManager.view.get.asInstanceOf[FXGameScene].updateView()
+
+    Thread.sleep(80)
+    gameLoop()
   }
-  /*metodo che contiene il ciclo dell'attuale partita:
-  *
-  * dice al model di andare avanti di uno step
-  * controlla se è successo qualcosa (sparato/mosso)
-  * update view
-  * */
 
-  def notifyModelDoStep() : Unit = ???
-  def notifyModelPlayerMoves(direction: ListBuffer[Direction]) : Unit = ???
-  def notifyModelPlayerShoot() : Unit = ???
+  def finishGame() : Unit = println("Finish!")
 }

@@ -1,14 +1,16 @@
 package gamemanager
 
-import utilities.Direction
+import utilities.{Action, Direction, Intent, Movement, SettingPreferences, Shoot}
+
 import scala.language.postfixOps
 import scala.collection.mutable.ListBuffer
 import gamemanager.handlers.PreferencesHandler
 import gameview.scene.{GameScene, SceneType}
 import utilities.MessageTypes.Info
-import utilities.{Intent, SettingPreferences}
 import SceneType._
 import gameview.Window
+
+import scala.collection.immutable.Queue
 
 class GameManager extends ViewObserver {
   lazy val windowManager: Window = GameManager.view.get.windowManager
@@ -16,16 +18,13 @@ class GameManager extends ViewObserver {
   /** Notifies that the game has started */
   override def notifyStartGame(): Unit = {
     val gameCycle: GameLoop = new GameLoop()
-    gameCycle initGame;
-    gameCycle run
+    gameCycle.initGame()
   }
 
-  /** Notifies that there's a shoot */
-  override def notifyShoot(): Unit = GameManager.playerShoots = GameManager.playerShoots + 1
-
   /** Notifies that the player has moved */
-  override def notifyMovement(direction: Direction): Unit = {
-    GameManager.playerMoves :+ direction
+  override def notifyAction(action: Action): Unit = action.actionType match{
+    case Movement =>  GameManager.playerMoves = GameManager.playerMoves :+ action.direction
+    case _ =>
   }
 
   override def notifySettings(): Unit = ???
@@ -66,6 +65,8 @@ class GameManager extends ViewObserver {
 
     windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
   }
+
+
 }
 
 object GameManager {
@@ -74,8 +75,17 @@ object GameManager {
   //Flag for the end of game
   var endGame: Boolean = false
   //Array che tiene traccia di movimenti
-  val playerMoves = ListBuffer[Direction]()
+  var playerMoves: Queue[Option[Direction]] = Queue[Option[Direction]]()
   //Variabile che tiene traccia degli spari
   var playerShoots: Int = 0
   var numCycle: Int = 0
+
+  def checkNewMovement(): Option[Direction] = GameManager.playerMoves.length match {
+    case 0 => None
+    case _ => {
+      val direction = GameManager.playerMoves.dequeue._1
+      GameManager.playerMoves = GameManager.playerMoves.dequeue._2
+      direction
+    }
+  }
 }
