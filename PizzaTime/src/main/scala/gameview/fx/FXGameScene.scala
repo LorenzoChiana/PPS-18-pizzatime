@@ -7,9 +7,8 @@ import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
-import gameview.fx.FXGameScene.{createTile, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.{createTile, pointToPixel, tileHeight, tileWidth}
 import gameview.scene.GameScene
-
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
@@ -22,6 +21,7 @@ import javafx.util.Duration
 import utilities.{Action, Direction, Down, Left, Movement, Point, Right, Shoot, Up}
 
 import scala.collection.mutable.Map
+import utilities.Point
 
 /**
  * Represents the scene that appears when you start playing
@@ -34,7 +34,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
   private val heroImage: Image = new Image(getClass.getResourceAsStream("/images/sprite/sprite.png"))
   private val hero: ImageView = new ImageView(heroImage)
-  private val directions: Map[Action, Boolean] = Map(Action(Movement, Some(Up))->false, Action(Movement, Some(Down))->false, Action(Movement, Some(Left))->false, Action(Movement, Some(Right))->false)
+  private val directions: Map[Action, Boolean] = Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
   private val width: Int = stage.getWidth.intValue()
   private val height: Int = stage.getHeight.intValue()
   var animation: SpriteAnimation = _
@@ -46,7 +46,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
     val arenaArea: GridPane = createArena()
     val dungeon: Group = new Group(arenaArea, hero)
-    animation = new SpriteAnimation(hero, Duration.millis(300), 4, 4, 0, 0, 100,130)
+    animation = new SpriteAnimation(hero, Duration.millis(300), 4, 4, 0, 0, 100, 130)
 
     val scene: Scene = new Scene(dungeon, width, height) {
       setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
@@ -76,6 +76,26 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     timeline.play()
   })
 
+  var currentPosition: Point = arena.get.player.position.point
+
+  /**
+   * method called by the controller cyclically to update the view
+   */
+  def updateView(): Unit = {
+    /** Updating position and animate hero */
+    if (!arena.get.player.position.point.equals(currentPosition)) {
+      arena.get.player.position.dir match {
+        case Some(Up) => animation.offsetY = 260; animation.play()
+        case Some(Down) => animation.offsetY = 0; animation.play()
+        case Some(Left) => animation.offsetY = 130; animation.play()
+        case Some(Right) => animation.offsetY = 390; animation.play()
+        case _ => None
+      }
+      hero.relocate(pointToPixel(arena.get.player.position.point)._1, pointToPixel(arena.get.player.position.point)._2)
+      currentPosition = arena.get.player.position.point
+    }
+  }
+
   /**
    * Draws entities within the game arena
    *
@@ -91,41 +111,9 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
     gridPane
   }
-
-  /**
-   * method called by the controller cyclically to update the view
-   */
-  def updateView(): Unit = {
-   // println(directions)
-    /** Updating position and animate hero */
-  }
-
-
-
-  private def moveBy(dx: Int, dy: Int): Unit = {
-    val cx: Double = hero.getBoundsInLocal.getWidth / 2
-    val cy: Double = hero.getBoundsInLocal.getHeight / 2
-
-    val x: Double = cx + hero.getLayoutX + dx
-    val y: Double = cy + hero.getLayoutY + dy
-
-    moveTo(x,y)
-  }
-
-  private def moveTo(x: Double, y: Double): Unit = {
-    val cx: Double = hero.getBoundsInLocal.getWidth / 2
-    val cy: Double = hero.getBoundsInLocal.getHeight / 2
-
-    if (x - cx >= 0 &&
-      x + cx <= width &&
-      y - cy >= 0 &&
-      y + cy <= height) {
-      hero.relocate(x - cx, y - cy)
-    }
-  }
 }
 
-/** Factory for [[FXGameScene]] instances. */
+/** Utility methods for [[FXGameScene]]. */
 object FXGameScene {
   /**
    * Defines the width of each tile that will make up the arena
@@ -140,6 +128,13 @@ object FXGameScene {
    * @return the height of the tile
    */
   def tileHeight: Double = Game.height / arenaHeight
+
+  /** Converts a logic [[Point]] to a pixel for visualization purposes.
+   *
+   *  @param p the [[Point]] to convert
+   *  @return a tuple of coordinates in pixels
+   */
+  def pointToPixel(p: Point): (Double, Double) = (p.x * tileWidth, (p.y * tileHeight) + tileHeight)
 
   /**
    * Creates a tile sprite

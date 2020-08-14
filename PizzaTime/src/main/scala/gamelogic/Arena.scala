@@ -8,8 +8,9 @@ import utilities.ImplicitConversions._
 /** The playable area, populated with all the [[Entity]]s.
  *
  *  @param playerName the [[Player]]'s name
+ *  @param mapGen the [[MapGenerator]] to use
  */
-class Arena(val playerName: String) extends GameMap {
+class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   val player: Player = Player(playerName, Position(center, Some(Down)))
   var enemies: Set[EnemyCharacter] = Set()
   var bullets: Set[Bullet] = Set()
@@ -19,16 +20,21 @@ class Arena(val playerName: String) extends GameMap {
   val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
 
   def allEntities: Set[Entity] = enemies ++ bullets ++ collectibles ++ obstacles ++ walls + player
+
+  def generateMap(): Unit = mapGen.generateLevel()
+
+  def updateMap(): Unit = ???
 }
 
 /** Utility methods for [[Arena]]. */
 object Arena {
   /** Creates an [[Arena]].
    *
-   * @param playerName the [[Player]]'s name
-   * @return the new [[Arena]] instance
+   *  @param playerName the [[Player]]'s name
+   *  @param mapGen the [[MapGenerator]] to use
+   *  @return the new [[Arena]] instance
    */
-  def apply(playerName: String): Arena = new Arena(playerName)
+  def apply(playerName: String, mapGen: MapGenerator): Arena = new Arena(playerName, mapGen)
 
   /** Returns the set of [[Point]]s that correspond to the [[Arena]]'s [[Wall]]. */
   def bounds: Set[Point] = {

@@ -1,6 +1,8 @@
 package gamemanager
 
 import gamelogic.GameState
+import gamelogic.MapGenerator.gameType
+import gamemanager.handlers.PreferencesHandler
 import gameview.fx.FXGameScene
 
 import scala.collection.mutable.ListBuffer
@@ -10,7 +12,7 @@ import utilities.Direction
 class GameLoop()  extends Thread  {
 
   def initGame():Unit = {
-    GameState.startGame("Player1")
+    GameState.startGame(PreferencesHandler.playerName, gameType(PreferencesHandler.difficulty))
     this.start()
   }
 

@@ -8,8 +8,9 @@ object GameState {
   val arenaWidth: Int = 12
   val arenaHeight: Int = 8
 
-  def startGame(playerName: String): Unit = {
-    arena = Some(Arena(playerName))
+  def startGame(playerName: String, mapGen: MapGenerator): Unit = {
+    arena = Some(Arena(playerName, mapGen))
+    arena.get.generateMap()
   }
 
   def nextStep(Movement: Option[Direction]): Unit = ???
