@@ -8,10 +8,6 @@ import utilities.ImplicitConversions._
 /** The playable area, populated with all the [[Entity]]s.
  *
  *  @param playerName the [[Player]]'s name
- */
-/** The playable area, populated with all the [[Entity]]s.
- *
- *  @param playerName the [[Player]]'s name
  *  @param mapGen the [[MapGenerator]] to use
  */
 class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {

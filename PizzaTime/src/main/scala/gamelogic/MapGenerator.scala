@@ -8,9 +8,16 @@ import GameState._
 import utilities.ImplicitConversions._
 import scala.util.Random.between
 
+/** Encapsulates the logic for generating a new level.
+ *  Used by [[Arena]].
+ *
+ *  @param bonusProb the bonus probability
+ *  @param malusProb the malus probability
+ */
 case class MapGenerator(bonusProb: Double, malusProb: Double) {
   var currentLevel: Int = 0
 
+  /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
     currentLevel += 1
     generateEnemies()
@@ -42,12 +49,18 @@ case class MapGenerator(bonusProb: Double, malusProb: Double) {
   private def levelMultiplier: Int = currentLevel / LevelThreshold
 }
 
+/** Utility methods for [[MapGenerator]]. */
 object MapGenerator {
   val EnemiesRange: Int = 5
   val CollectiblesRange: Int = 2
   val ObstaclesRange: Int = 2
   val LevelThreshold: Int = 3
 
+  /** Creates a [[MapGenerator]].
+   *
+   *  @param diff the difficulty value to use
+   *  @return the new [[MapGenerator]] instance
+   */
   def gameType(diff: Difficulty.Value): MapGenerator = diff match {
     case Easy => MapGenerator(0.9, 0.1)
     case Medium => MapGenerator(0.7, 0.3)
@@ -55,10 +68,11 @@ object MapGenerator {
     case Extreme => MapGenerator(0.1, 0.9)
   }
 
+  /** Returns a random position on the [[Arena]]. */
   @scala.annotation.tailrec
   def randomPosition: Position = {
-    val x = between(1, arenaWidth)
-    val y = between(1, arenaHeight)
+    val x = between(1, arenaWidth - 1)
+    val y = between(1, arenaHeight - 1)
     if (isClearFloor(x, y)) Position((x,y), Some(Down)) else randomPosition
   }
 
