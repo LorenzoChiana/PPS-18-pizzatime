@@ -19,6 +19,29 @@ trait MovableEntity extends Entity {
     )
     surroundings -- bounds
   }
+
+  /** Returns true if a [[Point]] is transitable.
+   *
+   *  @param p the [[Point]] to check
+   */
+  def canMove(p: Point): Boolean = surroundings.contains(p)
+
+  /** Moves the [[MovableEntity]] one step forward in a given [[Direction]].
+   *
+   *  @param dir the [[Direction]] of movement
+   */
+  def move(dir: Direction): Unit = {
+    if (canMove(stepPoint(position.point, dir)))
+      position = Position(stepPoint(position.point, dir), Some(dir))
+    else
+      position = Position(position.point, Some(dir))
+  }
+
+  /** Moves the [[MovableEntity]] in a clear [[Position]].
+   *
+   *  @param pos the destination's [[Position]]
+   */
+  def moveTo(pos: Position): Unit = if (canMove(pos.point)) position = pos
 }
 
 /** Utility methods for [[MovableEntity]]. */

@@ -9,6 +9,7 @@ import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
 import gameview.fx.FXGameScene.{createTile, tileHeight, tileWidth}
+import utilities.Point
 
 /**
  * Represents the scene that appears when you start playing
@@ -46,7 +47,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   }
 }
 
-/** Factory for [[FXGameScene]] instances. */
+/** Utility methods for [[FXGameScene]]. */
 object FXGameScene {
   /**
    * Defines the width of each tile that will make up the arena
@@ -61,6 +62,13 @@ object FXGameScene {
    * @return the height of the tile
    */
   def tileHeight: Double = Game.height / arenaHeight
+
+  /** Converts a logic [[Point]] to a pixel for visualization purposes.
+   *
+   *  @param p the [[Point]] to convert
+   *  @return a tuple of coordinates in pixels
+   */
+  def pointToPixel(p: Point): (Double, Double) = (p.x * tileWidth, (p.y * tileHeight) + tileHeight)
 
   /**
    * Creates a tile sprite
