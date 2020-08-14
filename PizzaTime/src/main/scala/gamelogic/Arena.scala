@@ -9,7 +9,7 @@ import utilities.ImplicitConversions._
  *
  *  @param playerName the [[Player]]'s name
  */
-class Arena(val playerName: String) extends GameMap {
+class Arena(val playerName: String, val mapGenerator: MapGenerator) extends GameMap {
   val player: Player = Player(playerName, Position(center, Some(Down)))
   var enemies: Set[EnemyCharacter] = Set()
   var bullets: Set[Bullet] = Set()
@@ -25,10 +25,11 @@ class Arena(val playerName: String) extends GameMap {
 object Arena {
   /** Creates an [[Arena]].
    *
-   * @param playerName the [[Player]]'s name
-   * @return the new [[Arena]] instance
+   *  @param playerName the [[Player]]'s name
+   *  @param mapGen the [[MapGenerator]] to use
+   *  @return the new [[Arena]] instance
    */
-  def apply(playerName: String): Arena = new Arena(playerName)
+  def apply(playerName: String, mapGen: MapGenerator): Arena = new Arena(playerName, mapGen)
 
   /** Returns the set of [[Point]]s that correspond to the [[Arena]]'s [[Wall]]. */
   def bounds: Set[Point] = {

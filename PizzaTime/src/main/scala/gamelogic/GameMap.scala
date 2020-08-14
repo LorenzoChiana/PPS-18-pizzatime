@@ -4,6 +4,8 @@ package gamelogic
  *  Implemented by [[Arena]].
  */
 trait GameMap {
+  def mapGen: MapGenerator
+
   def player: Player
   var enemies: Set[EnemyCharacter]
   var bullets: Set[Bullet]
