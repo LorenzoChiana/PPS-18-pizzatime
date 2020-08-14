@@ -8,6 +8,7 @@ object GameState {
 
   def startGame(playerName: String, mapGen: MapGenerator): Unit = {
     arena = Some(Arena(playerName, mapGen))
+    arena.get.generateMap()
   }
 
   def nextStep(): Unit = ???

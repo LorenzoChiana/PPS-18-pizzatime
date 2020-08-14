@@ -9,7 +9,12 @@ import utilities.ImplicitConversions._
  *
  *  @param playerName the [[Player]]'s name
  */
-class Arena(val playerName: String, val mapGenerator: MapGenerator) extends GameMap {
+/** The playable area, populated with all the [[Entity]]s.
+ *
+ *  @param playerName the [[Player]]'s name
+ *  @param mapGen the [[MapGenerator]] to use
+ */
+class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   val player: Player = Player(playerName, Position(center, Some(Down)))
   var enemies: Set[EnemyCharacter] = Set()
   var bullets: Set[Bullet] = Set()
@@ -19,6 +24,10 @@ class Arena(val playerName: String, val mapGenerator: MapGenerator) extends Game
   val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
 
   def allEntities: Set[Entity] = enemies ++ bullets ++ collectibles ++ obstacles ++ walls + player
+
+  def generateMap(): Unit = ???
+
+  def updateMap(): Unit = ???
 }
 
 /** Utility methods for [[Arena]]. */
