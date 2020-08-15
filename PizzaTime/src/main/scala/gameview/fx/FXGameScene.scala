@@ -2,6 +2,7 @@ package gameview.fx
 
 import gameview.Window
 import gameview.scene.Scene
+import javafx.scene.{Scene => JFXScene}
 import javafx.application.Platform
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.GridPane
@@ -20,14 +21,16 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private var floorImage: Image = _
   private var wallImage: Image = _
   private var obstacleImage: Image = _
+  private var collectibleImage: Image = _
 
   Platform.runLater(() => {
     floorImage = new Image(getClass.getResourceAsStream("/images/textures/garden.png"))
     wallImage = new Image(getClass.getResourceAsStream("/images/textures/wall.jpg"))
     obstacleImage = new Image(getClass.getResourceAsStream("/images/sprites/flour.png"))
+    collectibleImage = new Image(getClass.getResourceAsStream("/images/sprites/pizza.png"))
 
     val arenaArea: GridPane = createArena()
-    val scene: javafx.scene.Scene = new javafx.scene.Scene(arenaArea)
+    val scene: JFXScene = new JFXScene(arenaArea)
 
     stage.setScene(scene)
     stage.show()
@@ -44,6 +47,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     for (floor <- arena.get.floor) gridPane.add(createTile(floorImage), floor.position.point.x, floor.position.point.y)
     for (wall <- arena.get.walls) gridPane.add(createTile(wallImage), wall.position.point.x, wall.position.point.y)
     for (obstacle <- arena.get.obstacles) gridPane.add(createTile(obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
+    for (collectible <- arena.get.collectibles) gridPane.add(createTile(collectibleImage), collectible.position.point.x, collectible.position.point.y)
 
     gridPane.setGridLinesVisible(false)
 

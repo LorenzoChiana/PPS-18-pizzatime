@@ -20,7 +20,7 @@ case class MapGenerator(bonusProb: Double, malusProb: Double) {
   /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
     currentLevel += 1
-    generateEnemies()
+   // generateEnemies()
     generateCollectibles()
     generateObstacles()
   }

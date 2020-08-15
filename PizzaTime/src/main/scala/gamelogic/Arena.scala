@@ -21,7 +21,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   def allEntities: Set[Entity] = enemies ++ bullets ++ collectibles ++ obstacles ++ walls + player
 
-  def generateMap(): Unit = ???
+  def generateMap(): Unit = mapGen.generateLevel()
 
   def updateMap(): Unit = ???
 }
