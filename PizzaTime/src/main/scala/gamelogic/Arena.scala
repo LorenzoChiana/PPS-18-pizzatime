@@ -77,4 +77,25 @@ object Arena {
    *  @return true if the [[Point]] is clear
    */
   def isClearFloor(p: Point): Boolean = arena.get.allEntities.forall(e => !e.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains a [[Obstacle]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Obstacle]]
+   */
+  def containsObstacle(p: Point): Boolean = arena.get.obstacles.exists(_.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains a [[Collectible]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Collectible]]
+   */
+  def containsCollectible(p: Point): Boolean = arena.get.collectibles.exists(_.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains a [[Enemy]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Enemy]]
+   */
+  def containsEnemy(p: Point): Boolean = arena.get.enemies.exists(_.position.point.equals(p))
 }
