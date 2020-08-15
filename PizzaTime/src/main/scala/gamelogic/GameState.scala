@@ -1,5 +1,7 @@
 package gamelogic
 
+import utilities.Direction
+
 /** Represents the game's logical state. */
 object GameState {
   var arena: Option[GameMap] = None
@@ -11,6 +13,6 @@ object GameState {
     arena.get.generateMap()
   }
 
-  def nextStep(): Unit = ???
+  def nextStep(movement: Option[Direction]): Unit = arena.get.updateMap(movement)
 }
 
