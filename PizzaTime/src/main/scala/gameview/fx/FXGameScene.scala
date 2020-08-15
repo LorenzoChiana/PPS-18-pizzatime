@@ -8,7 +8,7 @@ import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
-import gameview.fx.FXGameScene.{createTile, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.createTile
 import utilities.Point
 
 /**
@@ -19,9 +19,12 @@ import utilities.Point
 case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
   private var floorImage: Image = _
   private var wallImage: Image = _
+  private var obstacleImage: Image = _
+
   Platform.runLater(() => {
-    floorImage = new Image("https://i.pinimg.com/originals/a4/22/9a/a4229a483cf76e0b5458450c2e591ff3.png")
-    wallImage = new Image("https://i.pinimg.com/originals/cc/bc/92/ccbc92a6cdd9b42d856933c2fbf00677.jpg")
+    floorImage = new Image(getClass.getResourceAsStream("/images/textures/garden.png"))
+    wallImage = new Image(getClass.getResourceAsStream("/images/textures/wall.jpg"))
+    obstacleImage = new Image(getClass.getResourceAsStream("/images/sprites/flour.png"))
 
     val arenaArea: GridPane = createArena()
     val scene: javafx.scene.Scene = new javafx.scene.Scene(arenaArea)
@@ -40,6 +43,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
     for (floor <- arena.get.floor) gridPane.add(createTile(floorImage), floor.position.point.x, floor.position.point.y)
     for (wall <- arena.get.walls) gridPane.add(createTile(wallImage), wall.position.point.x, wall.position.point.y)
+    for (obstacle <- arena.get.obstacles) gridPane.add(createTile(obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
 
     gridPane.setGridLinesVisible(false)
 
