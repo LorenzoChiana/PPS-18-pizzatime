@@ -29,10 +29,10 @@ object PreferencesHandler {
   implicit val formats: Formats = net.liftweb.json.DefaultFormats + new EnumSerializer(Difficulty)
 
   /**
-   * @return the game difficulty saved
+   * @return the game difficulty saved, by default it is easy
    */
   def difficulty: Difficulty.Value = {
-    parse(prefs.get(DIFFICULTY, compactRender(decompose(Difficulty.Medium)))).extract[Difficulty.Value]
+    parse(prefs.get(DIFFICULTY, compactRender(decompose(Difficulty.Easy)))).extract[Difficulty.Value]
   }
 
   /**
