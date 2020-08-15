@@ -5,7 +5,9 @@ import Arena._
 import utilities.{Difficulty, Down, Position}
 import utilities.Difficulty._
 import GameState._
+import gamemanager.handlers.PreferencesHandler.difficulty
 import utilities.ImplicitConversions._
+
 import scala.util.Random.between
 
 /** Encapsulates the logic for generating a new level.
@@ -36,7 +38,8 @@ case class MapGenerator(bonusProb: Double, malusProb: Double) {
   private def generateCollectibles(): Unit = {
     val range = CollectiblesRange + currentLevel
     var coll: Set[Collectible] = Set()
-    for (_ <- 0 to between(1, range)) coll = coll + BonusScore(randomPosition, 0)
+    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) coll = coll + BonusLife(randomPosition)
+    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) coll = coll + BonusScore(randomPosition, difficulty.bonusScore)
     arena.get.collectibles = coll
   }
 

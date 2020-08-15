@@ -1,5 +1,6 @@
 package gameview.fx
 
+import gamelogic.{BonusLife, BonusScore, Collectible}
 import gameview.Window
 import gameview.scene.Scene
 import javafx.application.Platform
@@ -8,8 +9,10 @@ import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
-import gameview.fx.FXGameScene.createTile
+import gameview.fx.FXGameScene.{createTile, pointToPixel}
 import utilities.Point
+
+import scala.collection.immutable
 
 /**
  * Represents the scene that appears when you start playing
@@ -20,6 +23,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private var floorImage: Image = _
   private var wallImage: Image = _
   private var obstacleImage: Image = _
+  private var collectibles: immutable.Map[Collectible, ImageView] = new immutable.HashMap[Collectible, ImageView]()
 
   Platform.runLater(() => {
     floorImage = new Image(getClass.getResourceAsStream("/images/textures/garden.png"))
@@ -49,6 +53,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
     gridPane
   }
+  
 }
 
 /** Utility methods for [[FXGameScene]]. */
