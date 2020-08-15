@@ -36,11 +36,8 @@ case class MapGenerator(bonusProb: Double, malusProb: Double) {
   }
 
   private def generateCollectibles(): Unit = {
-    val range = CollectiblesRange + currentLevel
-    var coll: Set[Collectible] = Set()
-    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) coll = coll + BonusLife(randomPosition)
-    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) coll = coll + BonusScore(randomPosition, difficulty.bonusScore)
-    arena.get.collectibles = coll
+    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) arena.get.collectibles = arena.get.collectibles + BonusLife(randomPosition)
+    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) arena.get.collectibles = arena.get.collectibles + BonusScore(randomPosition, difficulty.bonusScore)
   }
 
   private def generateObstacles(): Unit = {

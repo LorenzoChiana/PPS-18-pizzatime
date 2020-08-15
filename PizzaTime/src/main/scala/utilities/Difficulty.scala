@@ -34,7 +34,7 @@ object Difficulty extends Enumeration {
     malusProb = 0.9,
     arenaWidth = 128,
     arenaHeight = 72,
-    bonusRange = Range(3, 5),
+    bonusRange = Range(1, 5),
     bonusScore = 40,
     maxLife = 5
   )

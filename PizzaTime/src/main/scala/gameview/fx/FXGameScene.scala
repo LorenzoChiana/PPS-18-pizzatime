@@ -1,8 +1,8 @@
 package gameview.fx
 
-import gameview.{SpriteAnimation}
+import gamelogic.{BonusLife, BonusScore, Collectible}
+import gameview.SpriteAnimation
 import gameview.Window
-import javafx.scene.{Scene => JFXScene}
 import javafx.application.Platform
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.GridPane
@@ -20,9 +20,12 @@ import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
 import utilities.{Action, Down, Left, Movement, Right, Up}
-import scala.collection.mutable.Map
+
 import gameview.fx.FXGameScene.createTile
 import utilities.Point
+
+import scala.collection.{immutable, mutable}
+import scala.collection.immutable.HashMap
 
 /**
  * Represents the scene that appears when you start playing
@@ -32,24 +35,46 @@ import utilities.Point
 case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with GameScene {
   private var floorImage: Image = _
   private var wallImage: Image = _
-  private val heroImage: Image = new Image(getClass.getResourceAsStream("/images/sprite/sprite.png"))
-  private val hero: ImageView = new ImageView(heroImage)
-  private val directions: Map[Action, Boolean] = Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
+  private var obstacleImage: Image = _
+  private var heroImage: Image = _
+  private var bonusScoreImage: Image = _
+  private var bonusLifeImage: Image = _
+  private var hero: ImageView = _
+  private val directions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
   private val width: Int = stage.getWidth.intValue()
   private val height: Int = stage.getHeight.intValue()
   var animation: SpriteAnimation = _
-  private var obstacleImage: Image = _
-  private var collectibleImage: Image = _
+  private var collectibles: immutable.Map[Collectible, ImageView] = HashMap[Collectible, ImageView]()
+  var currentPosition: Point = arena.get.player.position.point
 
   Platform.runLater(() => {
     floorImage = new Image(getClass.getResourceAsStream("/images/textures/garden.png"))
     wallImage = new Image(getClass.getResourceAsStream("/images/textures/wall.jpg"))
     obstacleImage = new Image(getClass.getResourceAsStream("/images/sprites/flour.png"))
-    collectibleImage = new Image(getClass.getResourceAsStream("/images/sprites/pizza.png"))
+    heroImage = new Image(getClass.getResourceAsStream("/images/sprites/hero.png"))
+    bonusLifeImage = new Image(getClass.getResourceAsStream("/images/sprites/pizza.png"))
+    bonusScoreImage = new Image(getClass.getResourceAsStream("/images/sprites/tomato.png"))
+
+    hero = new ImageView(heroImage)
+    hero.relocate(pointToPixel(currentPosition)._1, pointToPixel(currentPosition)._2)
 
     val arenaArea: GridPane = createArena()
     val dungeon: Group = new Group(arenaArea, hero)
     animation = new SpriteAnimation(hero, Duration.millis(300), 4, 4, 0, 0, 100, 130)
+
+    /** Create collectioble sprites */
+    arena.get.collectibles.foreach {
+      case c: BonusLife =>
+        val collectible = createTile(bonusLifeImage)
+        collectibles = collectibles + (c -> collectible)
+        dungeon.getChildren.add(collectible)
+        collectible.relocate(pointToPixel(c.position.point)._1, pointToPixel(c.position.point)._2)
+      case c: BonusScore =>
+        val collectible = createTile(bonusScoreImage)
+        collectibles = collectibles + (c -> collectible)
+        dungeon.getChildren.add(collectible)
+        collectible.relocate(pointToPixel(c.position.point)._1, pointToPixel(c.position.point)._2)
+    }
 
     val scene: Scene = new Scene(dungeon, width, height) {
       setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
@@ -77,9 +102,10 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     }))
     timeline.setCycleCount(Animation.INDEFINITE)
     timeline.play()
+
   })
 
-  var currentPosition: Point = arena.get.player.position.point
+
 
   /**
    * method called by the controller cyclically to update the view
@@ -110,7 +136,8 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     for (floor <- arena.get.floor) gridPane.add(createTile(floorImage), floor.position.point.x, floor.position.point.y)
     for (wall <- arena.get.walls) gridPane.add(createTile(wallImage), wall.position.point.x, wall.position.point.y)
     for (obstacle <- arena.get.obstacles) gridPane.add(createTile(obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
-    for (collectible <- arena.get.collectibles) gridPane.add(createTile(collectibleImage), collectible.position.point.x, collectible.position.point.y)
+    for (collectible <- arena.get.collectibles) gridPane.add(createTile(bonusScoreImage), collectible.position.point.x, collectible.position.point.y)
+    for (collectible <- arena.get.collectibles) gridPane.add(createTile(bonusLifeImage), collectible.position.point.x, collectible.position.point.y)
 
     gridPane.setGridLinesVisible(false)
 
