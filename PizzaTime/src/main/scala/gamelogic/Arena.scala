@@ -1,9 +1,9 @@
 package gamelogic
 
-import Arena._
 import GameState._
-import utilities.{Point, Position, Down}
+import utilities.{Direction, Down, Point, Position}
 import utilities.ImplicitConversions._
+
 
 /** The playable area, populated with all the [[Entity]]s.
  *
@@ -11,19 +11,32 @@ import utilities.ImplicitConversions._
  *  @param mapGen the [[MapGenerator]] to use
  */
 class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
-  val player: Player = Player(playerName, Position(center, Some(Down)))
+  val player: Player = Player(playerName, Position(Arena.center, Some(Down)))
   var enemies: Set[EnemyCharacter] = Set()
   var bullets: Set[Bullet] = Set()
   var collectibles: Set[Collectible] = Set()
   var obstacles: Set[Obstacle] = Set()
-  val walls: Set[Wall] = for (p <- bounds) yield Wall(Position(p, None))
-  val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
+  val walls: Set[Wall] = for (p <- Arena.bounds) yield Wall(Position(p, None))
+  val floor: Set[Floor] = for (p <- Arena.tiles) yield Floor(Position(p, None))
 
   def allEntities: Set[Entity] = enemies ++ bullets ++ collectibles ++ obstacles ++ walls + player
 
   def generateMap(): Unit = mapGen.generateLevel()
 
-  def updateMap(): Unit = ???
+  def updateMap(movement: Option[Direction]): Unit = {
+    if (movement.isDefined) {
+      player.move(movement.get)
+      player.position.point match {
+        case p if Arena.containsCollectible(p) =>
+          collectibles.find(_.position.point.equals(p)).get match {
+            case _: BonusLife => player.increaseLife()
+            case c: BonusScore => player addScore c.value
+          }
+          collectibles --= collectibles.filter(_.position.point.equals(p))
+        case _ => None
+      }
+    }
+  }
 }
 
 /** Utility methods for [[Arena]]. */
@@ -77,4 +90,25 @@ object Arena {
    *  @return true if the [[Point]] is clear
    */
   def isClearFloor(p: Point): Boolean = arena.get.allEntities.forall(e => !e.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains a [[Obstacle]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Obstacle]]
+   */
+  def containsObstacle(p: Point): Boolean = arena.get.obstacles.exists(_.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains a [[Collectible]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Collectible]]
+   */
+  def containsCollectible(p: Point): Boolean = arena.get.collectibles.exists(_.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains a [[Enemy]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Enemy]]
+   */
+  def containsEnemy(p: Point): Boolean = arena.get.enemies.exists(_.position.point.equals(p))
 }

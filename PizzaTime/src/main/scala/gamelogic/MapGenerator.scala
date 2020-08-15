@@ -5,7 +5,9 @@ import Arena._
 import utilities.{Difficulty, Down, Position}
 import utilities.Difficulty._
 import GameState._
+import gamemanager.handlers.PreferencesHandler.difficulty
 import utilities.ImplicitConversions._
+
 import scala.util.Random.between
 
 /** Encapsulates the logic for generating a new level.
@@ -20,23 +22,25 @@ case class MapGenerator(bonusProb: Double, malusProb: Double) {
   /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
     currentLevel += 1
-    generateEnemies()
+   // generateEnemies()
     generateCollectibles()
     generateObstacles()
   }
 
   private def generateEnemies(): Unit = {
-   /* val range = (EnemiesRange + currentLevel) * levelMultiplier
+    val range = (EnemiesRange + currentLevel) * levelMultiplier
     var en: Set[EnemyCharacter] = Set()
-    for (_ <- 0 to between(1, range)) en = en + Enemy(randomPosition)
-    arena.get.enemies = en*/
+    var id: Int = 0
+    for (_ <- 0 to between(1, range)) { en = en + Enemy(randomPosition, id); id = id+1 }
+    arena.get.enemies = en
   }
 
   private def generateCollectibles(): Unit = {
-  /*  val range = CollectiblesRange + currentLevel
+    val range = CollectiblesRange + currentLevel
     var coll: Set[Collectible] = Set()
-    for (_ <- 0 to between(1, range)) coll = coll + BonusScore(randomPosition)
-    arena.get.collectibles = coll*/
+    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) coll = coll + BonusLife(randomPosition)
+    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) coll = coll + BonusScore(randomPosition, difficulty.bonusScore)
+    arena.get.collectibles = coll
   }
 
   private def generateObstacles(): Unit = {

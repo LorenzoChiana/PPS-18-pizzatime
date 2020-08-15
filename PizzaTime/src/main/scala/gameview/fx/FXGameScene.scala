@@ -1,26 +1,27 @@
 package gameview.fx
 
-import gameview.{SpriteAnimation, Window}
+import gameview.{SpriteAnimation}
+import gameview.Window
+import javafx.scene.{Scene => JFXScene}
 import javafx.application.Platform
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
-import gameview.fx.FXGameScene.{createTile, pointToPixel, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.pointToPixel
 import gameview.scene.GameScene
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
-import javafx.util.Duration
 import javafx.event.ActionEvent
 import javafx.scene.{Group, Scene}
 import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
-import utilities.{Action, Direction, Down, Left, Movement, Point, Right, Shoot, Up}
-
+import utilities.{Action, Down, Left, Movement, Right, Up}
 import scala.collection.mutable.Map
+import gameview.fx.FXGameScene.createTile
 import utilities.Point
 
 /**
@@ -31,18 +32,20 @@ import utilities.Point
 case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with GameScene {
   private var floorImage: Image = _
   private var wallImage: Image = _
-
   private val heroImage: Image = new Image(getClass.getResourceAsStream("/images/sprite/sprite.png"))
   private val hero: ImageView = new ImageView(heroImage)
   private val directions: Map[Action, Boolean] = Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
   private val width: Int = stage.getWidth.intValue()
   private val height: Int = stage.getHeight.intValue()
   var animation: SpriteAnimation = _
-
+  private var obstacleImage: Image = _
+  private var collectibleImage: Image = _
 
   Platform.runLater(() => {
-    floorImage = new Image("https://i.pinimg.com/originals/a4/22/9a/a4229a483cf76e0b5458450c2e591ff3.png")
-    wallImage = new Image("https://i.pinimg.com/originals/cc/bc/92/ccbc92a6cdd9b42d856933c2fbf00677.jpg")
+    floorImage = new Image(getClass.getResourceAsStream("/images/textures/garden.png"))
+    wallImage = new Image(getClass.getResourceAsStream("/images/textures/wall.jpg"))
+    obstacleImage = new Image(getClass.getResourceAsStream("/images/sprites/flour.png"))
+    collectibleImage = new Image(getClass.getResourceAsStream("/images/sprites/pizza.png"))
 
     val arenaArea: GridPane = createArena()
     val dungeon: Group = new Group(arenaArea, hero)
@@ -64,8 +67,8 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
         case RIGHT => directions(Action(Movement, Some(Right))) = false
         case _ => None
       })
-
     }
+
     stage.setScene(scene)
     stage.show()
 
@@ -106,11 +109,14 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
     for (floor <- arena.get.floor) gridPane.add(createTile(floorImage), floor.position.point.x, floor.position.point.y)
     for (wall <- arena.get.walls) gridPane.add(createTile(wallImage), wall.position.point.x, wall.position.point.y)
+    for (obstacle <- arena.get.obstacles) gridPane.add(createTile(obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
+    for (collectible <- arena.get.collectibles) gridPane.add(createTile(collectibleImage), collectible.position.point.x, collectible.position.point.y)
 
     gridPane.setGridLinesVisible(false)
 
     gridPane
   }
+  
 }
 
 /** Utility methods for [[FXGameScene]]. */

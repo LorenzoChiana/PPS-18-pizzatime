@@ -1,18 +1,12 @@
 package gamemanager
 
-import gamelogic.GameState
-import gamelogic.MapGenerator.gameType
-import gamemanager.handlers.PreferencesHandler
 import gameview.fx.FXGameScene
+import gamelogic.{GameState, MapGenerator}
 
-import scala.collection.mutable.ListBuffer
-import utilities.Direction
-/*ci andrà anche la view quando sarà presente*/
+class GameLoop() extends Thread  {
 
-class GameLoop()  extends Thread  {
-
-  def initGame():Unit = {
-    GameState.startGame(PreferencesHandler.playerName, gameType(PreferencesHandler.difficulty))
+  def initGame(): Unit = {
+    GameState.startGame("Player1", new MapGenerator(0, 0))
     this.start()
   }
 
@@ -21,7 +15,7 @@ class GameLoop()  extends Thread  {
   def gameLoop(): Unit = if (GameManager.endGame) {
     finishGame()
   } else {
- //   GameState.nextStep(GameManager.checkNewMovement())
+    GameState.nextStep(GameManager.checkNewMovement())
     GameManager.numCycle = GameManager.numCycle + 1
 
     /** Update view */

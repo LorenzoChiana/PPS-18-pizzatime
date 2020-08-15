@@ -1,5 +1,7 @@
 package gamelogic
 
+import utilities.Direction
+
 /** Represents the map where the game takes place.
  *  Implemented by [[Arena]].
  */
@@ -24,5 +26,5 @@ trait GameMap {
   def generateMap()
 
   /** Updates the [[GameMap]] for the new logical step. */
-  def updateMap()
+  def updateMap(movement: Option[Direction])
 }
