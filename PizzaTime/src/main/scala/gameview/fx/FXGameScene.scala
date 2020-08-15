@@ -72,7 +72,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     stage.setScene(scene)
     stage.show()
 
-    val timeline = new Timeline(new KeyFrame(Duration.millis(150), (_: ActionEvent) => {
+    val timeline = new Timeline(new KeyFrame(Duration.millis(100), (_: ActionEvent) => {
       directions.foreach(d => if (d._2) FXWindow.observers.foreach(o => o.notifyAction(d._1)))
     }))
     timeline.setCycleCount(Animation.INDEFINITE)

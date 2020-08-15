@@ -13,6 +13,7 @@ object GameState {
     arena.get.generateMap()
   }
 
-  def nextStep(Movement: Option[Direction]): Unit = ???
+  def nextStep(movement: Option[Direction]): Unit = arena.get.updateMap(movement)
+
 }
 
