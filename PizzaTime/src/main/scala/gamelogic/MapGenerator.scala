@@ -28,14 +28,15 @@ case class MapGenerator(bonusProb: Double, malusProb: Double) {
   private def generateEnemies(): Unit = {
     val range = (EnemiesRange + currentLevel) * levelMultiplier
     var en: Set[EnemyCharacter] = Set()
-    for (_ <- 0 to between(1, range)) en = en + Enemy(randomPosition)
+    var id: Int = 0
+    for (_ <- 0 to between(1, range)) { en = en + Enemy(randomPosition, id); id = id+1 }
     arena.get.enemies = en
   }
 
   private def generateCollectibles(): Unit = {
     val range = CollectiblesRange + currentLevel
     var coll: Set[Collectible] = Set()
-    for (_ <- 0 to between(1, range)) coll = coll + BonusScore(randomPosition)
+    for (_ <- 0 to between(1, range)) coll = coll + BonusScore(randomPosition, 0)
     arena.get.collectibles = coll
   }
 

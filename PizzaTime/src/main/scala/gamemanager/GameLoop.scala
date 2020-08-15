@@ -1,15 +1,15 @@
 package gamemanager
 
-import gamelogic.GameState
+import gamelogic.{GameState, MapGenerator}
 
 import scala.collection.mutable.ListBuffer
 import utilities.Direction
 /*ci andrà anche la view quando sarà presente*/
 
-class GameLoop()  extends Thread  {
+class GameLoop() extends Thread  {
 
-  def initGame():Unit = {
-    GameState.startGame("Player1")
+  def initGame(): Unit = {
+    GameState.startGame("Player1", new MapGenerator(0, 0))
     this.start()
   }
 
