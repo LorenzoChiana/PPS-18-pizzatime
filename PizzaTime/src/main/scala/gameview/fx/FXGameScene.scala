@@ -167,7 +167,7 @@ object FXGameScene {
    *  @param p the [[Point]] to convert
    *  @return a tuple of coordinates in pixels
    */
-  def pointToPixel(p: Point): (Double, Double) = (p.x * tileWidth, (p.y * tileHeight) + tileHeight)
+  def pointToPixel(p: Point): (Double, Double) = (p.x * tileWidth, p.y * tileHeight)
 
   /**
    * Creates a tile sprite
