@@ -19,7 +19,7 @@ import javafx.scene.{Group, Scene}
 import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
-import utilities.{Action, Down, Left, Movement, Point, Right, TakeCollectible, Up}
+import utilities.{Action, Down, Left, Movement, Point, Right, Up}
 import gameview.fx.FXGameScene.createTile
 
 import scala.collection.{immutable, mutable}
@@ -72,15 +72,6 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
         collectibles = collectibles + (c -> collectible)
         dungeon.getChildren.add(collectible)
         collectible.relocate(pointToPixel(c.position.point)._1, pointToPixel(c.position.point)._2)
-    }
-
-    /** Check if there's something on the floor to collect */
-    import gamelogic.Arena._
-    if (containsCollectible(arena.get.player.position.point)) {
-      FXWindow.observers.foreach(o => o.notifyAction(Action(TakeCollectible, None)))
-      Platform.runLater(() => {
-        arenaArea.add(createTile(floorImage), arena.get.player.position.point.x, arena.get.player.position.point.y)
-      })
     }
 
     val scene: Scene = new Scene(dungeon, width, height) {

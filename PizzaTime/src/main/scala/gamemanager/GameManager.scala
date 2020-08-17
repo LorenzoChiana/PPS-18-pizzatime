@@ -1,6 +1,6 @@
 package gamemanager
 
-import utilities.{Action, Direction, Intent, Movement, SettingPreferences, Shoot, TakeCollectible}
+import utilities.{Action, Direction, Intent, Movement, SettingPreferences}
 
 import scala.language.postfixOps
 import scala.collection.mutable.ListBuffer
@@ -26,17 +26,6 @@ class GameManager extends ViewObserver {
   /** Notifies that the player has moved */
   override def notifyAction(action: Action): Unit = action.actionType match{
     case Movement =>  GameManager.playerMoves = GameManager.playerMoves :+ action.direction
-    case TakeCollectible =>
-      arena.get.player.position.point match {
-        case p if Arena.containsCollectible(p) =>
-          arena.get.collectibles.find(_.position.point.equals(p)).get match {
-            case _: BonusLife => arena.get.player.increaseLife()
-            case c: BonusScore => arena.get.player addScore c.value
-          }
-          arena.get.player.collect(arena.get.collectibles.find(_.position.point.equals(arena.get.player.position.point)).get)
-          arena.get.collectibles --= arena.get.collectibles.filter(_.position.point.equals(p))
-        case _ => None
-      }
     case _ =>
   }
 
