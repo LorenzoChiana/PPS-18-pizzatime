@@ -24,7 +24,7 @@ trait MovableEntity extends Entity {
    *
    *  @param p the [[Point]] to check
    */
-  def canMove(p: Point): Boolean = surroundings.contains(p)
+  def canMove(p: Point): Boolean = surroundings.contains(p) && !containsObstacle(p)
 
   /** Moves the [[MovableEntity]] one step forward in a given [[Direction]].
    *
