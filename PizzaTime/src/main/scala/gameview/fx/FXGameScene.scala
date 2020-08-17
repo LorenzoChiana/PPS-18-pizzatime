@@ -42,7 +42,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private val width: Int = stage.getWidth.intValue()
   private val height: Int = stage.getHeight.intValue()
   var animation: SpriteAnimation = _
-  private var collectibles: immutable.Map[Collectible, ImageView] = HashMap[Collectible, ImageView]()
+  private var collectibles: Map[Collectible, ImageView] = immutable.HashMap[Collectible, ImageView]()
   var currentPosition: Point = arena.get.player.position.point
 
   Platform.runLater(() => {
@@ -61,18 +61,16 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     animation = new SpriteAnimation(hero, Duration.millis(300), 4, 4, 0, 0, 100, 130)
 
     /** Create collectioble sprites */
-    arena.get.collectibles.foreach {
-      case c: BonusLife =>
-        val collectible = createTile(bonusLifeImage)
-        collectibles = collectibles + (c -> collectible)
-        dungeon.getChildren.add(collectible)
-        collectible.relocate(pointToPixel(c.position.point)._1, pointToPixel(c.position.point)._2)
-      case c: BonusScore =>
-        val collectible = createTile(bonusScoreImage)
-        collectibles = collectibles + (c -> collectible)
-        dungeon.getChildren.add(collectible)
-        collectible.relocate(pointToPixel(c.position.point)._1, pointToPixel(c.position.point)._2)
-    }
+    arena.get.collectibles.foreach ( collectible => {
+      var collectibleImage: ImageView = null
+      collectible match {
+        case _: BonusLife => collectibleImage = createTile(bonusLifeImage)
+        case _: BonusScore => collectibleImage = createTile(bonusScoreImage)
+      }
+      collectibles += (collectible -> collectibleImage)
+      dungeon.getChildren.add(collectibleImage)
+      collectibleImage.relocate(pointToPixel(collectible.position.point)._1, pointToPixel(collectible.position.point)._2)
+    })
 
     val scene: Scene = new Scene(dungeon, width, height) {
       setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
@@ -120,6 +118,11 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       }
       hero.relocate(pointToPixel(arena.get.player.position.point)._1, pointToPixel(arena.get.player.position.point)._2)
       currentPosition = arena.get.player.position.point
+
+      /** Updating collectibles */
+      val collectiblesTaken = collectibles.keySet.diff(arena.get.collectibles)
+      collectiblesTaken.foreach(collectible => collectibles(collectible).setVisible(false))
+      collectibles --= collectiblesTaken
     }
   }
 
@@ -134,14 +137,11 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     for (floor <- arena.get.floor) gridPane.add(createTile(floorImage), floor.position.point.x, floor.position.point.y)
     for (wall <- arena.get.walls) gridPane.add(createTile(wallImage), wall.position.point.x, wall.position.point.y)
     for (obstacle <- arena.get.obstacles) gridPane.add(createTile(obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
-    for (collectible <- arena.get.collectibles) gridPane.add(createTile(bonusScoreImage), collectible.position.point.x, collectible.position.point.y)
-    for (collectible <- arena.get.collectibles) gridPane.add(createTile(bonusLifeImage), collectible.position.point.x, collectible.position.point.y)
 
     gridPane.setGridLinesVisible(false)
 
     gridPane
   }
-  
 }
 
 /** Utility methods for [[FXGameScene]]. */
