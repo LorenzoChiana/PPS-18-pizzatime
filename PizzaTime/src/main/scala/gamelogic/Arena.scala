@@ -26,15 +26,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   def updateMap(movement: Option[Direction]): Unit = {
     if (movement.isDefined) {
       player.move(movement.get)
-      player.position.point match {
-        case p if Arena.containsCollectible(p) =>
-          collectibles.find(_.position.point.equals(p)).get match {
-            case _: BonusLife => player.increaseLife()
-            case c: BonusScore => player addScore c.value
-          }
-          collectibles --= collectibles.filter(_.position.point.equals(p))
-        case _ => None
-      }
     }
   }
 }
