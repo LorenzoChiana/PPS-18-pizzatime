@@ -22,13 +22,13 @@ case class MapGenerator(bonusProb: Double, malusProb: Double) {
   /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
     currentLevel += 1
-   // generateEnemies()
+    generateEnemies()
     generateCollectibles()
     generateObstacles()
   }
 
   private def generateEnemies(): Unit = {
-    val range = (EnemiesRange + currentLevel) * levelMultiplier
+    val range = (EnemiesRange + currentLevel) //* levelMultiplier
     var en: Set[EnemyCharacter] = Set()
     var id: Int = 0
     for (_ <- 0 to between(1, range)) { en = en + Enemy(randomPosition, id); id = id+1 }

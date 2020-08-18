@@ -1,6 +1,6 @@
 package gameview.fx
 
-import gamelogic.{BonusLife, BonusScore, Collectible}
+import gamelogic.{BonusLife, BonusScore, Collectible, EnemyCharacter}
 import gameview.SpriteAnimation
 import gameview.Window
 import javafx.application.Platform
@@ -21,9 +21,7 @@ import javafx.scene.input.KeyEvent
 import javafx.util.Duration
 import utilities.{Action, Down, Left, Movement, Point, Right, Up}
 import gameview.fx.FXGameScene.createTile
-
 import scala.collection.{immutable, mutable}
-import scala.collection.immutable.HashMap
 
 /**
  * Represents the scene that appears when you start playing
@@ -38,7 +36,9 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private var bonusScoreImage: Image = _
   private var bonusLifeImage: Image = _
   private var hero: ImageView = _
+  private var enemyImage: Image = _
   private val directions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
+  private var enemies: immutable.Map[EnemyCharacter, ImageView] = new immutable.HashMap[EnemyCharacter, ImageView]()
   private val width: Int = stage.getWidth.intValue()
   private val height: Int = stage.getHeight.intValue()
   var animation: SpriteAnimation = _
@@ -52,6 +52,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     heroImage = new Image(getClass.getResourceAsStream("/images/sprites/hero.png"))
     bonusLifeImage = new Image(getClass.getResourceAsStream("/images/sprites/pizza.png"))
     bonusScoreImage = new Image(getClass.getResourceAsStream("/images/sprites/tomato.png"))
+    enemyImage = new Image(getClass.getResourceAsStream("/images/sprites/enemy.png"))
 
     hero = new ImageView(heroImage)
     hero.relocate(pointToPixel(currentPosition)._1, pointToPixel(currentPosition)._2)
@@ -70,6 +71,12 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       collectibles += (collectible -> collectibleImage)
       dungeon.getChildren.add(collectibleImage)
       collectibleImage.relocate(pointToPixel(collectible.position.point)._1, pointToPixel(collectible.position.point)._2)
+    })
+
+    arena.get.enemies.foreach(e => {
+      val enemy = createTile(enemyImage)
+      enemies = enemies + (e -> enemy)
+      dungeon.getChildren.add(enemy)
     })
 
     val scene: Scene = new Scene(dungeon, width, height) {
@@ -101,8 +108,6 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
   })
 
-
-
   /**
    * method called by the controller cyclically to update the view
    */
@@ -124,6 +129,13 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       collectiblesTaken.foreach(collectible => collectibles(collectible).setVisible(false))
       collectibles --= collectiblesTaken
     }
+
+    /** Updating position and animation enemy*/
+    enemies.foreach(e => {
+      arena.get.enemies.filter(en => en.equals(e._1)).head
+      val pos = pointToPixel(arena.get.enemies.filter(en => en.equals(e._1)).head.position.point)
+      e._2 relocate(pos._1, pos._2)
+    })
   }
 
   /**
