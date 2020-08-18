@@ -37,6 +37,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         case _ => None
       }
     }
+    enemies.foreach(en => en.movementBehaviour())
   }
 }
 

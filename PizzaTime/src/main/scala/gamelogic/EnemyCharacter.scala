@@ -5,4 +5,6 @@ package gamelogic
  */
 trait EnemyCharacter extends MovableEntity {
   def id : Int
+
+  def movementBehaviour(): Unit
 }
