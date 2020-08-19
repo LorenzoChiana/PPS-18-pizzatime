@@ -1,26 +1,29 @@
 package gamemanager
 
 import gameview.fx.FXGameScene
-import gamelogic.{GameState, MapGenerator}
+import gamelogic.MapGenerator._
+import gamelogic.GameState._
+import GameManager._
+import utilities.Difficulty._
 
 class GameLoop() extends Thread  {
 
   def initGame(): Unit = {
-    GameState.startGame("Player1", new MapGenerator(0, 0))
+    startGame("Player1", gameType(Medium))
     this.start()
   }
 
   override def run(): Unit = gameLoop()
 
-  def gameLoop(): Unit = if (GameManager.endGame) {
+  def gameLoop(): Unit = if (endGame) {
     finishGame()
   } else {
-    GameState.nextStep(GameManager.checkNewMovement())
-    GameManager.numCycle = GameManager.numCycle + 1
+    nextStep(checkNewMovement())
+    numCycle += 1
 
     /** Update view */
-    if (GameManager.view.get.isInstanceOf[FXGameScene])
-      GameManager.view.get.asInstanceOf[FXGameScene].updateView()
+    if (view.get.isInstanceOf[FXGameScene])
+      view.get.asInstanceOf[FXGameScene].updateView()
 
     Thread.sleep(80)
     gameLoop()
