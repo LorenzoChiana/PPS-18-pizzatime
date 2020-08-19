@@ -7,10 +7,9 @@ import Arena._
 /** An enemy character.
  *
  *  @param position its starting position
- *  @param id a unique number for reference
+ *  @param lives its starting lives
  */
-case class Enemy(var position: Position, id: Int) extends EnemyCharacter {
-  var lives: Int = 5
+case class Enemy(var position: Position,  var lives: Int = 5) extends EnemyCharacter {
 
   def movementBehaviour(): Unit = {
     nextInt(4) match {

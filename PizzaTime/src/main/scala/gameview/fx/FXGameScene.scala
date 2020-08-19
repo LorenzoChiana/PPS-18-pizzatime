@@ -1,6 +1,6 @@
 package gameview.fx
 
-import gamelogic.{BonusLife, BonusScore, Collectible, EnemyCharacter}
+import gamelogic.{BonusLife, BonusScore, Bullet, Collectible, EnemyCharacter}
 import gameview.SpriteAnimation
 import gameview.Window
 import javafx.application.Platform
@@ -10,18 +10,17 @@ import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
 import gamemanager.handlers.PreferencesHandler
-import gameview.fx.FXGameScene.pointToPixel
+import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel, tileHeight, tileWidth}
 import gameview.scene.GameScene
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.ActionEvent
 import javafx.scene.{Group, Scene}
-import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, UP}
+import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, SPACE, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
-import utilities.{Action, Down, Left, Movement, Point, Right, Up}
-import gameview.fx.FXGameScene.createTile
+import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up}
 import javafx.scene.control.Label
 
 import scala.collection.{immutable, mutable}
@@ -40,8 +39,10 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private var bonusLifeImage: Image = _
   private var hero: ImageView = _
   private var enemyImage: Image = _
+  private var bulletImage: Image = _
   private val directions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
   private var enemies: immutable.Map[EnemyCharacter, ImageView] = new immutable.HashMap[EnemyCharacter, ImageView]()
+  private var bullets: immutable.Map[Bullet, ImageView] = new immutable.HashMap[Bullet, ImageView]()
   private val width: Int = stage.getWidth.intValue()
   private val height: Int = stage.getHeight.intValue()
   var animation: SpriteAnimation = _
@@ -50,6 +51,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private var userLifeLabel: Label = _
 
   Platform.runLater(() => {
+    bulletImage = new Image(getClass.getResourceAsStream("/images/sprites/tomato.png"))
     floorImage = new Image(getClass.getResourceAsStream("/images/textures/garden.png"))
     wallImage = new Image(getClass.getResourceAsStream("/images/textures/wall.jpg"))
     obstacleImage = new Image(getClass.getResourceAsStream("/images/sprites/flour.png"))
@@ -62,7 +64,8 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     hero.relocate(pointToPixel(currentPosition)._1, pointToPixel(currentPosition)._2)
 
     val arenaArea: GridPane = createArena()
-    val dungeon: Group = new Group(arenaArea, hero)
+
+    dungeon.getChildren.addAll(arenaArea,hero)
     animation = new SpriteAnimation(hero, Duration.millis(300), 4, 4, 0, 0, 100, 130)
 
     /** Create collectioble sprites */
@@ -89,6 +92,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
         case DOWN => directions(Action(Movement, Some(Down))) = true
         case LEFT => directions(Action(Movement, Some(Left))) = true
         case RIGHT => directions(Action(Movement, Some(Right))) = true
+        case SPACE => directions(Action(Shoot, None)) = true
         case _ => None
       })
 
@@ -97,6 +101,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
         case DOWN => directions(Action(Movement, Some(Down))) = false
         case LEFT => directions(Action(Movement, Some(Left))) = false
         case RIGHT => directions(Action(Movement, Some(Right))) = false
+        case SPACE => directions(Action(Shoot, None)) = false
         case _ => None
       })
     }
@@ -139,11 +144,30 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       collectibles --= collectiblesTaken
     }
 
-    /** Updating position and animation enemy*/
+    /** Updating position enemy */
     enemies.foreach(e => {
-      arena.get.enemies.filter(en => en.equals(e._1)).head
-      val pos = pointToPixel(arena.get.enemies.filter(en => en.equals(e._1)).head.position.point)
-      e._2 relocate(pos._1, pos._2)
+      val ens = arena.get.enemies.filter(_ == e._1)
+      if (ens.isEmpty){
+        e._2.setVisible(false)
+      }else{
+        val pos = pointToPixel(ens.head.position.point)
+        e._2 relocate(pos._1, pos._2)
+      }
+    })
+
+    /** Updating bullet */
+    arena.get.bullets.foreach(b => addBullet(b))
+    bullets.foreach(b => {
+      val buls = arena.get.bullets.filter(_ == b._1)
+      if (buls.isEmpty) {
+        Platform.runLater(() => {
+          dungeon.getChildren.remove(b._2)
+        })
+      } else {
+        val pos = pointToPixel(buls.head.position.point)
+        b._2 relocate(pos._1, pos._2)
+      }
+
     })
 
     /** Updating player lives */
@@ -166,10 +190,27 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
     gridPane
   }
+
+  /**
+   * Add bullet to the arena
+   *
+   */
+  private def addBullet(b: Bullet): Unit = {
+    if (!bullets.contains(b)) {
+      val bullet = createTile(bulletImage)
+      bullets = bullets + (b -> bullet)
+      bullet.setFitHeight(tileHeight / 2)
+      bullet.setFitWidth(tileWidth / 2)
+      Platform.runLater(() => {
+        FXGameScene.dungeon.getChildren.add(bullet)
+      })
+    }
+  }
 }
 
 /** Utility methods for [[FXGameScene]]. */
 object FXGameScene {
+  val dungeon: Group = new Group()
   /**
    * Defines the width of each tile that will make up the arena
    *

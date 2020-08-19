@@ -1,14 +1,12 @@
 package gamemanager
 
-import utilities.{Action, Direction, Intent, Movement, SettingPreferences}
+import utilities.{Action, Direction, Intent, Movement, SettingPreferences, Shoot}
 
 import scala.language.postfixOps
-import scala.collection.mutable.ListBuffer
 import gamemanager.handlers.PreferencesHandler
 import gameview.scene.{GameScene, SceneType}
 import utilities.MessageTypes.Info
 import SceneType._
-import gamelogic.{Arena, BonusLife, BonusScore}
 import gamelogic.GameState.arena
 import gameview.Window
 
@@ -23,10 +21,13 @@ class GameManager extends ViewObserver {
     gameCycle.initGame()
   }
 
-  /** Notifies that the player has moved */
+  /**
+   * Notifies that the player has moved or shoot
+   * @param action the [[Action]] notified by the view
+   * */
   override def notifyAction(action: Action): Unit = action.actionType match{
-    case Movement =>  GameManager.playerMoves = GameManager.playerMoves :+ action.direction
-    case _ =>
+    case Movement => GameManager.playerMoves = GameManager.playerMoves :+ action.direction
+    case Shoot => GameManager.playerShoots = GameManager.playerShoots :+ arena.get.player.position.dir
   }
 
   override def notifySettings(): Unit = ???
@@ -74,19 +75,38 @@ class GameManager extends ViewObserver {
 object GameManager {
   var view: Option[GameScene] = None
   def view_(view: GameScene): Unit = this.view = Some(view)
-  //Flag for the end of game
+
+  /**
+   * Flag for the end of game
+   */
   var endGame: Boolean = false
-  //Array che tiene traccia di movimenti
+
+  /**
+   * [[Queue]] for movements notified but not yet processed
+   */
+
   var playerMoves: Queue[Option[Direction]] = Queue[Option[Direction]]()
-  //Variabile che tiene traccia degli spari
-  var playerShoots: Int = 0
+  /**
+   * [[Queue]] for shoots notified but not yet processed
+   */
+  var playerShoots: Queue[Option[Direction]] = Queue[Option[Direction]]()
+
   var numCycle: Int = 0
 
-  def checkNewMovement(): Option[Direction] = GameManager.playerMoves.length match {
+  def checkNewMovement(): Option[Direction] = playerMoves.length match {
     case 0 => None
     case _ => {
-      val direction = GameManager.playerMoves.dequeue._1
-      GameManager.playerMoves = GameManager.playerMoves.dequeue._2
+      val direction = playerMoves.dequeue._1
+      playerMoves = playerMoves.dequeue._2
+      direction
+    }
+  }
+
+  def checkNewShoot(): Option[Direction] = playerShoots.length match {
+    case 0 => None
+    case _ => {
+      val direction = playerShoots.dequeue._1
+      playerShoots = playerShoots.dequeue._2
       direction
     }
   }
