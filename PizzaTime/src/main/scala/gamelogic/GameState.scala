@@ -1,12 +1,13 @@
 package gamelogic
 
+import gamemanager.handlers.PreferencesHandler.difficulty
 import utilities.Direction
 
 /** Represents the game's logical state. */
 object GameState {
   var arena: Option[GameMap] = None
-  val arenaWidth: Int = 12
-  val arenaHeight: Int = 8
+  var arenaWidth: Int = difficulty.arenaWidth
+  var arenaHeight: Int = difficulty.arenaHeight
 
   def startGame(playerName: String, mapGen: MapGenerator): Unit = {
     arena = Some(Arena(playerName, mapGen))
