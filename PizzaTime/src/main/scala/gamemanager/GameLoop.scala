@@ -1,10 +1,13 @@
 package gamemanager
 
-import gameview.fx.FXGameScene
+import gamelogic.GameState.arena
 import gamelogic.MapGenerator._
 import gamelogic.GameState._
 import GameManager._
 import utilities.Difficulty._
+import gamelogic.{GameState, MapGenerator}
+import gameview.fx.FXGameScene
+import utilities.MessageTypes
 
 class GameLoop() extends Thread  {
 
@@ -18,12 +21,22 @@ class GameLoop() extends Thread  {
   def gameLoop(): Unit = if (endGame) {
     finishGame()
   } else {
+    val dialog = GameManager.view.get.windowManager
+
     nextStep(checkNewMovement())
-    numCycle += 1
+    numCycle = numCycle + 1
+
+
+    if (arena.get.player.lives == 0) {
+      //è da notificare anche al gameManager?
+      dialog.showMessage("GAME OVER", "You lose", MessageTypes.Warning)
+    }
 
     /** Update view */
-    if (view.get.isInstanceOf[FXGameScene])
-      view.get.asInstanceOf[FXGameScene].updateView()
+    view.get match {
+      case scene: FXGameScene => scene.updateView()
+      case _ =>
+    }
 
     Thread.sleep(80)
     gameLoop()
