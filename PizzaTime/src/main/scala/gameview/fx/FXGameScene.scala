@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
+import gamemanager.handlers.PreferencesHandler
 import gameview.fx.FXGameScene.pointToPixel
 import gameview.scene.GameScene
 import javafx.animation.Animation
@@ -21,6 +22,8 @@ import javafx.scene.input.KeyEvent
 import javafx.util.Duration
 import utilities.{Action, Down, Left, Movement, Point, Right, Up}
 import gameview.fx.FXGameScene.createTile
+import javafx.scene.control.Label
+
 import scala.collection.{immutable, mutable}
 
 /**
@@ -44,6 +47,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   var animation: SpriteAnimation = _
   private var collectibles: Map[Collectible, ImageView] = immutable.HashMap[Collectible, ImageView]()
   var currentPosition: Point = arena.get.player.position.point
+  private var userLifeLabel: Label = _
 
   Platform.runLater(() => {
     floorImage = new Image(getClass.getResourceAsStream("/images/textures/garden.png"))
@@ -97,6 +101,11 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       })
     }
 
+    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives)
+    userLifeLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold")
+    userLifeLabel.relocate(Game.width/2.5, 1)
+    dungeon.getChildren.add(userLifeLabel)
+
     stage.setScene(scene)
     stage.show()
 
@@ -136,6 +145,9 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       val pos = pointToPixel(arena.get.enemies.filter(en => en.equals(e._1)).head.position.point)
       e._2 relocate(pos._1, pos._2)
     })
+
+    /** Updating player lives */
+    Platform.runLater(() => userLifeLabel.setText(PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764"))
   }
 
   /**
