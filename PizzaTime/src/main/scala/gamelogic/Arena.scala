@@ -80,15 +80,21 @@ object Arena {
     tiles -- bounds
   }
 
-  /** Returns the [[Arena]]'s center point. */
+  /** Returns the [[Arena]]'s center [[Point]]. */
   def center: Point = (arenaWidth / 2, arenaHeight / 2)
 
   /** Checks whether a [[Point]] is inside the [[Arena]] or not.
    *
    *  @param p the [[Point]] to check
+   *  @param innerBounds to be set to true to exclude the [[Wall]]s from the playable area
    *  @return true if the [[Point]] is inside the [[Arena]]
    */
-  def checkBounds(p: Point): Boolean = p.x < arenaWidth && p.y < arenaHeight
+  def checkBounds(p: Point, innerBounds: Boolean = false): Boolean = {
+    if (innerBounds)
+      (p.x > 0) && (p.y > 0) && (p.x < arenaWidth - 1) && (p.y < arenaHeight - 1)
+    else
+      (p.x < arenaWidth) && (p.y < arenaHeight)
+  }
 
   /** Checks whether a [[Point]] is clear or not (meaning if the [[Point]] is not occupied by any [[Entity]]).
    *
@@ -96,6 +102,12 @@ object Arena {
    *  @return true if the [[Point]] is clear
    */
   def isClearFloor(p: Point): Boolean = arena.get.allEntities.forall(e => !e.position.point.equals(p))
+
+  /** Clears a specified [[Point]] inside the [[Arena]]'s inner bounds.
+   *
+   *  @param p the [[Point]] to clear
+   */
+  def clearPoint(p: Point): Unit = if (checkBounds(p, innerBounds = true) && !isClearFloor(p)) findAndRemove(p)
 
   /** Checks whether a [[Point]] contains a [[Obstacle]] or not.
    *
@@ -117,4 +129,19 @@ object Arena {
    *  @return true if the [[Point]] contains a [[Enemy]]
    */
   def containsEnemy(p: Point): Boolean = arena.get.enemies.exists(_.position.point.equals(p))
+
+  private def findAndRemove(p: Point): Unit = {
+    arena.get.enemies.foreach(e =>
+      if (e.position.point.equals(p)) arena.get.enemies = arena.get.enemies - e
+    )
+    arena.get.bullets.foreach(b =>
+      if (b.position.point.equals(p)) arena.get.bullets = arena.get.bullets - b
+    )
+    arena.get.collectibles.foreach(c =>
+      if (c.position.point.equals(p)) arena.get.collectibles = arena.get.collectibles - c
+    )
+    arena.get.obstacles.foreach(o =>
+      if (o.position.point.equals(p)) arena.get.obstacles = arena.get.obstacles - o
+    )
+  }
 }
