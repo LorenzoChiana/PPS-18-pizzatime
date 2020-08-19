@@ -15,6 +15,5 @@ object GameState {
   }
 
   def nextStep(movement: Option[Direction]): Unit = arena.get.updateMap(movement)
-
 }
 

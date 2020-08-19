@@ -4,6 +4,8 @@ import scala.language.implicitConversions
 import gamelogic.Collectible
 import gamelogic.Enemy
 import gamelogic.Obstacle
+import gamelogic.Arena
+import gamelogic.Entity
 
 /** Represents the various difficulties that the game can have.
  *  The options are: easy, medium, hard or extreme.
@@ -15,7 +17,7 @@ object Difficulty extends Enumeration {
     bonusRange = Range(3, 5),
     malusRange = Range(1, 3),
     bonusProb = 0.8,
-    maxLife = 5,
+    maxLife = 8,
     bonusScore = 40,
     obstacleDimension = Range(1, 3),
     levelThreshold = 8
@@ -37,7 +39,7 @@ object Difficulty extends Enumeration {
     bonusRange = Range(3, 5),
     malusRange = Range(12, 20),
     bonusProb = 0.3,
-    maxLife = 5,
+    maxLife = 3,
     bonusScore = 20,
     obstacleDimension = Range(1, 5),
     levelThreshold = 3
@@ -48,7 +50,7 @@ object Difficulty extends Enumeration {
     bonusRange = Range(1, 3),
     malusRange = Range(24, 40),
     bonusProb = 0.1,
-    maxLife = 5,
+    maxLife = 1,
     bonusScore = 10,
     obstacleDimension = Range(1, 6),
     levelThreshold = 1
@@ -57,14 +59,14 @@ object Difficulty extends Enumeration {
 
   /** Each difficulty will have a set of values that will affect the game.
    *
-   *  @param arenaWidth the width of the arena
-   *  @param arenaHeight the height of the arena
-   *  @param bonusRange the range of number of bonus entities (i.e. [[Collectible]]s)
-   *  @param malusRange the range of number of malus entities (i.e. [[Enemy]]s or [[Obstacle]]s)
-   *  @param bonusProb  probability of having bonuses
+   *  @param arenaWidth the width of the [[Arena]]
+   *  @param arenaHeight the height of the [[Arena]]
+   *  @param bonusRange the [[Range]] of number of bonus [[Entity]]s (i.e. [[Collectible]]s)
+   *  @param malusRange the [[Range]] of number of malus [[Entity]]s (i.e. [[Enemy]]s or [[Obstacle]]s)
+   *  @param bonusProb the probability of having bonuses
    *  @param maxLife a value that represents the maximum number of lives
    *  @param bonusScore the score given by the score-related [[Collectible]]s
-   *  @param obstacleDimension the dimension of the [[Obstacle]]
+   *  @param obstacleDimension the dimension of the [[Obstacle]]s
    *  @param levelThreshold a threshold that affects level generation
    */
   case class DifficultyVal(arenaWidth: Int,
@@ -77,10 +79,10 @@ object Difficulty extends Enumeration {
                            obstacleDimension: Range,
                            levelThreshold: Int) extends super.Val
 
-  /** Implicit conversion from a [[Value]] to a [[DifficultyVal]].
+  /** Implicit conversion from [[Value]] to [[DifficultyVal]].
    *
    *  @param value the [[Value]] to convert
-   *  @return the converted value
+   *  @return the converted [[DifficultyVal]]
    */
-  implicit def convert(value: Value): DifficultyVal = value.asInstanceOf[DifficultyVal]
+  implicit def valueToDifficultyVal(value: Value): DifficultyVal = value.asInstanceOf[DifficultyVal]
 }

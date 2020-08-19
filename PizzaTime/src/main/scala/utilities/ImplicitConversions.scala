@@ -2,6 +2,12 @@ package utilities
 
 import scala.language.implicitConversions
 
+/** Useful implicit conversions. */
 object ImplicitConversions {
-  implicit def tupleToPoint(t: (Int, Int)): Point = Point(t._1, t._2)
+  /** Implicit conversion from [[Tuple2]] to [[Point]].
+   *
+   *  @param tuple the [[Tuple2]] to convert
+   *  @return the converted [[Point]]
+   */
+  implicit def tupleToPoint(tuple: (Int, Int)): Point = Point(tuple._1, tuple._2)
 }

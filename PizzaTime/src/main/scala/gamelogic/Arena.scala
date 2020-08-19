@@ -4,7 +4,6 @@ import GameState._
 import utilities.{Direction, Down, Point, Position}
 import utilities.ImplicitConversions._
 
-
 /** The playable area, populated with all the [[Entity]]s.
  *
  *  @param playerName the [[Player]]'s name

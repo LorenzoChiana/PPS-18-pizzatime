@@ -6,7 +6,6 @@ import utilities.{Difficulty, Down, Position}
 import utilities.Difficulty._
 import GameState._
 import utilities.ImplicitConversions._
-
 import scala.util.Random.between
 
 /** Encapsulates the logic for generating a new level.
@@ -56,12 +55,12 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 object MapGenerator {
   /** Creates a [[MapGenerator]].
    *
-   * @param difficulty the [[Difficulty]] chosen by the user
-   * @return the new [[MapGenerator]] instance
+   *  @param difficulty the [[Difficulty]] chosen by the user
+   *  @return the new [[MapGenerator]] instance
    */
   def gameType(difficulty: DifficultyVal): MapGenerator = new MapGenerator(difficulty)
 
-  /** Returns a random position on the [[Arena]]. */
+  /** Returns a random [[Position]] on the [[Arena]]. */
   @scala.annotation.tailrec
   def randomPosition: Position = {
     val x = between(1, arenaWidth - 1)
