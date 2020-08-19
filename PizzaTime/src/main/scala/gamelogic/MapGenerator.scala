@@ -25,7 +25,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
   }
 
   private def generateEnemies(): Unit = {
-    val range = currentLevel
+    val range =  currentLevel + 1
     var en: Set[EnemyCharacter] = Set()
     var id: Int = 0
     for (_ <- 0 to between(1, range)) { en = en + Enemy(randomPosition, id); id = id+1 }
@@ -38,7 +38,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
   }
 
   private def generateObstacles(): Unit = {
-    val range = currentLevel
+    val range = currentLevel + 1
     var obs: Set[Obstacle] = Set()
     for (_ <- 0 to between(1, range)) obs = obs + Obstacle(randomPosition)
     arena.get.obstacles = obs

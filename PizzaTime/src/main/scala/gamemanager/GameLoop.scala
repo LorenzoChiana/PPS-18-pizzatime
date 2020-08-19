@@ -18,28 +18,26 @@ class GameLoop() extends Thread  {
 
   override def run(): Unit = gameLoop()
 
-  def gameLoop(): Unit = if (endGame) {
+  def gameLoop(): Unit = {
+    while (!endGame) {
+      val dialog = GameManager.view.get.windowManager
+
+      nextStep(checkNewMovement())
+      numCycle = numCycle + 1
+
+      if (arena.get.player.lives == 0) {
+        //è da notificare anche al gameManager?
+        dialog.showMessage("GAME OVER", "You lose", MessageTypes.Warning)
+      }
+
+      /** Update view */
+      view.get match {
+        case scene: FXGameScene => scene.updateView()
+        case _ =>
+      }
+      Thread.sleep(80)
+    }
     finishGame()
-  } else {
-    val dialog = GameManager.view.get.windowManager
-
-    nextStep(checkNewMovement())
-    numCycle = numCycle + 1
-
-
-    if (arena.get.player.lives == 0) {
-      //è da notificare anche al gameManager?
-      dialog.showMessage("GAME OVER", "You lose", MessageTypes.Warning)
-    }
-
-    /** Update view */
-    view.get match {
-      case scene: FXGameScene => scene.updateView()
-      case _ =>
-    }
-
-    Thread.sleep(80)
-    gameLoop()
   }
 
   def finishGame() : Unit = println("Finish!")
