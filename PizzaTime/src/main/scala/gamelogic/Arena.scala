@@ -58,6 +58,7 @@ object Arena {
   /** Returns the set of [[Point]]s that correspond to the [[Arena]]'s [[Wall]]. */
   def bounds: Set[Point] = {
     var bounds: Set[Point] = Set()
+
     for (
       x <- 0 until arenaWidth;
       y <- 0 until arenaHeight
@@ -73,6 +74,7 @@ object Arena {
   /** Returns the set of [[Point]]s that correspond to the [[Arena]]'s [[Floor]]. */
   def tiles: Set[Point] = {
     var tiles: Set[Point] = Set()
+
     for (
       x <- 0 until arenaWidth;
       y <- 0 until arenaHeight
@@ -109,10 +111,10 @@ object Arena {
    */
   def clearPoint(p: Point): Unit = if (checkBounds(p, innerBounds = true) && !isClearFloor(p)) findAndRemove(p)
 
-  /** Checks whether a [[Point]] contains a [[Obstacle]] or not.
+  /** Checks whether a [[Point]] contains an [[Obstacle]] or not.
    *
    *  @param p the [[Point]] to check
-   *  @return true if the [[Point]] contains a [[Obstacle]]
+   *  @return true if the [[Point]] contains an [[Obstacle]]
    */
   def containsObstacle(p: Point): Boolean = arena.get.obstacles.exists(_.position.point.equals(p))
 
