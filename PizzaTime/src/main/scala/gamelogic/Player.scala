@@ -8,7 +8,7 @@ import utilities.Position
  *  @param playerName its name
  *  @param position its starting position
  */
-case class Player(playerName: String, var position: Position) extends MovableEntity{
+case class Player(playerName: String, var position: Position) extends MovableEntity {
   var score: Int = 0
   var lives: Int = 5
   var collectibles: Set[Collectible] = Set()
