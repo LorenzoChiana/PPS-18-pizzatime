@@ -1,6 +1,9 @@
 package gamelogic
 
-import utilities.{Down, Position, Up, Left, Right}
+import gamelogic.Arena.{containsCollectible, containsEnemy}
+import utilities.{Down, Left, Point, Position, Right, Up}
+
+import scala.util.Random
 
 /** An enemy character.
  *
@@ -10,7 +13,7 @@ import utilities.{Down, Position, Up, Left, Right}
 class Enemy(var position: Position, var id: Int) extends EnemyCharacter {
   var lives: Int = 5
 
-  val dir = scala.util.Random
+  val dir: Random.type = scala.util.Random
 
   override def movementBehaviour(): Unit = {
     val dir = scala.util.Random
@@ -21,6 +24,8 @@ class Enemy(var position: Position, var id: Int) extends EnemyCharacter {
       case 3 => move(Right)
     }
   }
+
+  override def canMove(p: Point): Boolean = super.canMove(p) && !containsCollectible(p) && !containsEnemy(p)
 
 }
 
