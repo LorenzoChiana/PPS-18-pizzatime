@@ -4,7 +4,6 @@ package gamelogic
  *  Implemented by [[Enemy]].
  */
 trait EnemyCharacter extends MovableEntity {
-  def id : Int
-
+  def lives : Int
   def movementBehaviour(): Unit
 }

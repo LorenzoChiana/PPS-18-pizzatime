@@ -4,7 +4,7 @@ import GameState._
 import gamelogic.Arena.containsEnemy
 import utilities.{Direction, Down, Point, Position}
 import utilities.ImplicitConversions._
-
+import scala.language.postfixOps
 /** The playable area, populated with all the [[Entity]]s.
  *
  *  @param playerName the [[Player]]'s name
@@ -23,7 +23,9 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   def generateMap(): Unit = mapGen.generateLevel()
 
-  def updateMap(movement: Option[Direction]): Unit = {
+  def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
+    if (shoot.isDefined) bullets = bullets + Bullet(player.position)
+
     if (movement.isDefined) {
       player.move(movement.get)
       player.position.point match {
@@ -37,10 +39,17 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         case _ => None
       }
     }
+
     enemies.foreach(en => {
       en.movementBehaviour()
       if (en.position.point.equals(player.position.point)) player.decreaseLife()
     })
+
+    /**Advance the bullets*/
+    bullets foreach(bullet => bullet advances)
+
+    /**Check if any enemies are dead*/
+    enemies foreach(en => if (en.lives == 0) enemies = enemies - en)
   }
 }
 

@@ -21,7 +21,7 @@ class GameLoop() extends Thread  {
     while (!endGame) {
       val dialog = GameManager.view.get.windowManager
 
-      nextStep(checkNewMovement())
+      nextStep(checkNewMovement(), checkNewShoot())
       numCycle = numCycle + 1
 
       if (arena.get.player.lives == 0) {
