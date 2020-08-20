@@ -32,15 +32,14 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
             case _: BonusLife => player.increaseLife()
             case c: BonusScore => player addScore c.value
           }
-          player.collect(collectibles.find(_.position.point.equals(player.position.point)).get)
           collectibles --= collectibles.filter(_.position.point.equals(p))
-        case p if containsEnemy(p) => { player.lives = player.lives -1; println(player.lives) } //forse può dare bug
+        case p if containsEnemy(p) => player.decreaseLife()
         case _ => None
       }
     }
     enemies.foreach(en => {
       en.movementBehaviour()
-      if (en.position.point.equals(player.position.point)) { player.lives = player.lives -1; println(player.lives) } //può generare bug con quello sopra
+      if (en.position.point.equals(player.position.point)) player.decreaseLife()
     })
   }
 }

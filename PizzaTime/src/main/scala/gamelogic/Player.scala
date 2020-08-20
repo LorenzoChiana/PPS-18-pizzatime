@@ -15,7 +15,8 @@ case class Player(playerName: String, var position: Position) extends MovableEnt
 
   def addScore(s: Int): Unit = score = score + s
 
-  def increaseLife(): Unit = if (lives < difficulty.maxLife) lives = lives + 1
+  def increaseLife(): Unit = if (lives < difficulty.maxLife) lives += 1
 
-  def collect(collectible: Collectible): Unit = collectibles = collectibles + collectible
+  def decreaseLife(): Unit = if (lives > 0) {println(lives); lives -= 1}
+
 }

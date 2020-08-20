@@ -3,13 +3,10 @@ package gamemanager
 import utilities.{Action, Direction, Intent, Movement, SettingPreferences}
 
 import scala.language.postfixOps
-import scala.collection.mutable.ListBuffer
 import gamemanager.handlers.PreferencesHandler
 import gameview.scene.{GameScene, SceneType}
 import utilities.MessageTypes.Info
 import SceneType._
-import gamelogic.{Arena, BonusLife, BonusScore}
-import gamelogic.GameState.arena
 import gameview.Window
 
 import scala.collection.immutable.Queue
