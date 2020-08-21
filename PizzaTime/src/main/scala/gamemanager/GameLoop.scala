@@ -12,6 +12,7 @@ class GameLoop() extends Thread  {
 
   def initGame(): Unit = {
     startGame("Player1", gameType(Medium))
+    ImageLoader.generateImages()
     this.start()
   }
 

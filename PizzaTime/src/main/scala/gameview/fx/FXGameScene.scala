@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
+import gamemanager.ImageLoader
 import gamemanager.handlers.PreferencesHandler
 import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel, tileHeight, tileWidth}
 import gameview.scene.GameScene
@@ -31,15 +32,8 @@ import scala.collection.{immutable, mutable}
  * @param stage a window in a JavaFX desktop application
  */
 case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with GameScene {
-  private var floorImage: Image = _
-  private var wallImage: Image = _
-  private var obstacleImage: Image = _
-  private var heroImage: Image = _
-  private var bonusScoreImage: Image = _
-  private var bonusLifeImage: Image = _
-  private var hero: ImageView = _
-  private var enemyImage: Image = _
-  private var bulletImage: Image = _
+
+  private val hero: ImageView = new ImageView(ImageLoader.heroImage)
   private val directions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
   private var enemies: immutable.Map[EnemyCharacter, ImageView] = new immutable.HashMap[EnemyCharacter, ImageView]()
   private var bullets: immutable.Map[Bullet, ImageView] = new immutable.HashMap[Bullet, ImageView]()
@@ -51,16 +45,6 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private var userLifeLabel: Label = _
 
   Platform.runLater(() => {
-    bulletImage = new Image(getClass.getResourceAsStream("/images/sprites/tomato.png"))
-    floorImage = new Image(getClass.getResourceAsStream("/images/textures/garden.png"))
-    wallImage = new Image(getClass.getResourceAsStream("/images/textures/wall.jpg"))
-    obstacleImage = new Image(getClass.getResourceAsStream("/images/sprites/flour.png"))
-    heroImage = new Image(getClass.getResourceAsStream("/images/sprites/hero.png"))
-    bonusLifeImage = new Image(getClass.getResourceAsStream("/images/sprites/pizza.png"))
-    bonusScoreImage = new Image(getClass.getResourceAsStream("/images/sprites/tomato.png"))
-    enemyImage = new Image(getClass.getResourceAsStream("/images/sprites/enemy.png"))
-
-    hero = new ImageView(heroImage)
     hero.relocate(pointToPixel(currentPosition)._1, pointToPixel(currentPosition)._2)
 
     val arenaArea: GridPane = createArena()
@@ -72,8 +56,8 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     arena.get.collectibles.foreach ( collectible => {
       var collectibleImage: ImageView = null
       collectible match {
-        case _: BonusLife => collectibleImage = createTile(bonusLifeImage)
-        case _: BonusScore => collectibleImage = createTile(bonusScoreImage)
+        case _: BonusLife => collectibleImage = createTile(ImageLoader.bonusLifeImage)
+        case _: BonusScore => collectibleImage = createTile(ImageLoader.bonusScoreImage)
       }
       collectibles += (collectible -> collectibleImage)
       dungeon.getChildren.add(collectibleImage)
@@ -81,7 +65,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     })
 
     arena.get.enemies.foreach(e => {
-      val enemy = createTile(enemyImage)
+      val enemy = createTile(ImageLoader.enemyImage)
       enemies = enemies + (e -> enemy)
       dungeon.getChildren.add(enemy)
     })
@@ -187,9 +171,9 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private def createArena(): GridPane = {
     val gridPane = new GridPane
 
-    for (floor <- arena.get.floor) gridPane.add(createTile(floorImage), floor.position.point.x, floor.position.point.y)
-    for (wall <- arena.get.walls) gridPane.add(createTile(wallImage), wall.position.point.x, wall.position.point.y)
-    for (obstacle <- arena.get.obstacles) gridPane.add(createTile(obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
+    for (floor <- arena.get.floor) gridPane.add(createTile(ImageLoader.floorImage), floor.position.point.x, floor.position.point.y)
+    for (wall <- arena.get.walls) gridPane.add(createTile(ImageLoader.wallImage), wall.position.point.x, wall.position.point.y)
+    for (obstacle <- arena.get.obstacles) gridPane.add(createTile(ImageLoader.obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
 
     gridPane.setGridLinesVisible(false)
 
@@ -202,7 +186,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
    */
   private def addBullet(b: Bullet): Unit = {
     if (!bullets.contains(b)) {
-      val bullet = createTile(bulletImage)
+      val bullet = createTile(ImageLoader.bulletImage)
       bullets = bullets + (b -> bullet)
       bullet.setFitHeight(tileHeight / 2)
       bullet.setFitWidth(tileWidth / 2)
