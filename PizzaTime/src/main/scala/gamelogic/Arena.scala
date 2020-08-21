@@ -153,7 +153,7 @@ object Arena {
    *  @param p the [[Point]] to check
    *  @return true if the [[Point]] contains a [[Bullet]]
    */
-  def containsBullet(p: Point):  Set[Bullet] = arena.get.bullets.filter(_.position.point.equals(p))
+  def containsBullet(p: Point): Set[Bullet] = arena.get.bullets.filter(_.position.point.equals(p))
 
   private def findAndRemove(p: Point): Unit = {
     arena.get.enemies.foreach(e =>

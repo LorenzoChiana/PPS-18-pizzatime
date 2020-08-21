@@ -7,7 +7,7 @@ import utilities.Difficulty._
 import MapGenerator._
 
 /** Test class for the behavior of [[Arena]].
- *  To ease testing, different [[Entity]]s are manually placed in the [[Player]]'s surroundings.
+ *  To ease testing, a dummy instance of [[Arena]] is manually populated with [[Entity]]s.
  */
 class ArenaTest extends AnyFlatSpec with Matchers {
   val arena = new Arena("Player1", gameType(Medium))
