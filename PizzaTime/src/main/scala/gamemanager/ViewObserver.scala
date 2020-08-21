@@ -1,6 +1,6 @@
 package gamemanager
 
-import utilities.{Action, Direction, SettingPreferences}
+import utilities.{Action, SettingPreferences}
 
 /** Represents an observer for the view */
 trait ViewObserver {
@@ -25,8 +25,6 @@ trait ViewObserver {
 
   /** Notifies to go back to the previous scene */
   def onBack(): Unit
-
-  def notifySettings(): Unit
 
   def onSave(settingPreferences: SettingPreferences): Unit
 

@@ -26,5 +26,5 @@ trait GameMap {
   def generateMap()
 
   /** Updates the [[GameMap]] for the new logical step. */
-  def updateMap(movement: Option[Direction])
+  def updateMap(movement: Option[Direction], shoot: Option[Direction])
 }

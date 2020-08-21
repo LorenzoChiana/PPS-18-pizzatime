@@ -1,93 +1,109 @@
 package gamemanager
 
-import utilities.{Action, Direction, Intent, Movement, SettingPreferences}
-
-import scala.language.postfixOps
-import scala.collection.mutable.ListBuffer
-import gamemanager.handlers.PreferencesHandler
+import utilities.{Action, Direction, Intent, Movement, SettingPreferences, Shoot}
+import handlers.PreferencesHandler._
 import gameview.scene.{GameScene, SceneType}
-import utilities.MessageTypes.Info
+import utilities.MessageTypes._
 import SceneType._
-import gamelogic.{Arena, BonusLife, BonusScore}
-import gamelogic.GameState.arena
+import gamelogic.GameState._
 import gameview.Window
-
 import scala.collection.immutable.Queue
+import ImageLoader._
+import gamelogic.MapGenerator._
+import utilities.Difficulty._
+import Runtime.getRuntime
+import java.util.concurrent.Executors.newFixedThreadPool
+import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.fromExecutorService
+import GameManager._
 
 class GameManager extends ViewObserver {
-  lazy val windowManager: Window = GameManager.view.get.windowManager
+  lazy val windowManager: Window = view.get.windowManager
 
-  /** Notifies that the game has started */
-  override def notifyStartGame(): Unit = {
-    val gameCycle: GameLoop = new GameLoop()
-    gameCycle.initGame()
+  /** Notifies that the game has started. */
+  def notifyStartGame(): Unit = {
+    startGame("Player1", gameType(Medium))
+    generateImages()
+    ThreadPool.execute(new GameCycle())
   }
 
-  /** Notifies that the player has moved */
-  override def notifyAction(action: Action): Unit = action.actionType match{
-    case Movement =>  GameManager.playerMoves = GameManager.playerMoves :+ action.direction
-    case _ =>
+  /** Notifies that the player has moved or shot.
+   *
+   *  @param action the [[Action]] notified by the view
+   */
+  def notifyAction(action: Action): Unit = action.actionType match{
+    case Movement => playerMoves = playerMoves :+ action.direction
+    case Shoot => playerShoots = playerShoots :+ arena.get.player.position.dir
   }
 
-  override def notifySettings(): Unit = ???
-
-  /** Notifies the transition to the game scene */
-  override def onStartGame(): Unit = {
-    require(GameManager.view.isDefined)
+  /** Notifies the transition to the game scene. */
+  def onStartGame(): Unit = {
+    require(view.isDefined)
     windowManager.scene_(new Intent(GameScene))
   }
 
-  /** Notifies the transition to the settings scene */
-  override def onSettings(): Unit = {
-    require(GameManager.view.isDefined)
+  /** Notifies the transition to the settings scene. */
+  def onSettings(): Unit = {
+    require(view.isDefined)
     windowManager.scene_(new Intent(SettingScene))
   }
 
-  /** Notifies the transition to the credits scene */
-  override def onCredits(): Unit = {
-    require(GameManager.view.isDefined)
+  /** Notifies the transition to the credits scene. */
+  def onCredits(): Unit = {
+    require(view.isDefined)
     windowManager.scene_(new Intent(CreditsScene))
   }
 
-  /** Notifies the intent to exit from game */
-  override def onExit(): Unit = windowManager.closeView()
+  /** Notifies the intent to exit from game. */
+  def onExit(): Unit = windowManager.closeView()
 
-  /** Notifies to go back to the previous scene */
-  override def onBack(): Unit = {
-    require(GameManager.view.isDefined)
+  /** Notifies to go back to the previous scene. */
+  def onBack(): Unit = {
+    require(view.isDefined)
     windowManager.scene_(new Intent(MainScene))
   }
 
-  /** Notifies to save new game settings */
-  override def onSave(settingPreferences: SettingPreferences): Unit = {
-    require(GameManager.view.isDefined)
+  /** Notifies to save new game settings. */
+  def onSave(settingPreferences: SettingPreferences): Unit = {
+    require(view.isDefined)
 
-    PreferencesHandler.playerName_(settingPreferences.playerName)
-    PreferencesHandler.difficulty_(settingPreferences.difficulty)
+    playerName_(settingPreferences.playerName)
+    difficulty_(settingPreferences.difficulty)
 
     windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
   }
-
-
 }
 
 object GameManager {
+  val NumThreads: Int = getRuntime.availableProcessors() + 1
+  val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
+  val TimeSliceMillis: Int = 50
   var view: Option[GameScene] = None
   def view_(view: GameScene): Unit = this.view = Some(view)
-  //Flag for the end of game
-  var endGame: Boolean = false
-  //Array che tiene traccia di movimenti
-  var playerMoves: Queue[Option[Direction]] = Queue[Option[Direction]]()
-  //Variabile che tiene traccia degli spari
-  var playerShoots: Int = 0
+
   var numCycle: Int = 0
 
-  def checkNewMovement(): Option[Direction] = GameManager.playerMoves.length match {
+  var endGame: Boolean = false
+
+  /** [[Queue]] for movements notified but not yet processed. */
+  var playerMoves: Queue[Option[Direction]] = Queue[Option[Direction]]()
+
+  /** [[Queue]] for shoots notified but not yet processed. */
+  var playerShoots: Queue[Option[Direction]] = Queue[Option[Direction]]()
+
+  def checkNewMovement(): Option[Direction] = playerMoves.length match {
     case 0 => None
-    case _ => {
-      val direction = GameManager.playerMoves.dequeue._1
-      GameManager.playerMoves = GameManager.playerMoves.dequeue._2
+    case _ =>
+      val direction = playerMoves.dequeue._1
+      playerMoves = playerMoves.dequeue._2
       direction
-    }
+  }
+
+  def checkNewShoot(): Option[Direction] = playerShoots.length match {
+    case 0 => None
+    case _ =>
+      val direction = playerShoots.dequeue._1
+      playerShoots = playerShoots.dequeue._2
+      direction
   }
 }
