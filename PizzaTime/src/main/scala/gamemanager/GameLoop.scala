@@ -18,7 +18,8 @@ class GameLoop() extends Thread  {
   override def run(): Unit = gameLoop()
 
   def gameLoop(): Unit = {
-    while (!endGame) {
+    if (endGame) finishGame()
+    else{
       val dialog = GameManager.view.get.windowManager
 
       nextStep(checkNewMovement(), checkNewShoot())
@@ -36,8 +37,10 @@ class GameLoop() extends Thread  {
         case _ =>
       }
       Thread.sleep(50)
+
+      gameLoop()
     }
-    finishGame()
+
   }
 
   def finishGame() : Unit = println("Finish!")
