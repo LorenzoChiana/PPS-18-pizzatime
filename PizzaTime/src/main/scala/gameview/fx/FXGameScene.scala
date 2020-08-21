@@ -1,6 +1,6 @@
 package gameview.fx
 
-import gamelogic.{BonusLife, BonusScore, Collectible, EnemyCharacter}
+import gamelogic.{BonusLife, BonusScore, Bullet, Collectible, EnemyCharacter}
 import gameview.SpriteAnimation
 import gameview.Window
 import javafx.application.Platform
@@ -9,19 +9,19 @@ import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
+import gamemanager.ImageLoader
 import gamemanager.handlers.PreferencesHandler
-import gameview.fx.FXGameScene.pointToPixel
+import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel, tileHeight, tileWidth}
 import gameview.scene.GameScene
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.ActionEvent
 import javafx.scene.{Group, Scene}
-import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, UP}
+import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, SPACE, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
-import utilities.{Action, Down, Left, Movement, Point, Right, Up}
-import gameview.fx.FXGameScene.createTile
+import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up}
 import javafx.scene.control.Label
 
 import scala.collection.{immutable, mutable}
@@ -32,16 +32,11 @@ import scala.collection.{immutable, mutable}
  * @param stage a window in a JavaFX desktop application
  */
 case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with GameScene {
-  private var floorImage: Image = _
-  private var wallImage: Image = _
-  private var obstacleImage: Image = _
-  private var heroImage: Image = _
-  private var bonusScoreImage: Image = _
-  private var bonusLifeImage: Image = _
-  private var hero: ImageView = _
-  private var enemyImage: Image = _
+
+  private val hero: ImageView = new ImageView(ImageLoader.heroImage)
   private val directions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
   private var enemies: immutable.Map[EnemyCharacter, ImageView] = new immutable.HashMap[EnemyCharacter, ImageView]()
+  private var bullets: immutable.Map[Bullet, ImageView] = new immutable.HashMap[Bullet, ImageView]()
   private val width: Int = stage.getWidth.intValue()
   private val height: Int = stage.getHeight.intValue()
   var animation: SpriteAnimation = _
@@ -50,27 +45,19 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private var userLifeLabel: Label = _
 
   Platform.runLater(() => {
-    floorImage = new Image(getClass.getResourceAsStream("/images/textures/garden.png"))
-    wallImage = new Image(getClass.getResourceAsStream("/images/textures/wall.jpg"))
-    obstacleImage = new Image(getClass.getResourceAsStream("/images/sprites/flour.png"))
-    heroImage = new Image(getClass.getResourceAsStream("/images/sprites/hero.png"))
-    bonusLifeImage = new Image(getClass.getResourceAsStream("/images/sprites/pizza.png"))
-    bonusScoreImage = new Image(getClass.getResourceAsStream("/images/sprites/tomato.png"))
-    enemyImage = new Image(getClass.getResourceAsStream("/images/sprites/enemy.png"))
-
-    hero = new ImageView(heroImage)
     hero.relocate(pointToPixel(currentPosition)._1, pointToPixel(currentPosition)._2)
 
     val arenaArea: GridPane = createArena()
-    val dungeon: Group = new Group(arenaArea, hero)
+
+    dungeon.getChildren.addAll(arenaArea,hero)
     animation = new SpriteAnimation(hero, Duration.millis(300), 4, 4, 0, 0, 100, 130)
 
     /** Create collectioble sprites */
     arena.get.collectibles.foreach ( collectible => {
       var collectibleImage: ImageView = null
       collectible match {
-        case _: BonusLife => collectibleImage = createTile(bonusLifeImage)
-        case _: BonusScore => collectibleImage = createTile(bonusScoreImage)
+        case _: BonusLife => collectibleImage = createTile(ImageLoader.bonusLifeImage)
+        case _: BonusScore => collectibleImage = createTile(ImageLoader.bonusScoreImage)
       }
       collectibles += (collectible -> collectibleImage)
       dungeon.getChildren.add(collectibleImage)
@@ -78,7 +65,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     })
 
     arena.get.enemies.foreach(e => {
-      val enemy = createTile(enemyImage)
+      val enemy = createTile(ImageLoader.enemyImage)
       enemies = enemies + (e -> enemy)
       dungeon.getChildren.add(enemy)
     })
@@ -89,6 +76,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
         case DOWN => directions(Action(Movement, Some(Down))) = true
         case LEFT => directions(Action(Movement, Some(Left))) = true
         case RIGHT => directions(Action(Movement, Some(Right))) = true
+        case SPACE => directions(Action(Shoot, None)) = true
         case _ => None
       })
 
@@ -97,13 +85,15 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
         case DOWN => directions(Action(Movement, Some(Down))) = false
         case LEFT => directions(Action(Movement, Some(Left))) = false
         case RIGHT => directions(Action(Movement, Some(Right))) = false
+        case SPACE => directions(Action(Shoot, None)) = false
         case _ => None
       })
     }
 
-    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives)
-    userLifeLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold")
-    userLifeLabel.relocate(Game.width/2.5, 1)
+    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives + "Score: " + arena.get.player.score)
+    userLifeLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold; -fx-background-color: #4444; " +
+      "-fx-padding: 8px; -fx-background-radius: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);")
+    userLifeLabel.relocate(Game.width / 3.5, 1)
     dungeon.getChildren.add(userLifeLabel)
 
     stage.setScene(scene)
@@ -139,15 +129,36 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       collectibles --= collectiblesTaken
     }
 
-    /** Updating position and animation enemy*/
+    /** Updating position enemy */
     enemies.foreach(e => {
-      arena.get.enemies.filter(en => en.equals(e._1)).head
-      val pos = pointToPixel(arena.get.enemies.filter(en => en.equals(e._1)).head.position.point)
-      e._2 relocate(pos._1, pos._2)
+      val ens = arena.get.enemies.filter(_ == e._1)
+      if (ens.isEmpty){
+        //e._2.setVisible(false)
+        Platform.runLater(() => {
+          dungeon.getChildren.remove(e._2)
+        })
+      }else{
+        val pos = pointToPixel(ens.head.position.point)
+        e._2 relocate(pos._1, pos._2)
+      }
+    })
+
+    /** Updating bullet */
+    arena.get.bullets.foreach(b => addBullet(b))
+    bullets.foreach(b => {
+      val unexplodedBullet = arena.get.bullets.find(_ == b._1)
+      if (unexplodedBullet.isEmpty)
+        Platform.runLater(() => {
+          dungeon.getChildren.remove(b._2)
+        })
+      else{
+        val pos = pointToPixel(unexplodedBullet.get.position.point)
+        b._2 relocate(pos._1, pos._2)
+      }
     })
 
     /** Updating player lives */
-    Platform.runLater(() => userLifeLabel.setText(PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764"))
+    Platform.runLater(() =>userLifeLabel.setText(PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 " + " Score: " + arena.get.player.score + " \u2605"))
   }
 
   /**
@@ -158,18 +169,35 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private def createArena(): GridPane = {
     val gridPane = new GridPane
 
-    for (floor <- arena.get.floor) gridPane.add(createTile(floorImage), floor.position.point.x, floor.position.point.y)
-    for (wall <- arena.get.walls) gridPane.add(createTile(wallImage), wall.position.point.x, wall.position.point.y)
-    for (obstacle <- arena.get.obstacles) gridPane.add(createTile(obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
+    for (floor <- arena.get.floor) gridPane.add(createTile(ImageLoader.floorImage), floor.position.point.x, floor.position.point.y)
+    for (wall <- arena.get.walls) gridPane.add(createTile(ImageLoader.wallImage), wall.position.point.x, wall.position.point.y)
+    for (obstacle <- arena.get.obstacles) gridPane.add(createTile(ImageLoader.obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
 
     gridPane.setGridLinesVisible(false)
 
     gridPane
   }
+
+  /**
+   * Add bullet to the arena
+   *
+   */
+  private def addBullet(b: Bullet): Unit = {
+    if (!bullets.contains(b)) {
+      val bullet = createTile(ImageLoader.bulletImage)
+      bullets = bullets + (b -> bullet)
+      bullet.setFitHeight(tileHeight / 2)
+      bullet.setFitWidth(tileWidth / 2)
+      Platform.runLater(() => {
+        FXGameScene.dungeon.getChildren.add(bullet)
+      })
+    }
+  }
 }
 
 /** Utility methods for [[FXGameScene]]. */
 object FXGameScene {
+  val dungeon: Group = new Group()
   /**
    * Defines the width of each tile that will make up the arena
    *

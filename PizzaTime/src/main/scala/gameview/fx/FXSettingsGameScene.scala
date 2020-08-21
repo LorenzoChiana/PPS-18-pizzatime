@@ -27,7 +27,7 @@ case class FXSettingsGameScene(override val windowManager: Window) extends FXVie
     val selection = difficultyComboBox.getSelectionModel
     if(selection.isEmpty) selection.selectFirst()
 
-    FXWindow.observers.foreach(_.onSave(SettingPreferences(playerName = playerNameField.getText, selection.getSelectedItem)))
+    FXWindow.observers.foreach(_.onSave(SettingPreferences(playerNameField.getText, selection.getSelectedItem)))
   })
 
   def showCurrentPreferences(settingPreferences: SettingPreferences): Unit = {

@@ -5,7 +5,6 @@ import gamelogic.MapGenerator._
 import gamelogic.GameState._
 import GameManager._
 import utilities.Difficulty._
-import gamelogic.{GameState, MapGenerator}
 import gameview.fx.FXGameScene
 import utilities.MessageTypes
 
@@ -13,33 +12,36 @@ class GameLoop() extends Thread  {
 
   def initGame(): Unit = {
     startGame("Player1", gameType(Medium))
+    ImageLoader.generateImages()
     this.start()
   }
 
   override def run(): Unit = gameLoop()
 
-  def gameLoop(): Unit = if (endGame) {
-    finishGame()
-  } else {
-    val dialog = GameManager.view.get.windowManager
+  def gameLoop(): Unit = {
+    if (endGame) finishGame()
+    else{
+      val dialog = GameManager.view.get.windowManager
 
-    nextStep(checkNewMovement())
-    numCycle = numCycle + 1
+      nextStep(checkNewMovement(), checkNewShoot())
+      numCycle = numCycle + 1
 
+      if (arena.get.player.lives == 0) {
+        //è da notificare anche al gameManager?
+        dialog.showMessage("GAME OVER", "You lose", MessageTypes.Warning)
+        endGame = true
+      }
 
-    if (arena.get.player.lives == 0) {
-      //è da notificare anche al gameManager?
-      dialog.showMessage("GAME OVER", "You lose", MessageTypes.Warning)
+      /** Update view */
+      view.get match {
+        case scene: FXGameScene => scene.updateView()
+        case _ =>
+      }
+      Thread.sleep(50)
+
+      gameLoop()
     }
 
-    /** Update view */
-    view.get match {
-      case scene: FXGameScene => scene.updateView()
-      case _ =>
-    }
-
-    Thread.sleep(80)
-    gameLoop()
   }
 
   def finishGame() : Unit = println("Finish!")

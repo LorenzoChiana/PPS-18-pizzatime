@@ -1,9 +1,10 @@
 package gamelogic
 
 import GameState._
-import gamelogic.Arena.containsEnemy
+import gamelogic.Arena.{containsBullet, containsEnemy}
 import utilities.{Direction, Down, Point, Position}
 import utilities.ImplicitConversions._
+import scala.language.postfixOps
 
 /** The playable area, populated with all the [[Entity]]s.
  *
@@ -23,7 +24,9 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   def generateMap(): Unit = mapGen.generateLevel()
 
-  def updateMap(movement: Option[Direction]): Unit = {
+  def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
+    if (shoot.isDefined) bullets = bullets + Bullet(player.position)
+
     if (movement.isDefined) {
       player.move(movement.get)
       player.position.point match {
@@ -32,16 +35,29 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
             case _: BonusLife => player.increaseLife()
             case c: BonusScore => player addScore c.value
           }
-          player.collect(collectibles.find(_.position.point.equals(player.position.point)).get)
           collectibles --= collectibles.filter(_.position.point.equals(p))
-        case p if containsEnemy(p) => { player.lives = player.lives -1; println(player.lives) } //forse può dare bug
+        case p if containsEnemy(p) => player.decreaseLife()
         case _ => None
       }
     }
+
     enemies.foreach(en => {
       en.movementBehaviour()
-      if (en.position.point.equals(player.position.point)) { player.lives = player.lives -1; println(player.lives) } //può generare bug con quello sopra
+      if (en.position.point.equals(player.position.point)) player.decreaseLife()
+
+      val bulletOnEnemy = containsBullet(en.position.point)
+
+      if (bulletOnEnemy.nonEmpty) {
+        en.decreaseLife()
+        bullets = bullets -- bulletOnEnemy
+      }
     })
+
+    /**Advance the bullets*/
+    bullets foreach(bullet => bullet advances)
+
+    /**Check if any enemies are dead*/
+    enemies foreach(en => if (en.lives == 0) {enemies = enemies - en; player addScore en.pointsKilling})
   }
 }
 
@@ -131,6 +147,13 @@ object Arena {
    *  @return true if the [[Point]] contains a [[Enemy]]
    */
   def containsEnemy(p: Point): Boolean = arena.get.enemies.exists(_.position.point.equals(p))
+  
+  /** Checks whether a [[Point]] contains a [[Bullet]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Bullet]]
+   */
+  def containsBullet(p: Point):  Set[Bullet] = arena.get.bullets.filter(_.position.point.equals(p))
 
   private def findAndRemove(p: Point): Unit = {
     arena.get.enemies.foreach(e =>

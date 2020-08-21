@@ -6,6 +6,8 @@ import utilities.{Difficulty, Down, Position}
 import utilities.Difficulty._
 import GameState._
 import utilities.ImplicitConversions._
+
+import scala.util.Random
 import scala.util.Random.between
 
 /** Encapsulates the logic for generating a new level.
@@ -18,29 +20,30 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
   /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
-    currentLevel += 1
+    currentLevel = currentLevel + 1
     generateEnemies()
     generateCollectibles()
     generateObstacles()
   }
 
   private def generateEnemies(): Unit = {
-    val range = currentLevel
-    var en: Set[EnemyCharacter] = Set()
-    var id: Int = 0
-    for (_ <- 0 to between(1, range)) { en = en + Enemy(randomPosition, id); id = id+1 }
+    val enemyNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
+    val en: Set[EnemyCharacter] = Set.tabulate(enemyNum)(id => Enemy(randomPosition))
     arena.get.enemies = en
   }
 
   private def generateCollectibles(): Unit = {
-    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) arena.get.collectibles = arena.get.collectibles + BonusLife(randomPosition)
-    for (_ <- 0 to between(difficulty.bonusRange.min, difficulty.bonusRange.max)) arena.get.collectibles = arena.get.collectibles + BonusScore(randomPosition, difficulty.bonusScore)
+    val bonusNum: Int = between(difficulty.bonusRange.min, difficulty.bonusRange.max)
+    val collectibles: Set[Collectible] = Set.fill(bonusNum)(elem =
+      if (Random.nextInt(1) == 0) BonusLife(randomPosition)
+      else BonusScore(randomPosition, difficulty.bonusScore)
+    )
+    arena.get.collectibles = collectibles
   }
 
   private def generateObstacles(): Unit = {
-    val range = currentLevel
-    var obs: Set[Obstacle] = Set()
-    for (_ <- 0 to between(1, range)) obs = obs + Obstacle(randomPosition)
+    val obstaclesNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
+    val obs: Set[Obstacle] = Set.fill(obstaclesNum)(elem = Obstacle(randomPosition))
     arena.get.obstacles = obs
   }
 
