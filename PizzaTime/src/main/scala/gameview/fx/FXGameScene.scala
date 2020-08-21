@@ -72,7 +72,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
         case _: BonusLife => collectibleImage = createTile(bonusLifeImage)
         case _: BonusScore => collectibleImage = createTile(bonusScoreImage)
       }
-      collectibles += (collectible -> collectibleImage)
+      collectibles = collectibles + (collectible -> collectibleImage)
       dungeon.getChildren.add(collectibleImage)
       collectibleImage.relocate(pointToPixel(collectible.position.point)._1, pointToPixel(collectible.position.point)._2)
     })
@@ -136,7 +136,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       /** Updating collectibles */
       val collectiblesTaken = collectibles.keySet.diff(arena.get.collectibles)
       collectiblesTaken.foreach(collectible => collectibles(collectible).setVisible(false))
-      collectibles --= collectiblesTaken
+      collectibles = collectibles -- collectiblesTaken
     }
 
     /** Updating position and animation enemy*/
