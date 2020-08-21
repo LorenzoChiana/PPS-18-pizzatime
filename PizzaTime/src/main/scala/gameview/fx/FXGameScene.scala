@@ -106,9 +106,10 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       })
     }
 
-    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives)
-    userLifeLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold")
-    userLifeLabel.relocate(Game.width/2.5, 1)
+    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives + "Score: " + arena.get.player.score)
+    userLifeLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold; -fx-background-color: #4444; " +
+      "-fx-padding: 8px; -fx-background-radius: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);")
+    userLifeLabel.relocate(Game.width / 3.5, 1)
     dungeon.getChildren.add(userLifeLabel)
 
     stage.setScene(scene)
@@ -148,7 +149,10 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     enemies.foreach(e => {
       val ens = arena.get.enemies.filter(_ == e._1)
       if (ens.isEmpty){
-        e._2.setVisible(false)
+        //e._2.setVisible(false)
+        Platform.runLater(() => {
+          dungeon.getChildren.remove(e._2)
+        })
       }else{
         val pos = pointToPixel(ens.head.position.point)
         e._2 relocate(pos._1, pos._2)
@@ -161,6 +165,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       val buls = arena.get.bullets.filter(_ == b._1)
       if (buls.isEmpty) {
         Platform.runLater(() => {
+         // b._2.setVisible(false)
           dungeon.getChildren.remove(b._2)
         })
       } else {
@@ -171,7 +176,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     })
 
     /** Updating player lives */
-    Platform.runLater(() => userLifeLabel.setText(PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764"))
+    Platform.runLater(() =>userLifeLabel.setText(PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 " + " Score: " + arena.get.player.score + " \u2605"))
   }
 
   /**

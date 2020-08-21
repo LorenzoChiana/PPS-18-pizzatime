@@ -35,7 +35,7 @@ class GameLoop() extends Thread  {
         case scene: FXGameScene => scene.updateView()
         case _ =>
       }
-      Thread.sleep(80)
+      Thread.sleep(50)
     }
     finishGame()
   }
