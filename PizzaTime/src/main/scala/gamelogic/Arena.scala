@@ -44,7 +44,9 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     enemies.foreach(en => {
       en.movementBehaviour()
       if (en.position.point.equals(player.position.point)) player.decreaseLife()
+
       val bulletOnEnemy = containsBullet(en.position.point)
+
       if (bulletOnEnemy.nonEmpty) {
         en.decreaseLife()
         bullets = bullets -- bulletOnEnemy
