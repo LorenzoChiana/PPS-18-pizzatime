@@ -33,7 +33,7 @@ import scala.collection.{immutable, mutable}
  */
 case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with GameScene {
 
-  private val hero: ImageView = new ImageView(ImageLoader.heroImage)
+  private val hero: ImageView = createTile(ImageLoader.heroImage)
   private val directions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
   private var enemies: immutable.Map[EnemyCharacter, ImageView] = new immutable.HashMap[EnemyCharacter, ImageView]()
   private var bullets: immutable.Map[Bullet, ImageView] = new immutable.HashMap[Bullet, ImageView]()
@@ -149,10 +149,11 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       val unexplodedBullet = arena.get.bullets.find(_ == b._1)
       if (unexplodedBullet.isEmpty)
         Platform.runLater(() => {
-          dungeon.getChildren.get(dungeon.getChildren.indexOf(b._2)).setVisible(false)
-          //dungeon.getChildren.remove(b._2)
+          dungeon.getChildren.filtered(_.equals(b._2)).forEach(_ => setVisible(false))
+          b._2.setVisible(false)
+          dungeon.getChildren.remove(b._2)
         })
-      else{
+      else {
         val pos = pointToPixel(unexplodedBullet.get.position.point)
         b._2 relocate(pos._1, pos._2)
       }
@@ -174,7 +175,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     for (wall <- arena.get.walls) gridPane.add(createTile(ImageLoader.wallImage), wall.position.point.x, wall.position.point.y)
     for (obstacle <- arena.get.obstacles) gridPane.add(createTile(ImageLoader.obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
 
-    gridPane.setGridLinesVisible(false)
+    gridPane.setGridLinesVisible(true)
 
     gridPane
   }
