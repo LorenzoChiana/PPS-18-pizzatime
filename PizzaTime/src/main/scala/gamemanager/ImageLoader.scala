@@ -1,6 +1,13 @@
 package gamemanager
 
+import gamemanager.ImageLoader.floorImage
 import javafx.scene.image.Image
+import utilities.ImageType
+
+import scala.collection.immutable
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import scala.util.{Failure, Success}
 
 
 /** Allows to load the various sprites of the game.
@@ -23,16 +30,17 @@ object ImageLoader {
   var bulletImage: Image = _
   var bonusScoreImage: Image = _
 
-  private def generateImage(path: String) = new Image(getClass.getResourceAsStream(path))
-
-   def generateImages():Unit = {
-    floorImage = generateImage("/images/textures/garden.png")
-    wallImage= generateImage("/images/textures/wall.jpg")
-    obstacleImage = generateImage("/images/sprites/flour.png")
-    bonusLifeImage = generateImage("/images/sprites/pizza.png")
-    heroImage = generateImage("/images/sprites/hero.png")
-    enemyImage = generateImage("/images/sprites/enemy.png")
-    bulletImage = generateImage("/images/sprites/tomato.png")
-    bonusScoreImage= generateImage("/images/sprites/tomato.png")
+  def generateImages(): Future[Unit] = Future {
+    ImageType.allImage.foreach(i => i match{
+      case ImageType.Floor => floorImage = new Image(getClass.getResourceAsStream(i.path))
+      case ImageType.Wall => wallImage = new Image(getClass.getResourceAsStream(i.path))
+      case ImageType.Obstacle => obstacleImage = new Image(getClass.getResourceAsStream(i.path))
+      case ImageType.BonusLife => bonusLifeImage = new Image(getClass.getResourceAsStream(i.path))
+      case ImageType.Hero => heroImage = new Image(getClass.getResourceAsStream(i.path))
+      case ImageType.Enemy => enemyImage = new Image(getClass.getResourceAsStream(i.path))
+      case ImageType.Bullet => bulletImage = new Image(getClass.getResourceAsStream(i.path))
+      case ImageType.BonusScore => bonusScoreImage = new Image(getClass.getResourceAsStream(i.path))
+    } )
   }
+
 }

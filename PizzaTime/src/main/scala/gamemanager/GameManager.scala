@@ -7,15 +7,19 @@ import utilities.MessageTypes._
 import SceneType._
 import gamelogic.GameState._
 import gameview.Window
+
 import scala.collection.immutable.Queue
-import ImageLoader._
 import gamelogic.MapGenerator._
 import utilities.Difficulty._
 import Runtime.getRuntime
 import java.util.concurrent.Executors.newFixedThreadPool
+
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
 import GameManager._
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 
 class GameManager extends ViewObserver {
   lazy val windowManager: Window = view.get.windowManager
@@ -23,8 +27,8 @@ class GameManager extends ViewObserver {
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {
     startGame("Player1", gameType(Medium))
-    generateImages()
     ThreadPool.execute(new GameCycle())
+
   }
 
   /** Notifies that the player has moved or shot.
