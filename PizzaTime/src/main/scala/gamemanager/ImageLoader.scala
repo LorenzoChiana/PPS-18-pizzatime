@@ -30,7 +30,7 @@ object ImageLoader {
   var bulletImage: Image = _
   var bonusScoreImage: Image = _
 
-  def generateImages(): Future[Unit] = Future {
+  def generateImages(): Unit = {
     ImageType.allImage.foreach(i => i match{
       case ImageType.Floor => floorImage = new Image(getClass.getResourceAsStream(i.path))
       case ImageType.Wall => wallImage = new Image(getClass.getResourceAsStream(i.path))
