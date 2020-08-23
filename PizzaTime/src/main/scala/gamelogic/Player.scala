@@ -2,6 +2,7 @@ package gamelogic
 
 import gamemanager.handlers.PreferencesHandler.difficulty
 import utilities.Position
+import GameState.arena
 
 /** The main character.
  *
@@ -18,5 +19,4 @@ case class Player(playerName: String, var position: Position) extends MovableEnt
   def increaseLife(): Unit = if (lives < difficulty.maxLife) lives += 1
 
   def decreaseLife(): Unit = if (lives > 0) {println(lives); lives -= 1}
-
 }

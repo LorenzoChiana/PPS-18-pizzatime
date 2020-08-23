@@ -14,7 +14,11 @@ class ArenaTest extends AnyFlatSpec with Matchers {
 
   initializeSurroundings()
 
-  "The Arena" should "have walls inside the playable area" in {
+  "The Arena" should "be empty after creation" in {
+
+  }
+
+  it should "have walls inside the playable area" in {
     assert(arena.walls.forall(wall => checkBounds(wall.position.point)))
   }
 
