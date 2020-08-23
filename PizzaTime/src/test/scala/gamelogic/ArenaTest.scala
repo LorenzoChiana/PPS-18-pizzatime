@@ -12,10 +12,8 @@ import MapGenerator._
 class ArenaTest extends AnyFlatSpec with Matchers {
   val arena = new Arena("Player1", gameType(Medium))
 
-  initializeSurroundings()
-
   "The Arena" should "be empty after creation" in {
-
+    assert(arena.allGameEntities.isEmpty)
   }
 
   it should "have walls inside the playable area" in {
@@ -46,5 +44,5 @@ class ArenaTest extends AnyFlatSpec with Matchers {
 
   }
 
-  private def initializeSurroundings(): Unit = ???
+  private def initializeDummyEntities(): Unit = ???
 }
