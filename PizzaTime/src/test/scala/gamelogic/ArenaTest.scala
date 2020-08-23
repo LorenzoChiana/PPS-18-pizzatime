@@ -5,6 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import utilities.Difficulty._
 import MapGenerator._
+import utilities.Position
 
 /** Test class for the behavior of [[Arena]].
  *  To ease testing, a dummy instance of [[Arena]] is manually populated with [[Entity]]s.
@@ -12,7 +13,7 @@ import MapGenerator._
 class ArenaTest extends AnyFlatSpec with Matchers {
   val arena = new Arena("Player1", gameType(Medium))
 
-  "The Arena" should "be empty after creation" in {
+    "The Arena" should "be empty after creation" in {
     assert(arena.allGameEntities.isEmpty)
   }
 
@@ -27,7 +28,11 @@ class ArenaTest extends AnyFlatSpec with Matchers {
   }
 
   it can "be populated with game entities" in {
-    
+    initializeDummyEntities()
+    assert(arena.enemies.nonEmpty)
+    assert(arena.bullets.nonEmpty)
+    assert(arena.collectibles.nonEmpty)
+    assert(arena.obstacles.nonEmpty)
   }
 
   it should "have collectibles inside the walls" in {
@@ -50,5 +55,10 @@ class ArenaTest extends AnyFlatSpec with Matchers {
 
   }
 
-  private def initializeDummyEntities(): Unit = ???
+  private def initializeDummyEntities(): Unit = {
+    arena.enemies = arena.enemies + Enemy(randomPosition)
+    arena.bullets = arena.bullets + Bullet(randomPosition)
+    arena.collectibles = arena.collectibles + BonusLife(randomPosition)
+    arena.obstacles = arena.obstacles + Obstacle(randomPosition)
+  }
 }

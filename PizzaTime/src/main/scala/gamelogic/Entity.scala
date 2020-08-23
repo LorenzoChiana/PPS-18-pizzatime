@@ -3,7 +3,7 @@ package gamelogic
 import utilities.Position
 
 /** Represents a basic entity, defined by a [[Position]].
- *  Implemented by [[Wall]], [[Floor]] and [[Obstacle]].
+ *  Implemented by [[Wall]], [[Floor]], [[Obstacle]], [[Collectible]] and [[MovableEntity]].
  */
 trait Entity {
   var position: Position

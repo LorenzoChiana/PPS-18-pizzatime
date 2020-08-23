@@ -19,11 +19,14 @@ class Bullet(var position: Position) extends MovableEntity{
     }
   }
 
-  override def move(dir: Direction): Unit = {
-    if (canMove(stepPoint(position.point, dir)))
+  override def move(dir: Direction): Boolean = {
+    if (canMove(stepPoint(position.point, dir))) {
       position = Position(stepPoint(position.point, dir), Some(dir))
-    else
+      true
+    } else {
       arena.get.bullets = arena.get.bullets - this
+      false
+    }
   }
 
   override def remove(): Boolean = {
