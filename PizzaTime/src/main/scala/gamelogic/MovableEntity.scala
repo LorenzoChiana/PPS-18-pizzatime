@@ -41,7 +41,7 @@ trait MovableEntity extends Entity {
    *
    *  @param pos the destination's [[Position]]
    */
-  def moveTo(pos: Position): Unit = if (canMove(pos.point)) position = pos
+  def moveTo(pos: Position): Unit = if (!containsEnemy(pos.point) && !containsObstacle(pos.point)) position = pos
 }
 
 /** Utility methods for [[MovableEntity]]. */
