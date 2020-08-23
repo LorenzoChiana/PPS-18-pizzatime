@@ -106,17 +106,17 @@ object Arena {
   /** Returns the [[Arena]]'s center [[Point]]. */
   def center: Point = (arenaWidth / 2, arenaHeight / 2)
 
-  /** Checks whether a [[Point]] is inside the [[Arena]] or not.
+  /** Checks whether a [[Point]] is inside the playable area of the [[Arena]] or not.
    *
    *  @param p the [[Point]] to check
-   *  @param innerBounds to be set to true to exclude the [[Wall]]s from the playable area
+   *  @param bounds to be set to true to include the [[Wall]]s
    *  @return true if the [[Point]] is inside the [[Arena]]
    */
-  def checkBounds(p: Point, innerBounds: Boolean = false): Boolean = {
-    if (innerBounds)
-      (p.x > 0) && (p.y > 0) && (p.x < arenaWidth - 1) && (p.y < arenaHeight - 1)
-    else
+  def checkBounds(p: Point, bounds: Boolean = false): Boolean = {
+    if (bounds)
       (p.x < arenaWidth) && (p.y < arenaHeight)
+    else
+      (p.x > 0) && (p.y > 0) && (p.x < arenaWidth - 1) && (p.y < arenaHeight - 1)
   }
 
   /** Checks whether a [[Point]] is clear or not (meaning if the [[Point]] is not occupied by any [[Entity]]).
@@ -131,7 +131,7 @@ object Arena {
    *  @param p the [[Point]] to clear
    */
   def clearPoint(p: Point): Unit = {
-    if (checkBounds(p, innerBounds = true) && !isClearFloor(p))
+    if (checkBounds(p) && !isClearFloor(p))
       arena.get.allGameEntities
         .filter(e => e.position.point.equals(p))
         .map(e => e.remove())

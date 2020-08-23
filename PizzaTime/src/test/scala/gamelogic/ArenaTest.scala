@@ -16,28 +16,34 @@ class ArenaTest extends AnyFlatSpec with Matchers {
     assert(arena.allGameEntities.isEmpty)
   }
 
-  it should "have walls inside the playable area" in {
-    assert(arena.walls.forall(wall => checkBounds(wall.position.point)))
+  it should "have walls inside it" in {
+    assert(arena.walls.nonEmpty)
+    assert(arena.walls.forall(wall => checkBounds(wall.position.point, bounds = true)))
   }
 
   it should "have floor inside the walls" in {
-    assert(arena.floor.forall(tile => checkBounds(tile.position.point, innerBounds = true)))
+    assert(arena.floor.nonEmpty)
+    assert(arena.floor.forall(tile => checkBounds(tile.position.point)))
+  }
+
+  it can "be populated with game entities" in {
+    
   }
 
   it should "have collectibles inside the walls" in {
-    assert(arena.collectibles.forall(collectible => checkBounds(collectible.position.point, innerBounds = true)))
+    assert(arena.collectibles.forall(collectible => checkBounds(collectible.position.point)))
   }
 
   it should "have obstacles inside the walls" in {
-    assert(arena.obstacles.forall(obstacle => checkBounds(obstacle.position.point, innerBounds = true)))
+    assert(arena.obstacles.forall(obstacle => checkBounds(obstacle.position.point)))
   }
 
   it should "have the player inside the walls" in {
-    assert(checkBounds(arena.player.position.point, innerBounds = true))
+    assert(checkBounds(arena.player.position.point))
   }
 
   it should "have enemies inside the walls" in {
-    assert(arena.enemies.forall(enemy => checkBounds(enemy.position.point, innerBounds = true)))
+    assert(arena.enemies.forall(enemy => checkBounds(enemy.position.point)))
   }
 
   "Collectibles" should "be walkable" in {
