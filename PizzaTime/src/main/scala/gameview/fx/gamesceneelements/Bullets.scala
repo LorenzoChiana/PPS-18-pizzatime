@@ -4,7 +4,7 @@ import gamelogic.Bullet
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.bulletImage
 import gameview.fx.FXGameScene
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.{createTile, pointToPixel, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import scala.collection.immutable
