@@ -9,6 +9,7 @@ import gameview.fx.FXWindow.addObserver
 
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 
 class Main extends Application {
   def start(primaryStage: Stage): Unit = {
@@ -20,6 +21,15 @@ class Main extends Application {
     val observers: Set[ViewObserver] = Set(new GameManager())
     addObserver(observers)
     view.scene_(new Intent(MainScene))
-    view.showView()
+
+    val f = Future {
+      ImageLoader.generateImages()
+    }
+
+    f.onComplete {
+      case Success(value) => view.showView()
+      case Failure(e) => e.printStackTrace
+    }
+
   }
 }

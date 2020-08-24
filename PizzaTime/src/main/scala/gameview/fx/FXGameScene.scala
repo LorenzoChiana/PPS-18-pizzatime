@@ -148,10 +148,10 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     bullets.foreach(b => {
       val unexplodedBullet = arena.get.bullets.find(_ == b._1)
       if (unexplodedBullet.isEmpty) {
-        dungeon.getChildren.filtered(_.equals(b._2)).forEach(el => el.setVisible(false))
-        /*Platform.runLater(() => {
+       // dungeon.getChildren.filtered(_.equals(b._2)).forEach(el => el.setVisible(false))
+        Platform.runLater(() => {
           dungeon.getChildren.remove(b._2)
-        })*/
+        })
       }
       else {
         val pos = pointToPixel(unexplodedBullet.get.position.point)
