@@ -57,7 +57,6 @@ class PlayerTest extends AnyFlatSpec with Matchers {
 
   it should "move around the map" in {
     player.moveTo(Position(Point(1, 1), Some(Down)))
-    println("Player: "+ player.position.point)
     for (y <- walkableHeight._1 to walkableHeight._2) y match {
       case Odd(y) =>
         for(x <- walkableWidth._1 +1 to walkableWidth._2 ) {
@@ -74,7 +73,36 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     }
   }
 
+  it should "walk over bonuses and not obstacles" in {
+    val initialPlayerPoint = Point(centerWidth, centerHeight)
 
+    val bonusLifePoint = Point(centerWidth +1, centerHeight)
+    val bonusScorePoint = Point(centerWidth -1, centerHeight)
+    collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) + BonusScore(Position(bonusScorePoint, None), 1)
+
+    player.moveTo(Position(initialPlayerPoint, Some(Down)))
+    player.move(Right)
+    assert(player.position.point.equals(bonusLifePoint))
+
+    player.moveTo(Position(initialPlayerPoint, Some(Down)))
+    player.move(Left)
+    assert(player.position.point.equals(bonusScorePoint))
+
+    val obstaclePoint = Point(centerWidth, centerHeight +1)
+    obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
+
+    player.moveTo(Position(initialPlayerPoint, Some(Down)))
+    player.move(Down)
+    assert(player.position.point.equals(initialPlayerPoint))
+  }
+
+  it should "collect bonus" in {
+    player.moveTo(Position(Point(centerWidth, centerHeight), Some(Down)))
+    collectibles = collectibles + BonusLife(Position(Point(centerWidth +1, centerHeight), None))
+    assert(player.collectibles.isEmpty)
+    player.move(Right)
+    //assert(player.collectibles.nonEmpty)
+  }
 
   object Even {
     def unapply(x: Int): Option[Int] = if (x % 2 == 0) Some(x) else None
