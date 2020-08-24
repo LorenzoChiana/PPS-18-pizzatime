@@ -47,7 +47,7 @@ trait MovableEntity extends Entity {
    *  @return true if the move succeeds and the [[Position]] changes, false otherwise
    */
   def moveTo(pos: Position): Boolean = {
-    if (!containsObstacle(pos.point)) {
+    if (!containsObstacle(pos.point) && !containsObstacle(pos.point)) {
       position = pos
       true
     } else false
