@@ -2,15 +2,16 @@ package gamelogic
 
 import gamelogic.GameState.{arenaHeight, arenaWidth, startGame}
 import gamelogic.MapGenerator.gameType
-import gamemanager.handlers.PreferencesHandler.difficulty
+import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
-import utilities.Difficulty.Medium
+import utilities.Difficulty.{Easy, Medium}
 import utilities.Point
 import utilities.{Direction, Down, Left, Position, Right, Up}
 
 class PlayerTest extends AnyFlatSpec with Matchers {
-  startGame("Player1", gameType(Medium))
+  difficulty_(Easy)
+  startGame("Player1", gameType(Easy))
   val arena: GameMap = GameState.arena.get
   val centerWidth: Int = difficulty.arenaWidth/2
   val centerHeight: Int = difficulty.arenaHeight/2
@@ -24,6 +25,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
 
 
   "The player" should "have 'Player1' as name" in {
+    println("Diff: " + difficulty + " arenaW: "+difficulty.arenaWidth + " arenaH: "+difficulty.arenaHeight)
     assert(player.playerName == "Player1")
   }
 
@@ -73,6 +75,35 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     }
   }
 
+  it should "collide with the walls" in {
+    player.moveTo(Position(Point(1, 1), Some(Down)))
+    for (y <- walkableHeight._1 to walkableHeight._2;
+         x <- walkableWidth._1 to walkableWidth._2)
+      (x, y) match {
+        case (walkableWidth._1, y) =>
+          //Muri più a sinistra
+          player.move(Left)
+          assert(player.position.point.equals(Point(x,y)))
+          player.move(Right)
+        case (walkableWidth._2, y) =>
+          //Muri più a destra
+          player.move(Right)
+          assert(player.position.point.equals(Point(x,y)))
+          player.moveTo(Position(Point(walkableWidth._1,y+1), Some(Down)))
+        case (x, walkableHeight._1) =>
+          //Muri in alto
+          player.move(Up)
+          assert(player.position.point.equals(Point(x,y)))
+          player.move(Right)
+        case (x, walkableHeight._2) =>
+          //Muri in basso
+          player.move(Down)
+          assert(player.position.point.equals(Point(x,y)))
+          player.move(Right)
+        case _ => player.move(Right)
+      }
+  }
+
   it should "walk over bonuses and not obstacles" in {
     val initialPlayerPoint = Point(centerWidth, centerHeight)
 
@@ -94,14 +125,20 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     player.moveTo(Position(initialPlayerPoint, Some(Down)))
     player.move(Down)
     assert(player.position.point.equals(initialPlayerPoint))
+
+    collectibles = Set()
+    obstacles = Set()
   }
 
-  it should "collect bonus" in {
+  it should "increase his life if he steps on BonusLife" in {
     player.moveTo(Position(Point(centerWidth, centerHeight), Some(Down)))
+    player.lives = 0
     collectibles = collectibles + BonusLife(Position(Point(centerWidth +1, centerHeight), None))
-    assert(player.collectibles.isEmpty)
+    assert(player.lives == 0)
     player.move(Right)
-    //assert(player.collectibles.nonEmpty)
+    //assert(player.lives > 0)
+
+    collectibles = Set()
   }
 
   object Even {
