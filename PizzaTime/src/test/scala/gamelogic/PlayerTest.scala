@@ -6,7 +6,7 @@ import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import utilities.Difficulty.Easy
-import utilities.{Direction, Down, Left, Point, Position, Right, Up}
+import utilities.{Down, Left, Point, Position, Right, ToDown, ToLeft, ToRight, ToUp, Up}
 
 class PlayerTest extends AnyFlatSpec with Matchers {
   difficulty_(Easy)
@@ -34,25 +34,25 @@ class PlayerTest extends AnyFlatSpec with Matchers {
   it should "move up" in {
     player.moveTo(Position(centerPoint, Some(Down)))
     player.move(Up)
-    assert(player.position.point.equals(pointTo(centerPoint, Up)))
+    assert(player.position.point.equals(ToUp(centerPoint)))
   }
 
   it should "move down" in {
     player.moveTo(Position(centerPoint, Some(Down)))
     player.move(Down)
-    assert(player.position.point.equals(pointTo(centerPoint, Down)))
+    assert(player.position.point.equals(ToDown(centerPoint)))
   }
 
   it should "move left" in {
     player.moveTo(Position(centerPoint, Some(Down)))
     player.move(Left)
-    assert(player.position.point.equals(pointTo(centerPoint, Left)))
+    assert(player.position.point.equals(ToLeft(centerPoint)))
   }
 
   it should "move right" in {
     player.moveTo(Position(centerPoint, Some(Down)))
     player.move(Right)
-    assert(player.position.point.equals(pointTo(centerPoint, Right)))
+    assert(player.position.point.equals(ToRight(centerPoint)))
   }
 
   it should "move around the map" in {
@@ -104,8 +104,8 @@ class PlayerTest extends AnyFlatSpec with Matchers {
 
   it should "walk over bonuses and not obstacles" in {
 
-    val bonusLifePoint = pointTo(centerPoint, Right)
-    val bonusScorePoint = pointTo(centerPoint, Left)
+    val bonusLifePoint = ToRight(centerPoint)
+    val bonusScorePoint = ToLeft(centerPoint)
     collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) + BonusScore(Position(bonusScorePoint, None), 1)
 
     player.moveTo(Position(centerPoint, Some(Down)))
@@ -116,7 +116,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     player.move(Left)
     assert(player.position.point.equals(bonusScorePoint))
 
-    val obstaclePoint = pointTo(centerPoint, Down)
+    val obstaclePoint = ToDown(centerPoint)
     obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
 
     player.moveTo(Position(centerPoint, Some(Down)))
@@ -130,7 +130,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
   it should "increase his life if he steps on BonusLife" in {
     player.moveTo(Position(centerPoint, Some(Down)))
     player.lives = 1
-    collectibles = collectibles + BonusLife(Position(pointTo(centerPoint, Right), None))
+    collectibles = collectibles + BonusLife(Position(ToRight(centerPoint), None))
     assert(player.lives == 1)
     nextStep(Some(Right), None)
     assert(player.lives > 1)
@@ -142,7 +142,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     player.moveTo(Position(centerPoint, Some(Down)))
     player.score = 0
     val scoreToIncrease = 5
-    collectibles = collectibles + BonusScore(Position(pointTo(centerPoint, Right), None), scoreToIncrease)
+    collectibles = collectibles + BonusScore(Position(ToRight(centerPoint), None), scoreToIncrease)
     assert(player.score == 0)
     nextStep(Some(Right), None)
     assert(player.score == scoreToIncrease)
@@ -153,7 +153,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
   it should "decrease his life is he collides with an enemy" in {
     player.moveTo(Position(centerPoint, Some(Down)))
     player.lives = 5
-    enemies = enemies + Enemy(Position(pointTo(centerPoint, Right), Some(Left)))
+    enemies = enemies + Enemy(Position(ToRight(centerPoint), Some(Left)))
     assert(player.lives == 5)
     nextStep(Some(Right), None)
     assert(player.lives < 5)
@@ -169,10 +169,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     def unapply(x: Int): Option[Int] = if (x % 2 == 1) Some(x) else None
   }
 
-  private def pointTo(point: Point, dir: Direction): Point = dir match {
-    case Up => Point(point.x, point.y -1)
-    case Down => Point(point.x, point.y +1)
-    case Left => Point(point.x -1, point.y)
-    case Right => Point(point.x +1, point.y)
+  object toUp {
+    def unapply(point: Point): Option[Point] = Some(Point(point.x, point.y -1))
   }
 }
