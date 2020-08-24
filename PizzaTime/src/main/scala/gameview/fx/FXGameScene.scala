@@ -1,17 +1,14 @@
 package gameview.fx
 
-import gamelogic.{BonusLife, BonusScore, Bullet, Collectible, EnemyCharacter}
-import gameview.SpriteAnimation
 import gameview.Window
 import javafx.application.Platform
 import javafx.scene.image.{Image, ImageView}
-import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
-import gamemanager.ImageLoader
 import gamemanager.handlers.PreferencesHandler
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.dungeon
+import gameview.fx.gamesceneelements.{ArenaRoom, Bullets, Collectibles, Enemies, GameElements, Player}
 import gameview.scene.GameScene
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
@@ -24,7 +21,8 @@ import javafx.util.Duration
 import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up}
 import javafx.scene.control.Label
 
-import scala.collection.{immutable, mutable}
+import scala.collection.immutable.HashSet
+import scala.collection.mutable
 
 /**
  * Represents the scene that appears when you start playing
@@ -32,44 +30,17 @@ import scala.collection.{immutable, mutable}
  * @param stage a window in a JavaFX desktop application
  */
 case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with GameScene {
-
-  private val hero: ImageView = createTile(ImageLoader.heroImage)
   private val directions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
-  private var enemies: immutable.Map[EnemyCharacter, ImageView] = new immutable.HashMap[EnemyCharacter, ImageView]()
-  private var bullets: immutable.Map[Bullet, ImageView] = new immutable.HashMap[Bullet, ImageView]()
+
+  private val elements: Set[GameElements] = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
+
   private val width: Int = stage.getWidth.intValue()
   private val height: Int = stage.getHeight.intValue()
-  var animation: SpriteAnimation = _
-  private var collectibles: Map[Collectible, ImageView] = immutable.HashMap[Collectible, ImageView]()
+
   var currentPosition: Point = arena.get.player.position.point
   private var userLifeLabel: Label = _
 
   Platform.runLater(() => {
-    hero.relocate(pointToPixel(currentPosition)._1, pointToPixel(currentPosition)._2)
-
-    val arenaArea: GridPane = createArena()
-
-    dungeon.getChildren.addAll(arenaArea,hero)
-    animation = new SpriteAnimation(hero, Duration.millis(300), 4, 4, 0, 0, 100, 130)
-
-    /** Create collectioble sprites */
-    arena.get.collectibles.foreach ( collectible => {
-      var collectibleImage: ImageView = null
-      collectible match {
-        case _: BonusLife => collectibleImage = createTile(ImageLoader.bonusLifeImage)
-        case _: BonusScore => collectibleImage = createTile(ImageLoader.bonusScoreImage)
-      }
-      collectibles = collectibles + (collectible -> collectibleImage)
-      dungeon.getChildren.add(collectibleImage)
-      collectibleImage.relocate(pointToPixel(collectible.position.point)._1, pointToPixel(collectible.position.point)._2)
-    })
-
-    arena.get.enemies.foreach(e => {
-      val enemy = createTile(ImageLoader.enemyImage)
-      enemies = enemies + (e -> enemy)
-      dungeon.getChildren.add(enemy)
-    })
-
     val scene: Scene = new Scene(dungeon, width, height) {
       setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
         case UP => directions(Action(Movement, Some(Up))) = true
@@ -111,90 +82,14 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
    * method called by the controller cyclically to update the view
    */
   def updateView(): Unit = {
-    /** Updating position and animate hero */
-    if (!arena.get.player.position.point.equals(currentPosition)) {
-      arena.get.player.position.dir match {
-        case Some(Up) => animation.offsetY = 260; animation.play()
-        case Some(Down) => animation.offsetY = 0; animation.play()
-        case Some(Left) => animation.offsetY = 130; animation.play()
-        case Some(Right) => animation.offsetY = 390; animation.play()
-        case _ => None
-      }
-      hero.relocate(pointToPixel(arena.get.player.position.point)._1, pointToPixel(arena.get.player.position.point)._2)
-      currentPosition = arena.get.player.position.point
-
-      /** Updating collectibles */
-      val collectiblesTaken = collectibles.keySet.diff(arena.get.collectibles)
-      collectiblesTaken.foreach(collectible => collectibles(collectible).setVisible(false))
-      collectibles = collectibles -- collectiblesTaken
-    }
-
-    /** Updating position enemy */
-    enemies.foreach(e => {
-      val ens = arena.get.enemies.filter(_ == e._1)
-      if (ens.isEmpty){
-        //e._2.setVisible(false)
-        Platform.runLater(() => {
-          dungeon.getChildren.remove(e._2)
-        })
-      }else{
-        val pos = pointToPixel(ens.head.position.point)
-        e._2 relocate(pos._1, pos._2)
-      }
-    })
-
-    /** Updating bullet */
-    arena.get.bullets.foreach(b => addBullet(b))
-    bullets.foreach(b => {
-      val unexplodedBullet = arena.get.bullets.find(_ == b._1)
-      if (unexplodedBullet.isEmpty)
-        Platform.runLater(() => {
-          dungeon.getChildren.filtered(_.equals(b._2)).forEach(_ => setVisible(false))
-          b._2.setVisible(false)
-          dungeon.getChildren.remove(b._2)
-        })
-      else {
-        val pos = pointToPixel(unexplodedBullet.get.position.point)
-        b._2 relocate(pos._1, pos._2)
-      }
-    })
+    elements.foreach(e => e.update())
 
     /** Updating player lives */
-    Platform.runLater(() =>userLifeLabel.setText(PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 " + " Score: " + arena.get.player.score + " \u2605"))
+    Platform.runLater(() =>userLifeLabel.setText(
+      PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 "
+        + " Score: " + arena.get.player.score + " \u2605"))
   }
 
-  /**
-   * Draws entities within the game arena
-   *
-   * @return a new [[GridPane]] with all the game entities initialized to be displayed in the view
-   */
-  private def createArena(): GridPane = {
-    val gridPane = new GridPane
-
-    for (floor <- arena.get.floor) gridPane.add(createTile(ImageLoader.floorImage), floor.position.point.x, floor.position.point.y)
-    for (wall <- arena.get.walls) gridPane.add(createTile(ImageLoader.wallImage), wall.position.point.x, wall.position.point.y)
-    for (obstacle <- arena.get.obstacles) gridPane.add(createTile(ImageLoader.obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
-
-    gridPane.setGridLinesVisible(true)
-
-    gridPane
-  }
-
-  /**
-   * Add bullet to the arena
-   *
-   */
-  private def addBullet(b: Bullet): Unit = {
-    if (!bullets.contains(b)) {
-      val bullet = createTile(ImageLoader.bulletImage)
-      bullets = bullets + (b -> bullet)
-      bullet.setFitHeight(tileHeight / 2)
-      bullet.setFitWidth(tileWidth / 2)
-      Platform.runLater(() => {
-        FXGameScene.dungeon.getChildren.add(bullet)
-      })
-    }
-  }
 }
 
 /** Utility methods for [[FXGameScene]]. */

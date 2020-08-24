@@ -18,15 +18,11 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
 import GameManager._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
-
 class GameManager extends ViewObserver {
   lazy val windowManager: Window = view.get.windowManager
 
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {
-    ImageLoader.generateImages()
     startGame("Player1", gameType(Medium))
     ThreadPool.execute(new GameCycle())
 
