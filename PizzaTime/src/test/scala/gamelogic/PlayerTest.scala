@@ -1,6 +1,6 @@
 package gamelogic
 
-import gamelogic.GameState.{arenaHeight, arenaWidth, startGame}
+import gamelogic.GameState.{arenaHeight, arenaWidth, nextStep, startGame}
 import gamelogic.MapGenerator.gameType
 import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
@@ -25,7 +25,6 @@ class PlayerTest extends AnyFlatSpec with Matchers {
 
 
   "The player" should "have 'Player1' as name" in {
-    println("Diff: " + difficulty + " arenaW: "+difficulty.arenaWidth + " arenaH: "+difficulty.arenaHeight)
     assert(player.playerName == "Player1")
   }
 
@@ -132,13 +131,36 @@ class PlayerTest extends AnyFlatSpec with Matchers {
 
   it should "increase his life if he steps on BonusLife" in {
     player.moveTo(Position(Point(centerWidth, centerHeight), Some(Down)))
-    player.lives = 0
+    player.lives = 1
     collectibles = collectibles + BonusLife(Position(Point(centerWidth +1, centerHeight), None))
-    assert(player.lives == 0)
-    player.move(Right)
-    //assert(player.lives > 0)
+    assert(player.lives == 1)
+    nextStep(Some(Right), None)
+    assert(player.lives > 1)
 
     collectibles = Set()
+  }
+
+  it should "increase his score of he steps on BonusPoint" in {
+    player.moveTo(Position(Point(centerWidth, centerHeight), Some(Down)))
+    player.score = 0
+    val scoreToIncrease = 5
+    collectibles = collectibles + BonusScore(Position(Point(centerWidth +1, centerHeight), None), scoreToIncrease)
+    assert(player.score == 0)
+    nextStep(Some(Right), None)
+    assert(player.score == scoreToIncrease)
+
+    collectibles = Set()
+  }
+
+  it should "decrease his life is he collides with an enemy" in {
+    player.moveTo(Position(Point(centerWidth, centerHeight), Some(Down)))
+    player.lives = 5
+    enemies = enemies + Enemy(Position(Point(centerWidth +1, centerHeight), Some(Left)))
+    assert(player.lives == 5)
+    nextStep(Some(Right), None)
+    assert(player.lives < 5)
+
+    enemies = Set()
   }
 
   object Even {
