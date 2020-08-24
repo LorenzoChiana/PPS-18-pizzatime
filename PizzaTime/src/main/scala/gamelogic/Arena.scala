@@ -29,7 +29,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   /** Updates the [[Arena]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
-    if (shoot.isDefined) bullets = bullets + Bullet(player.position)
+    if (shoot.isDefined) bullets = bullets + Bullet(player.position, generateBulletId)
 
     if (movement.isDefined) {
       player.move(movement.get)
@@ -63,6 +63,14 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     /**Check if any enemies are dead*/
     enemies.filter(_.lives == 0).foreach( en => player addScore en.pointsKilling )
     enemies = enemies -- enemies.filter(_.lives == 0)
+  }
+
+
+  var bulletIdGenerator: Int = 0
+
+  private def generateBulletId(): Int = {
+    bulletIdGenerator += 1
+    bulletIdGenerator
   }
 }
 

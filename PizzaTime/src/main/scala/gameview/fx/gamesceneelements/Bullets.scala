@@ -20,13 +20,11 @@ class Bullets extends GameElements{
     arena.get.bullets.foreach(b => addBullet(b))
     bullets.foreach(b => {
       val unexplodedBullet = arena.get.bullets.find(_ == b._1)
-      if (unexplodedBullet.isEmpty)
-      //
-        Platform.runLater(() => {
-          dungeon.getChildren.filtered(_.equals(b._2)).forEach(el => el.setVisible(false))
-          dungeon.getChildren.remove(b._2)
-        })
-      else{
+
+      if (unexplodedBullet.isEmpty) {
+        b._2.setVisible(false)
+        bullets = bullets - b._1
+      } else{
         val pos = pointToPixel(unexplodedBullet.get.position.point)
         b._2 relocate(pos._1, pos._2)
       }

@@ -19,7 +19,7 @@ class Enemies extends GameElements{
   def update(): Unit ={
     enemies.foreach(e => {
       val enemyAlive = arena.get.enemies.find(_ == e._1)
-      if (enemyAlive.isEmpty) e._2.setVisible(false)
+      if (enemyAlive.isEmpty) {e._2.setVisible(false); enemies = enemies - e._1}
       else{
         val pos = pointToPixel(enemyAlive.get.position.point)
         e._2 relocate(pos._1, pos._2)

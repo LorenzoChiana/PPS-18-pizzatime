@@ -8,7 +8,7 @@ import utilities.{Direction, Down, Left, Position, Right, Up}
  *
  *  @param position its initial [[Position]]
  */
-class Bullet(var position: Position) extends MovableEntity{
+class Bullet(var position: Position, var id: Int) extends MovableEntity{
 
   def advances(): Unit = {
     position.dir.get match {
@@ -42,7 +42,8 @@ object Bullet {
   /** Creates a [[Bullet]] with a given [[Position]].
    *
    *  @param position its initial [[Position]]
+   *  @param id its identifier
    *  @return the new [[Bullet]] instance
    */
-  def apply(position: Position): Bullet = new Bullet(position)
+  def apply(position: Position, id: Int): Bullet = new Bullet(position, id)
 }

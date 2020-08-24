@@ -30,33 +30,33 @@ import scala.collection.mutable
  * @param stage a window in a JavaFX desktop application
  */
 case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with GameScene {
-  private val directions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false, Action(Movement, Some(Down)) -> false, Action(Movement, Some(Left)) -> false, Action(Movement, Some(Right)) -> false)
+  private val actions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false,
+    Action(Movement, Some(Down)) -> false,
+    Action(Movement, Some(Left)) -> false,
+    Action(Movement, Some(Right)) -> false,
+    Action(Shoot, None) -> false,
+  )
 
   private val elements: Set[GameElements] = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
 
-  private val width: Int = stage.getWidth.intValue()
-  private val height: Int = stage.getHeight.intValue()
-
-  var currentPosition: Point = arena.get.player.position.point
   private var userLifeLabel: Label = _
 
-  Platform.runLater(() => {
-    val scene: Scene = new Scene(dungeon, width, height) {
+    val scene: Scene = new Scene(dungeon) {
       setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
-        case UP => directions(Action(Movement, Some(Up))) = true
-        case DOWN => directions(Action(Movement, Some(Down))) = true
-        case LEFT => directions(Action(Movement, Some(Left))) = true
-        case RIGHT => directions(Action(Movement, Some(Right))) = true
-        case SPACE => directions(Action(Shoot, None)) = true
+        case UP => actions(Action(Movement, Some(Up))) = true
+        case DOWN => actions(Action(Movement, Some(Down))) = true
+        case LEFT => actions(Action(Movement, Some(Left))) = true
+        case RIGHT => actions(Action(Movement, Some(Right))) = true
+        case SPACE => actions(Action(Shoot, None)) = true
         case _ => None
       })
 
       setOnKeyReleased((keyEvent: KeyEvent) => keyEvent.getCode match {
-        case UP => directions(Action(Movement, Some(Up))) = false
-        case DOWN => directions(Action(Movement, Some(Down))) = false
-        case LEFT => directions(Action(Movement, Some(Left))) = false
-        case RIGHT => directions(Action(Movement, Some(Right))) = false
-        case SPACE => directions(Action(Shoot, None)) = false
+        case UP => actions(Action(Movement, Some(Up))) = false
+        case DOWN => actions(Action(Movement, Some(Down))) = false
+        case LEFT => actions(Action(Movement, Some(Left))) = false
+        case RIGHT => actions(Action(Movement, Some(Right))) = false
+        case SPACE => actions(Action(Shoot, None)) = false
         case _ => None
       })
     }
@@ -70,13 +70,11 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     stage.setScene(scene)
     stage.show()
 
-    val timeline = new Timeline(new KeyFrame(Duration.millis(100), (_: ActionEvent) => {
-      directions.foreach(d => if (d._2) FXWindow.observers.foreach(o => o.notifyAction(d._1)))
+    val timeline = new Timeline(new KeyFrame(Duration.millis(125), (_: ActionEvent) => {
+      actions.foreach(d => if (d._2) FXWindow.observers.foreach(o => o.notifyAction(d._1)))
     }))
     timeline.setCycleCount(Animation.INDEFINITE)
     timeline.play()
-
-  })
 
   /**
    * method called by the controller cyclically to update the view

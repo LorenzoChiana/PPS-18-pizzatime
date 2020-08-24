@@ -1,7 +1,7 @@
 package gamemanager
 
 import javafx.scene.image.Image
-import utilities.ImageType.{Floor, Wall, BonusLife, Obstacle, BonusScore, Hero, Enemy, Bullet}
+import utilities.ImageType.{BonusLife, BonusScore, Bullet, Enemy, Floor, Hero, Obstacle1, Obstacle2, Obstacle3, Wall}
 
 /** Allows to load the various sprites of the game.
  *  The sprites are for:
@@ -16,7 +16,9 @@ import utilities.ImageType.{Floor, Wall, BonusLife, Obstacle, BonusScore, Hero, 
 object ImageLoader {
   val floorImage: Image = generateImage(Floor.path)
   val wallImage: Image = generateImage(Wall.path)
-  val obstacleImage : Image = generateImage(Obstacle.path)
+  val obstacles = Seq(generateImage(Obstacle1.path),
+                      generateImage(Obstacle2.path),
+                      generateImage(Obstacle3.path))
   val bonusLifeImage: Image = generateImage(BonusLife.path)
   val heroImage: Image = generateImage(Hero.path)
   val enemyImage: Image = generateImage(Enemy.path)

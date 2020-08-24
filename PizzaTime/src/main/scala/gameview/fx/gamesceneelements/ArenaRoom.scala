@@ -31,8 +31,9 @@ class ArenaRoom extends GameElements {
 
     for (f <- arena.get.floor) gridPane.add(createTile(ImageLoader.floorImage), f.position.point.x, f.position.point.y)
     for (w <- arena.get.walls) gridPane.add(createTile(ImageLoader.wallImage), w.position.point.x, w.position.point.y)
-    for (obstacle <- arena.get.obstacles) gridPane.add(createTile(ImageLoader.obstacleImage), obstacle.position.point.x, obstacle.position.point.y)
-
+    for (o <- arena.get.obstacles){
+      gridPane.add(createTile(ImageLoader.obstacles(between(0,3))), o.position.point.x, o.position.point.y)
+    }
     gridPane.setGridLinesVisible(false)
 
     gridPane

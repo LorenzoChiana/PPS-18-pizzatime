@@ -35,7 +35,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
   private def generateCollectibles(): Unit = {
     val bonusNum: Int = between(difficulty.bonusRange.min, difficulty.bonusRange.max)
     val collectibles: Set[Collectible] = Set.fill(bonusNum)(
-      elem = if (Random.nextInt(1) == 0)
+      elem = if (Random.nextInt(2) == 0)
         BonusLife(randomPosition)
       else
         BonusScore(randomPosition, difficulty.bonusScore)
@@ -45,8 +45,8 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
   private def generateObstacles(): Unit = {
     val obstaclesNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
-    val obs: Set[Obstacle] = Set.fill(obstaclesNum)(elem = Obstacle(randomPosition))
-    arena.get.obstacles = obs
+    val obstacleDim: Int = between(difficulty.obstacleDimension.min, difficulty.obstacleDimension.max)
+    for (_ <- 0 to obstaclesNum) randomPositions(obstacleDim).foreach(p => arena.get.obstacles += Obstacle(p))
   }
 
   private def levelMultiplier: Int = (arena.get.mapGen.currentLevel / difficulty.levelThreshold) + 1
@@ -71,5 +71,19 @@ object MapGenerator {
     val x = between(1, arenaWidth - 1)
     val y = between(1, arenaHeight - 1)
     if (isClearFloor(x, y)) Position((x, y), Some(Down)) else randomPosition
+  }
+
+  /** Returns between 1 and 4 random positions on the [[Arena]]. */
+  @scala.annotation.tailrec
+  def randomPositions(dim: Int): Set[Position] = {
+    var obstacles: Set[Position] = Set()
+    val x = between(1, arenaWidth - dim)
+    val y = between(1, arenaHeight - 1)
+
+    for (i <- 0 to dim)
+      if (isClearFloor(x + i, y) && isClearFloor(x + i, y + 1) && isClearFloor(x + i, y - 1))
+        obstacles = obstacles + Position((x + i, y), Some(Down))
+
+    if (obstacles.size.equals(dim)) obstacles else randomPositions(dim)
   }
 }
