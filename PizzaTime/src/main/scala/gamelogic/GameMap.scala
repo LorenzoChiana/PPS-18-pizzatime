@@ -19,12 +19,9 @@ trait GameMap {
 
   def floor: Set[Floor]
 
-  /** Returns a set of all the [[Entity]]s on the map. */
-  def allEntities: Set[Entity]
+  def allGameEntities: Set[Entity]
 
-  /** Generates a new level. */
   def generateMap()
 
-  /** Updates the [[GameMap]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction])
 }

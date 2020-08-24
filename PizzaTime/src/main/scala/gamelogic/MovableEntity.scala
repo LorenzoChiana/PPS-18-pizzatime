@@ -6,7 +6,7 @@ import Arena._
 import utilities.{Direction, Up, Down, Left, Right, Point, Position}
 
 /** An entity that can move.
- *  Implemented by [[Player]] and [[Bullet]].
+ *  Implemented by [[Player]], [[Bullet]] and [[EnemyCharacter]].
  */
 trait MovableEntity extends Entity {
   /** Returns the set of [[Point]] a [[MovableEntity]] can move to. */
@@ -29,19 +29,29 @@ trait MovableEntity extends Entity {
   /** Moves the [[MovableEntity]] one step forward in a given [[Direction]].
    *
    *  @param dir the [[Direction]] of movement
+   *  @return true if the move succeeds and the [[Position]] changes, false otherwise
    */
-  def move(dir: Direction): Unit = {
-    if (canMove(stepPoint(position.point, dir)))
+  def move(dir: Direction): Boolean = {
+    if (canMove(stepPoint(position.point, dir))) {
       position = Position(stepPoint(position.point, dir), Some(dir))
-    else
+      true
+    } else {
       position = Position(position.point, Some(dir))
+      false
+    }
   }
 
-  /** Moves the [[MovableEntity]] in a clear [[Position]].
+  /** Moves the [[MovableEntity]] to the specified [[Position]].
    *
    *  @param pos the destination's [[Position]]
+   *  @return true if the move succeeds and the [[Position]] changes, false otherwise
    */
-  def moveTo(pos: Position): Unit = if (canMove(pos.point)) position = pos
+  def moveTo(pos: Position): Boolean = {
+    if (!containsObstacle(pos.point)) {
+      position = pos
+      true
+    } else false
+  }
 }
 
 /** Utility methods for [[MovableEntity]]. */

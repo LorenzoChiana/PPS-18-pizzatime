@@ -21,7 +21,9 @@ class Bullets extends GameElements{
     bullets.foreach(b => {
       val unexplodedBullet = arena.get.bullets.find(_ == b._1)
       if (unexplodedBullet.isEmpty)
+      //
         Platform.runLater(() => {
+          dungeon.getChildren.filtered(_.equals(b._2)).forEach(el => el.setVisible(false))
           dungeon.getChildren.remove(b._2)
         })
       else{

@@ -1,10 +1,9 @@
 package gamelogic
 
 import GameState._
-import gamelogic.Arena.{containsBullet, containsEnemy}
+import Arena._
 import utilities.{Direction, Down, Point, Position}
 import utilities.ImplicitConversions._
-import scala.language.postfixOps
 
 /** The playable area, populated with all the [[Entity]]s.
  *
@@ -17,13 +16,18 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   var bullets: Set[Bullet] = Set()
   var collectibles: Set[Collectible] = Set()
   var obstacles: Set[Obstacle] = Set()
-  val walls: Set[Wall] = for (p <- Arena.bounds) yield Wall(Position(p, None))
-  val floor: Set[Floor] = for (p <- Arena.tiles) yield Floor(Position(p, None))
+  val walls: Set[Wall] = for (p <- bounds) yield Wall(Position(p, None))
+  val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
 
-  def allEntities: Set[Entity] = enemies ++ bullets ++ collectibles ++ obstacles ++ walls + player
+  /** Returns a set of all the [[Entity]]s in the [[Arena]] that are relevant to the game.
+   *  Those include: [[Enemy]]s, [[Bullet]]s, [[Collectible]]s and [[Obstacle]]s.
+   */
+  def allGameEntities: Set[Entity] = enemies ++ bullets ++ collectibles ++ obstacles
 
+  /** Generates a new level. */
   def generateMap(): Unit = mapGen.generateLevel()
 
+  /** Updates the [[Arena]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
     if (shoot.isDefined) bullets = bullets + Bullet(player.position)
 
@@ -102,17 +106,17 @@ object Arena {
   /** Returns the [[Arena]]'s center [[Point]]. */
   def center: Point = (arenaWidth / 2, arenaHeight / 2)
 
-  /** Checks whether a [[Point]] is inside the [[Arena]] or not.
+  /** Checks whether a [[Point]] is inside the playable area of the [[Arena]] or not.
    *
    *  @param p the [[Point]] to check
-   *  @param innerBounds to be set to true to exclude the [[Wall]]s from the playable area
+   *  @param bounds to be set to true to include the [[Wall]]s
    *  @return true if the [[Point]] is inside the [[Arena]]
    */
-  def checkBounds(p: Point, innerBounds: Boolean = false): Boolean = {
-    if (innerBounds)
-      (p.x > 0) && (p.y > 0) && (p.x < arenaWidth - 1) && (p.y < arenaHeight - 1)
-    else
+  def checkBounds(p: Point, bounds: Boolean = false): Boolean = {
+    if (bounds)
       (p.x < arenaWidth) && (p.y < arenaHeight)
+    else
+      (p.x > 0) && (p.y > 0) && (p.x < arenaWidth - 1) && (p.y < arenaHeight - 1)
   }
 
   /** Checks whether a [[Point]] is clear or not (meaning if the [[Point]] is not occupied by any [[Entity]]).
@@ -120,13 +124,18 @@ object Arena {
    *  @param p the [[Point]] to check
    *  @return true if the [[Point]] is clear
    */
-  def isClearFloor(p: Point): Boolean = arena.get.allEntities.forall(e => !e.position.point.equals(p))
+  def isClearFloor(p: Point): Boolean = arena.get.allGameEntities.forall(e => !e.position.point.equals(p))
 
   /** Clears a specified [[Point]] inside the [[Arena]]'s inner bounds.
    *
    *  @param p the [[Point]] to clear
    */
-  def clearPoint(p: Point): Unit = if (checkBounds(p, innerBounds = true) && !isClearFloor(p)) findAndRemove(p)
+  def clearPoint(p: Point): Unit = {
+    if (checkBounds(p) && !isClearFloor(p))
+      arena.get.allGameEntities
+        .filter(e => e.position.point.equals(p))
+        .map(e => e.remove())
+  }
 
   /** Checks whether a [[Point]] contains an [[Obstacle]] or not.
    *
@@ -155,19 +164,4 @@ object Arena {
    *  @return true if the [[Point]] contains a [[Bullet]]
    */
   def containsBullet(p: Point): Set[Bullet] = arena.get.bullets.filter(_.position.point.equals(p))
-
-  private def findAndRemove(p: Point): Unit = {
-    arena.get.enemies.foreach(e =>
-      if (e.position.point.equals(p)) arena.get.enemies = arena.get.enemies - e
-    )
-    arena.get.bullets.foreach(b =>
-      if (b.position.point.equals(p)) arena.get.bullets = arena.get.bullets - b
-    )
-    arena.get.collectibles.foreach(c =>
-      if (c.position.point.equals(p)) arena.get.collectibles = arena.get.collectibles - c
-    )
-    arena.get.obstacles.foreach(o =>
-      if (o.position.point.equals(p)) arena.get.obstacles = arena.get.obstacles - o
-    )
-  }
 }

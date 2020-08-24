@@ -1,5 +1,6 @@
 import java.lang.Thread.sleep
 
+import gamemanager.GameManager.ThreadPool
 import gamemanager.{GameManager, ImageLoader, ViewObserver}
 import gameview.Window
 import gameview.fx.FXWindow
@@ -23,16 +24,6 @@ class Main extends Application {
     val observers: Set[ViewObserver] = Set(new GameManager())
     addObserver(observers)
     view.scene_(new Intent(MainScene))
-
-    val f = Future {
-     ImageLoader.generateImages()
-    }
-
-    f.onComplete {
-      case Success(value) => view.showView()
-      case Failure(e) => e.printStackTrace
-    }
-
-
+    view.showView()
   }
 }
