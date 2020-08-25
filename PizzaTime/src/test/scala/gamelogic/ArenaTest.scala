@@ -11,7 +11,7 @@ import GameState._
  *  To ease some tests, a dummy instance of [[Arena]] is also created.
  */
 class ArenaTest extends AnyFlatSpec with Matchers {
-  val arenaDummy: GameMap = Arena("Player1", gameType(Medium))
+  val arenaDummy: GameMap = Arena("Player1", gameType(Easy))
 
   "The Arena" should "be empty after creation" in {
     assert(arenaDummy.allGameEntities.isEmpty)
@@ -32,7 +32,7 @@ class ArenaTest extends AnyFlatSpec with Matchers {
   }
 
   it can "be populated with game entities" in {
-    startGame("Player1", gameType(Medium))
+    startGame("Player1", gameType(Easy))
     assert(arena.get.enemies.nonEmpty)
     assert(arena.get.collectibles.nonEmpty)
     assert(arena.get.obstacles.nonEmpty)
@@ -52,9 +52,5 @@ class ArenaTest extends AnyFlatSpec with Matchers {
 
   it should "have obstacles inside the walls" in {
     assert(arena.get.obstacles.forall(obstacle => checkBounds(obstacle.position.point)))
-  }
-
-  "Collectibles" should "be walkable" in {
-
   }
 }
