@@ -19,13 +19,11 @@ case class Bullet(var position: Position, var unexploded: Boolean = true) extend
     }
   }
 
-  override def move(dir: Direction): Boolean = {
+  override def move(dir: Direction): Unit = {
     if (canMove(stepPoint(position.point, dir))) {
       position = Position(stepPoint(position.point, dir), Some(dir))
-      true
     } else {
       unexploded = false
-      false
     }
   }
 
@@ -33,4 +31,14 @@ case class Bullet(var position: Position, var unexploded: Boolean = true) extend
       unexploded = false
       true
   }
+}
+
+/** Factory for [[Bullet]] instances. */
+object Bullet {
+  /** Creates a [[Bullet]] with a given [[Position]].
+   *
+   *  @param position its initial [[Position]]
+   *  @return the new [[Bullet]] instance
+   */
+  def apply(position: Position): Bullet = new Bullet(position)
 }
