@@ -89,6 +89,8 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
   }
 
+  def endLevel(): Unit = ???
+
   def endGame(): Unit = {
 
   }

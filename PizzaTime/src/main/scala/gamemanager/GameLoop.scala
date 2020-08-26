@@ -25,6 +25,8 @@ class GameLoop() extends Runnable  {
     nextStep(checkNewMovement(), checkNewShoot())
     numCycle += 1
 
+    if(arena.get.enemies.isEmpty) view.get.windowManager.scene.asInstanceOf[FXGameScene].endLevel
+
     if (!arena.get.player.isLive()) {
       //è da notificare anche al gameManager?
       view.get.windowManager.showMessage("GAME OVER", "You lose", Warning)

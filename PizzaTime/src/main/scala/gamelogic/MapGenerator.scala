@@ -16,11 +16,9 @@ import scala.util.Random.between
  *  @param difficulty the [[Difficulty]] chosen by the user
  */
 case class MapGenerator(difficulty: Difficulty.Value) {
-  var currentLevel: Int = 0
 
   /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
-    currentLevel = currentLevel + 1
     generateEnemies()
     generateCollectibles()
     generateObstacles()
@@ -49,7 +47,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     for (_ <- 0 to obstaclesNum) randomPositions(obstacleDim).foreach(p => arena.get.obstacles += Obstacle(p))
   }
 
-  private def levelMultiplier: Int = (arena.get.mapGen.currentLevel / difficulty.levelThreshold) + 1
+  private def levelMultiplier: Int = (GameState.level / difficulty.levelThreshold) + 1
 
   private def chance(prob: Double): Boolean = math.random < prob
 
