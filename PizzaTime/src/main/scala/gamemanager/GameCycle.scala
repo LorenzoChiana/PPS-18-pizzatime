@@ -25,7 +25,7 @@ class GameCycle() extends Runnable  {
     nextStep(checkNewMovement(), checkNewShoot())
     numCycle += 1
 
-    if (arena.get.player.lives == 0) {
+    if (!arena.get.player.isLive()) {
       //è da notificare anche al gameManager?
       view.get.windowManager.showMessage("GAME OVER", "You lose", Warning)
       endGame = true
