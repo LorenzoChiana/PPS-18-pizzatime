@@ -10,7 +10,7 @@ import GameState.arena
  *  @param position its starting position
  *  @param lives its starting lives
  */
-class Enemy(var position: Position,  var lives: Int = 5, val pointsKilling: Int = 20) extends EnemyCharacter {
+case class Enemy(var position: Position,  var lives: Int = 5, val pointsKilling: Int = 20) extends EnemyCharacter {
 
   override def movementBehaviour(): Unit = {
     nextInt(40) match {
@@ -32,14 +32,4 @@ class Enemy(var position: Position,  var lives: Int = 5, val pointsKilling: Int 
       true
     } else false
   }
-}
-
-/** Factory for [[Enemy]] instances. */
-object Enemy {
-  /** Creates a [[Enemy]] with a given [[Position]].
-   *
-   *  @param position its initial [[Position]]
-   *  @return the new [[Enemy]] instance
-   */
-  def apply(position: Position): Enemy = new Enemy(position)
 }
