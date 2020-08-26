@@ -28,8 +28,8 @@ case class Bullet(var position: Position, var unexploded: Boolean = true) extend
   }
 
   override def remove(): Boolean = {
-      unexploded = false
-      true
+    unexploded = false
+    true
   }
 }
 

@@ -33,27 +33,27 @@ trait MovableEntity extends Entity {
   def move(dir: Direction): Unit = {
     if (dir.equals(position.dir.get) && canMove(stepPoint(position.point, dir))) {
       position = Position(stepPoint(position.point, dir), Some(dir))
-    }
-    else
+    } else {
       changeDirection(dir)
+    }
   }
 
-  /** Changes the [[Direction]] of the entity
+  /** Changes the [[Direction]] of the [[MovableEntity]].
    *
-   * @param dir the new [[Direction]]
+   *  @param dir the new [[Direction]]
    */
-  def changeDirection(dir: Direction): Unit = position = Position(position.point, Some(dir))
+  def changeDirection(dir: Direction): Unit = {
+    position = Position(position.point, Some(dir))
+  }
 
   /** Moves the [[MovableEntity]] to the specified [[Position]].
    *
    *  @param pos the destination's [[Position]]
-   *  @return true if the move succeeds and the [[Position]] changes, false otherwise
    */
-  def moveTo(pos: Position): Boolean = {
-    if (!containsObstacle(pos.point) && !containsObstacle(pos.point)) {
+  def moveTo(pos: Position): Unit = {
+    if (!containsObstacle(pos.point)) {
       position = pos
-      true
-    } else false
+    }
   }
 }
 

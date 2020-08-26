@@ -42,7 +42,7 @@ class ArenaTest extends AnyFlatSpec with Matchers {
     assert(arena.get.enemies.forall(enemy => checkBounds(enemy.position.point)))
   }
 
-  it should "have bullets inside the walls" in { //bisogna far comparire i proiettili prima
+  it should "have bullets inside the walls" in {
     assert(arena.get.bullets.forall(bullet => checkBounds(bullet.position.point)))
   }
 
