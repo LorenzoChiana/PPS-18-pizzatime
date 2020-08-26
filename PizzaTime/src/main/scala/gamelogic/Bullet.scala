@@ -1,6 +1,5 @@
 package gamelogic
 
-import GameState.arena
 import MovableEntity.stepPoint
 import utilities.{Direction, Down, Left, Position, Right, Up}
 

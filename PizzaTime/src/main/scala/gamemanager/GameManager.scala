@@ -24,7 +24,7 @@ class GameManager extends ViewObserver {
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {
     startGame("Player1", gameType(Medium))
-    ThreadPool.execute(new GameCycle())
+    ThreadPool.execute(new GameLoop())
   }
 
   /** Notifies that the player has moved or shot.
