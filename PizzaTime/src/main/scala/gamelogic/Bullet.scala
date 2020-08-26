@@ -8,7 +8,7 @@ import utilities.{Direction, Down, Left, Position, Right, Up}
  *
  *  @param position its initial [[Position]]
  */
-case class Bullet(var position: Position, var unexplode: Boolean = true) extends MovableEntity{
+case class Bullet(var position: Position, var unexploded: Boolean = true) extends MovableEntity{
 
   def advances(): Unit = {
     position.dir.get match {
@@ -24,13 +24,13 @@ case class Bullet(var position: Position, var unexplode: Boolean = true) extends
       position = Position(stepPoint(position.point, dir), Some(dir))
       true
     } else {
-      unexplode = false
+      unexploded = false
       false
     }
   }
 
   override def remove(): Boolean = {
-      unexplode = false
+      unexploded = false
       true
   }
 }

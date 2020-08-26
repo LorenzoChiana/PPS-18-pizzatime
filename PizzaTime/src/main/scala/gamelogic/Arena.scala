@@ -61,7 +61,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     bullets foreach(bullet => bullet.advances())
 
     /**Check if any bullets are explode*/
-    bullets = bullets -- bullets.filter(_.unexplode == false)
+    bullets = bullets -- bullets.filter(_.unexploded == false)
 
     /**Check if any enemies are dead*/
     enemies.filter(_.lives == 0).foreach( en => player addScore en.pointsKilling )
