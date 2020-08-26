@@ -29,16 +29,20 @@ trait MovableEntity extends Entity {
   /** Moves the [[MovableEntity]] one step forward in a given [[Direction]].
    *
    *  @param dir the [[Direction]] of movement
-   *  @return true if the move succeeds and the [[Position]] changes, false otherwise
    */
   def move(dir: Direction): Unit = {
     if (dir.equals(position.dir.get) && canMove(stepPoint(position.point, dir))) {
       position = Position(stepPoint(position.point, dir), Some(dir))
     }
-    else {
-      position = Position(position.point, Some(dir))
-    }
+    else
+      changeDirection(dir)
   }
+
+  /** Changes the [[Direction]] of the entity
+   *
+   * @param dir the new [[Direction]]
+   */
+  def changeDirection(dir: Direction): Unit = position = Position(position.point, Some(dir))
 
   /** Moves the [[MovableEntity]] to the specified [[Position]].
    *
