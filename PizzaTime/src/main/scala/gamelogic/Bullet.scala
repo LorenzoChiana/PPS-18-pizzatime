@@ -1,6 +1,5 @@
 package gamelogic
 
-import GameState.arena
 import MovableEntity.stepPoint
 import utilities.{Direction, Down, Left, Position, Right, Up}
 
@@ -28,10 +27,8 @@ case class Bullet(var position: Position, var unexploded: Boolean = true) extend
   }
 
   override def remove(): Boolean = {
-    if (arena.get.bullets.contains(this)) {
-      arena.get.bullets = arena.get.bullets - this
-      true
-    } else false
+    unexploded = false
+    true
   }
 }
 
