@@ -8,7 +8,7 @@ import utilities.{Direction, Down, Left, Position, Right, Up}
  *
  *  @param position its initial [[Position]]
  */
-class Bullet(var position: Position) extends MovableEntity{
+case class Bullet(var position: Position, var unexplode: Boolean = true) extends MovableEntity{
 
   def advances(): Unit = {
     position.dir.get match {
@@ -24,26 +24,13 @@ class Bullet(var position: Position) extends MovableEntity{
       position = Position(stepPoint(position.point, dir), Some(dir))
       true
     } else {
-      arena.get.bullets = arena.get.bullets - this
+      unexplode = false
       false
     }
   }
 
   override def remove(): Boolean = {
-    if (arena.get.bullets.contains(this)) {
-      arena.get.bullets = arena.get.bullets - this
+      unexplode = false
       true
-    } else false
   }
-}
-
-/** Factory for [[Bullet]] instances. */
-object Bullet {
-  /** Creates a [[Bullet]] with a given [[Position]].
-   *
-   *  @param position its initial [[Position]]
-   *  @param id its identifier
-   *  @return the new [[Bullet]] instance
-   */
-  def apply(position: Position): Bullet = new Bullet(position)
 }
