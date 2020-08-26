@@ -28,8 +28,10 @@ case class Bullet(var position: Position, var unexploded: Boolean = true) extend
   }
 
   override def remove(): Boolean = {
-      unexploded = false
+    if (arena.get.bullets.contains(this)) {
+      arena.get.bullets = arena.get.bullets - this
       true
+    } else false
   }
 }
 
