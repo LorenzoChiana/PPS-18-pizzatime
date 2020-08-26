@@ -19,13 +19,11 @@ class Bullet(var position: Position) extends MovableEntity{
     }
   }
 
-  override def move(dir: Direction): Boolean = {
+  override def move(dir: Direction): Unit = {
     if (canMove(stepPoint(position.point, dir))) {
       position = Position(stepPoint(position.point, dir), Some(dir))
-      true
     } else {
       arena.get.bullets = arena.get.bullets - this
-      false
     }
   }
 
@@ -42,7 +40,6 @@ object Bullet {
   /** Creates a [[Bullet]] with a given [[Position]].
    *
    *  @param position its initial [[Position]]
-   *  @param id its identifier
    *  @return the new [[Bullet]] instance
    */
   def apply(position: Position): Bullet = new Bullet(position)

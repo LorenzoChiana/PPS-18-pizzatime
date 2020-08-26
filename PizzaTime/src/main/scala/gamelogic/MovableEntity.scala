@@ -31,13 +31,12 @@ trait MovableEntity extends Entity {
    *  @param dir the [[Direction]] of movement
    *  @return true if the move succeeds and the [[Position]] changes, false otherwise
    */
-  def move(dir: Direction): Boolean = {
-    if (canMove(stepPoint(position.point, dir))) {
+  def move(dir: Direction): Unit = {
+    if (dir.equals(position.dir.get) && canMove(stepPoint(position.point, dir))) {
       position = Position(stepPoint(position.point, dir), Some(dir))
-      true
-    } else {
+    }
+    else {
       position = Position(position.point, Some(dir))
-      false
     }
   }
 
