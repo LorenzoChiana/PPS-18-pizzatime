@@ -70,7 +70,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     stage.setScene(scene)
     stage.show()
 
-    val timeline = new Timeline(new KeyFrame(Duration.millis(125), (_: ActionEvent) => {
+    val timeline = new Timeline(new KeyFrame(Duration.millis(80), (_: ActionEvent) => {
       actions.foreach(d => if (d._2) FXWindow.observers.foreach(o => o.notifyAction(d._1)))
     }))
     timeline.setCycleCount(Animation.INDEFINITE)
@@ -80,12 +80,13 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
    * method called by the controller cyclically to update the view
    */
   def updateView(): Unit = {
-    elements.foreach(e => e.update())
+      elements.foreach(e => e.update())
 
-    /** Updating player lives */
-    Platform.runLater(() =>userLifeLabel.setText(
-      PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 "
-        + " Score: " + arena.get.player.score + " \u2605"))
+      /** Updating player lives */
+      Platform.runLater(() =>userLifeLabel.setText(
+        PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 "
+          + " Score: " + arena.get.player.score + " \u2605"))
+
   }
 
   def endGame(): Unit = {

@@ -4,6 +4,7 @@ import gamelogic.GameState.arena
 import gamemanager.ImageLoader.heroImage
 import gameview.SpriteAnimation
 import gameview.fx.FXGameScene.{dungeon, pointToPixel, tileHeight, tileWidth}
+import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.util.Duration
 import utilities.{Direction, Down, Left, Position, Right, Up}
@@ -29,7 +30,7 @@ class Player extends GameElements{
         case Some(Right) => heroAnimation.offsetY = 390; heroAnimation.play()
         case _ => None
       }
-      player.relocate(pointToPixel(playerPosition.point)._1, pointToPixel(playerPosition.point)._2)
+      Platform.runLater(() => player.relocate(pointToPixel(playerPosition.point)._1, pointToPixel(playerPosition.point)._2))
       currentPosition = playerPosition
     }
   }
@@ -46,8 +47,11 @@ object Player{
     val p: Player = new Player()
     p.player setFitHeight tileHeight
     p.player setFitWidth tileWidth
-    p.player relocate(pointToPixel(arena.get.player.position.point)._1, pointToPixel(arena.get.player.position.point)._2)
-    dungeon.getChildren.add(p.player)
+
+    Platform.runLater(() => {
+      p.player relocate(pointToPixel(arena.get.player.position.point)._1, pointToPixel(arena.get.player.position.point)._2)
+      dungeon.getChildren.add(p.player)
+    })
     p
   }
 }

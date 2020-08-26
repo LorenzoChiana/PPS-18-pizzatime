@@ -4,6 +4,7 @@ import gamelogic.{BonusLife, BonusScore, Collectible}
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.{bonusLifeImage, bonusScoreImage}
 import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
+import javafx.application.Platform
 import javafx.scene.image.ImageView
 
 import scala.collection.immutable
@@ -16,9 +17,11 @@ class Collectibles extends GameElements{
    * Updating collectibles
    */
   def update(): Unit ={
-    val collectiblesTaken = collectibles.keySet.diff(arena.get.collectibles)
-    collectiblesTaken.foreach(c => collectibles(c).setVisible(false))
-    collectibles = collectibles -- collectiblesTaken
+    Platform.runLater(() => {
+      val collectiblesTaken = collectibles.keySet.diff(arena.get.collectibles)
+      collectiblesTaken.foreach(c => collectibles(c).setVisible(false))
+      collectibles = collectibles -- collectiblesTaken
+    })
   }
 }
 
@@ -30,7 +33,7 @@ object Collectibles{
    *  @return the new [[Collectibles]] instance
    */
   def apply(): Collectibles = {
-    var coll: Collectibles = new Collectibles()
+    val coll: Collectibles = new Collectibles()
     arena.get.collectibles.foreach ( collectible => {
       var collectibleImage: ImageView = null
       collectible match {
@@ -38,8 +41,10 @@ object Collectibles{
         case _: BonusScore => collectibleImage = createTile(bonusScoreImage)
       }
       coll.collectibles += (collectible -> collectibleImage)
-      dungeon.getChildren.add(collectibleImage)
-      collectibleImage.relocate(pointToPixel(collectible.position.point)._1, pointToPixel(collectible.position.point)._2)
+      Platform.runLater(() => {
+        dungeon.getChildren.add(collectibleImage)
+        collectibleImage.relocate(pointToPixel(collectible.position.point)._1, pointToPixel(collectible.position.point)._2)
+      })
     })
     coll
   }

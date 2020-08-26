@@ -18,15 +18,16 @@ class Bullets extends GameElements{
    */
   override def update(): Unit ={
     arena.get.bullets.foreach(b => addBullet(b))
+
     bullets.foreach(b => {
       val unexplodedBullet = arena.get.bullets.find(_ == b._1)
 
       if (unexplodedBullet.isEmpty) {
-        b._2.setVisible(false)
+        Platform.runLater(() => b._2.setVisible(false))
         bullets = bullets - b._1
       } else{
         val pos = pointToPixel(unexplodedBullet.get.position.point)
-        b._2 relocate(pos._1, pos._2)
+        Platform.runLater(() => b._2 relocate(pos._1, pos._2))
       }
     })
   }
@@ -41,7 +42,10 @@ class Bullets extends GameElements{
       bullets = bullets + (b -> bullet)
       bullet.setFitHeight(tileHeight / 2)
       bullet.setFitWidth(tileWidth / 2)
+
       Platform.runLater(() => {
+        val pos = pointToPixel(b.position.point)
+        bullet.relocate(pos._1, pos._2)
         FXGameScene.dungeon.getChildren.add(bullet)
       })
     }
