@@ -88,6 +88,9 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
         + " Score: " + arena.get.player.score + " \u2605"))
   }
 
+  def endGame(): Unit = {
+
+  }
 }
 
 /** Utility methods for [[FXGameScene]]. */

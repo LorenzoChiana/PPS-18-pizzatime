@@ -7,7 +7,7 @@ import GameManager._
 import gameview.fx.FXGameScene
 import utilities.MessageTypes._
 
-class GameCycle() extends Runnable  {
+class GameLoop() extends Runnable  {
   def run(): Unit = {
     while (!endGame) {
       val startTime: Long = currentTimeMillis()
