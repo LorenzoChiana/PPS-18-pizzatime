@@ -26,6 +26,9 @@ trait ViewObserver {
   /** Notifies to go back to the previous scene */
   def onBack(): Unit
 
+  /** Saves preferences */
   def onSave(settingPreferences: SettingPreferences): Unit
+
+  def startNewLevel(): Unit
 
 }

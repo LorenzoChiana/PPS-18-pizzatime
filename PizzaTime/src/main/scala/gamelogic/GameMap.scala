@@ -19,7 +19,7 @@ trait GameMap {
 
   def floor: Set[Floor]
 
-  def allGameEntities: Set[Entity]
+  var allGameEntities: Set[Entity]
 
   def generateMap()
 

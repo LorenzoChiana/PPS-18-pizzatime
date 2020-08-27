@@ -22,7 +22,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Returns a set of all the [[Entity]]s in the [[Arena]] that are relevant to the game.
    *  Those include: [[Enemy]]s, [[Bullet]]s, [[Collectible]]s and [[Obstacle]]s.
    */
-  def allGameEntities: Set[Entity] = enemies ++ bullets ++ collectibles ++ obstacles
+  var allGameEntities: Set[Entity] = Set() //enemies ++ bullets ++ collectibles ++ obstacles
 
   /** Generates a new level. */
   def generateMap(): Unit = mapGen.generateLevel()
@@ -67,7 +67,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     enemies.filter(_.lives == 0).foreach( en => player addScore en.pointsKilling )
     enemies = enemies -- enemies.filter(_.lives == 0)
 
-    var door: Option[Point] = if(enemies.isEmpty) Some(Point(0,5)) else None
+    val door: Option[Point] = if(enemies.isEmpty) Some(Point(0,5)) else None
   }
 
 }
@@ -137,10 +137,11 @@ object Arena {
    *  @param p the [[Point]] to clear
    */
   def clearPoint(p: Point): Unit = {
-    if (checkBounds(p) && !isClearFloor(p))
+    if (checkBounds(p) && !isClearFloor(p)) {
       arena.get.allGameEntities
         .filter(e => e.position.point.equals(p))
         .map(e => e.remove())
+    }
   }
 
   /** Checks whether a [[Point]] contains an [[Obstacle]] or not.

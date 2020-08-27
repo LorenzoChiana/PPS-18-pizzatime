@@ -72,6 +72,10 @@ class GameManager extends ViewObserver {
 
     windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
   }
+
+  override def startNewLevel(): Unit = {
+    nextLevel()
+  }
 }
 
 object GameManager {
