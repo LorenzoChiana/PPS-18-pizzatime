@@ -2,7 +2,7 @@ package gamemanager
 
 import utilities.{Action, Direction, Intent, Movement, SettingPreferences, Shoot}
 import handlers.PreferencesHandler._
-import gameview.scene.{GameScene, SceneType}
+import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes._
 import SceneType._
 import gamelogic.GameState._
@@ -40,6 +40,10 @@ class GameManager extends ViewObserver {
   def onStartGame(): Unit = {
     require(view.isDefined)
     windowManager.scene_(new Intent(GameScene))
+  }
+
+  override def onClassification(): Unit = {
+    require(view.isDefined)
   }
 
   /** Notifies the transition to the settings scene. */
@@ -82,8 +86,8 @@ object GameManager {
   val NumThreads: Int = getRuntime.availableProcessors() + 1
   val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
   val TimeSliceMillis: Int = 50
-  var view: Option[GameScene] = None
-  def view_(view: GameScene): Unit = this.view = Some(view)
+  var view: Option[Scene] = None
+  def view_(view: Scene): Unit = this.view = Some(view)
 
   var numCycle: Int = 0
 

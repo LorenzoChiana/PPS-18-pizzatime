@@ -1,6 +1,6 @@
 package gameview.scene
 
-/** Contains all possible types of [[GameScene]] */
+/** Contains all possible types of [[Scene]] */
 object SceneType extends Enumeration {
-  val MainScene, GameCreatorScene, GameScene, SettingScene, CreditsScene = Value
+  val MainScene, GameScene, ClassificationScene, SettingScene, CreditsScene = Value
 }

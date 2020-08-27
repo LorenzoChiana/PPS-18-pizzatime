@@ -4,7 +4,7 @@ import java.lang.System.currentTimeMillis
 import Thread.sleep
 import gamelogic.GameState._
 import GameManager._
-import gameview.fx.FXGameScene
+import gameview.fx.FXScene
 import utilities.MessageTypes._
 
 class GameLoop() extends Runnable  {
@@ -33,7 +33,7 @@ class GameLoop() extends Runnable  {
 
     /** Update view */
     view.get match {
-      case scene: FXGameScene => scene.updateView()
+      case scene: FXScene => scene.updateView()
       case _ =>
     }
   }

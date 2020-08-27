@@ -2,7 +2,7 @@ package gameview.fx.gamesceneelements
 
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
+import gameview.fx.FXScene.{createTile, dungeon, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane

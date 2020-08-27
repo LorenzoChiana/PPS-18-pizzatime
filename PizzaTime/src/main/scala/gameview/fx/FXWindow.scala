@@ -75,8 +75,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setMainScene(): Unit = {
-      val mainScene: gameview.scene.GameScene = FXMainGameScene(this)
-      val fxMainScene = mainScene.asInstanceOf[FXMainGameScene]
+      val mainScene: gameview.scene.Scene = FXMainScene(this)
+      val fxMainScene = mainScene.asInstanceOf[FXMainScene]
       GameManager.view_(mainScene)
 
       Platform.runLater(() => {
@@ -86,8 +86,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setSettingsScene(): Unit = {
-      val settingsScene: gameview.scene.GameScene = FXSettingsGameScene(this)
-      val fxSettingsScene = settingsScene.asInstanceOf[FXSettingsGameScene]
+      val settingsScene: gameview.scene.Scene = FXSettingsScene(this)
+      val fxSettingsScene = settingsScene.asInstanceOf[FXSettingsScene]
 
       GameManager.view_(settingsScene)
       fxSettingsScene.showCurrentPreferences(SettingPreferences(
@@ -102,8 +102,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setCreditsScene(): Unit = {
-      val creditsScene: gameview.scene.GameScene = FXCreditsGameScene(this)
-      val fxCreditsScene = creditsScene.asInstanceOf[FXCreditsGameScene]
+      val creditsScene: gameview.scene.Scene = FXCreditsScene(this)
+      val fxCreditsScene = creditsScene.asInstanceOf[FXCreditsScene]
       //val creditsSceneObserver: CreditsSceneObserver = CreditsSceneController()
       //creditsScene.addObserver(creditsSceneObserver)
       GameManager.view_(creditsScene)
@@ -116,8 +116,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
     def setGameScene(stage: Stage): Unit = {
       observers.foreach(observer => observer.notifyStartGame())
-      val gameScene: gameview.scene.GameScene = FXGameScene(this, stage)
-      val fxGameScene = gameScene.asInstanceOf[FXGameScene]
+      val gameScene: gameview.scene.Scene = FXScene(this, stage)
+      val fxGameScene = gameScene.asInstanceOf[FXScene]
 
       GameManager.view_(gameScene)
 

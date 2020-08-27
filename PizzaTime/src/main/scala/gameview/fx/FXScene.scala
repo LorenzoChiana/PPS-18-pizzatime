@@ -7,14 +7,14 @@ import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
 import gamemanager.handlers.PreferencesHandler
-import gameview.fx.FXGameScene.dungeon
+import gameview.fx.FXScene.dungeon
 import gameview.fx.gamesceneelements.{ArenaRoom, Bullets, Collectibles, Enemies, GameElements, Player}
-import gameview.scene.GameScene
+import gameview.scene.Scene
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.ActionEvent
-import javafx.scene.{Group, Scene}
+import javafx.scene.{Group, Scene => JFXScene}
 import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, SPACE, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
@@ -29,7 +29,7 @@ import scala.collection.mutable
  * @param windowManager the window on which the scene is applied
  * @param stage a window in a JavaFX desktop application
  */
-case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with GameScene {
+case class FXScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
   private val actions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false,
     Action(Movement, Some(Down)) -> false,
     Action(Movement, Some(Left)) -> false,
@@ -41,7 +41,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
   private var userLifeLabel: Label = _
 
-    val scene: Scene = new Scene(dungeon) {
+    val scene: JFXScene = new JFXScene(dungeon) {
       setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
         case UP => actions(Action(Movement, Some(Up))) = true
         case DOWN => actions(Action(Movement, Some(Down))) = true
@@ -96,8 +96,8 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   }
 }
 
-/** Utility methods for [[FXGameScene]]. */
-object FXGameScene {
+/** Utility methods for [[FXScene]]. */
+object FXScene {
   val dungeon: Group = new Group()
   /**
    * Defines the width of each tile that will make up the arena

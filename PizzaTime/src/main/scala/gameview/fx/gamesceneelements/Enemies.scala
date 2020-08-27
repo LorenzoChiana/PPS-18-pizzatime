@@ -4,7 +4,7 @@ package gameview.fx.gamesceneelements
 import gamelogic.EnemyCharacter
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.enemyImage
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
+import gameview.fx.FXScene.{createTile, dungeon, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 

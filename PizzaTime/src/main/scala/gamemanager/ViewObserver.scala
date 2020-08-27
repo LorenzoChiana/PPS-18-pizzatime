@@ -14,6 +14,8 @@ trait ViewObserver {
   /** Notifies the transition to the game scene */
   def onStartGame(): Unit
 
+  def onClassification(): Unit
+
   /** Notifies the transition to the settings scene */
   def onSettings(): Unit
 
