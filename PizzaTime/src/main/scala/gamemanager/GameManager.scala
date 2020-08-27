@@ -17,6 +17,12 @@ import java.util.concurrent.Executors.newFixedThreadPool
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
 import GameManager._
+import gamelogic.GameState
+import net.liftweb.json.JsonAST.{JField, JInt, JObject, JString}
+import net.liftweb.json._
+
+import scala.io.Source
+import scala.util.{Failure, Success, Using}
 
 class GameManager extends ViewObserver {
   lazy val windowManager: Window = view.get.windowManager
@@ -44,6 +50,27 @@ class GameManager extends ViewObserver {
 
   override def onClassification(): Unit = {
     require(view.isDefined)
+    /*val json = {
+      ("Rank" -> ("PlayerName" -> "Lorenzo") ~ ("Record" -> 5) ) ~
+        ("Rank" -> ("PlayerName" -> "Giacomo") ~ ("Record" -> 4) )
+    }
+    implicit val formats: DefaultFormats.type = DefaultFormats
+    val jsonString = JsonAST.prettyRender(json)
+    Some(new PrintWriter("rank.json")).foreach { file => file.write(jsonString); file.close() }*/
+
+    import utilities.ImplicitConversions._
+    Using(Source.fromFile("rank.json")){ _.mkString } match {
+      case Success(stringRank) => {
+        GameState.playerRankings = (for {
+          JObject(playerRecord) <- parse(stringRank)
+          JField("PlayerName", JString(name)) <- playerRecord
+          JField("Record", JInt(record)) <- playerRecord
+        } yield name -> record
+          ).toMap
+      }
+      case Failure(error) => println("Error: " + error)
+    }
+    view.get.windowManager.scene_(new Intent(ClassificationScene))
   }
 
   /** Notifies the transition to the settings scene. */

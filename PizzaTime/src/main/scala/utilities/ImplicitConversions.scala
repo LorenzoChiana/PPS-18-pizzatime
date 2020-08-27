@@ -10,4 +10,6 @@ object ImplicitConversions {
    *  @return the converted [[Point]]
    */
   implicit def tupleToPoint(tuple: (Int, Int)): Point = Point(tuple._1, tuple._2)
+  implicit def bigIntToInt(bi: BigInt): Int = bi.intValue
+  implicit def bigIntToInt(m: Map[String, BigInt]): Map[String, Int] = m.transform((_, value) => value.intValue)
 }

@@ -22,5 +22,10 @@ object GameState {
     level = level + 1
     arena.get.generateMap()
   }
+
+  def addRecord(playerName: String, record: Int): Unit = playerRankings += (playerName -> record)
+
+  def checkRecord(playerName: String, record: Int): Boolean = true
+  //for((key, value) <- playerRankings) yield (key, value < record)
 }
 

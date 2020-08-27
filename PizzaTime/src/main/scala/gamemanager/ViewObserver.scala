@@ -14,6 +14,7 @@ trait ViewObserver {
   /** Notifies the transition to the game scene */
   def onStartGame(): Unit
 
+  /** Notifies the transition to the record classification */
   def onClassification(): Unit
 
   /** Notifies the transition to the settings scene */
