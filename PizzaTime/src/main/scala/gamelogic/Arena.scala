@@ -41,7 +41,10 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           }
           collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
         case p if containsEnemy(p) => player.decreaseLife()
-        case p if isDoor(p) => generateMap() //new level
+        case p if isDoor(p) => {
+          emptyMap()
+          generateMap() //new level
+        }
         case _ => None
       }
     }
@@ -57,6 +60,15 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         bullets = bullets -- bulletOnEnemy
       }
     })
+
+    def emptyMap(): Unit = {
+      player.moveTo(Position(center, Some(Down)))
+      enemies = Set()
+      bullets = Set()
+      collectibles = Set()
+      obstacles = Set()
+      door = None
+    }
 
     /**Advance the bullets*/
     bullets foreach(bullet => bullet.advances())
