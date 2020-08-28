@@ -1,7 +1,8 @@
 package gamelogic
 
+import gamelogic.Arena.isDoor
 import gamemanager.handlers.PreferencesHandler.difficulty
-import utilities.Position
+import utilities.{Point, Position}
 
 /** The main character.
  *
@@ -14,9 +15,11 @@ case class Player(playerName: String, var position: Position) extends MovableEnt
 
   def addScore(s: Int): Unit = score = score + s
 
-  def increaseLife(): Unit = if (lives < difficulty.maxLife) lives += 1
+  def increaseLife(): Unit = if (lives < difficulty.maxLife) lives = lives + 1
 
-  def decreaseLife(): Unit = if (lives > 0) lives -= 1
+  def decreaseLife(): Unit = if (lives > 0) lives = lives - 1
 
-  def isLive(): Boolean = lives > 0
+  def isLive: Boolean = lives > 0
+
+  override def canMove(p: Point): Boolean = super.canMove(p) || isDoor(p)
 }

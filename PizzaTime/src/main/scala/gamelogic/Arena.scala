@@ -1,7 +1,7 @@
 package gamelogic
 
 import GameState._
-import gamelogic.Arena.{bounds, containsBullet, containsEnemy, tiles}
+import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
 import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, Point, Position, ShootSound}
 import utilities.ImplicitConversions._
@@ -42,7 +42,13 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
             case c: BonusScore => player.addScore(c.value)
           }
           collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
+
         case p if containsEnemy(p) => player.decreaseLife(); play(InjurySound)
+
+        case p if isDoor(p) => {
+          emptyMap()
+          generateMap() //new level
+        }
         case _ => None
       }
     }
@@ -61,8 +67,17 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         bullets = bullets -- bulletOnEnemy
       }
 
-      if (!player.isLive()) {play(FailureSound) ; stopSound()}
+      if (!player.isLive) {play(FailureSound) ; stopSound()}
     })
+
+    def emptyMap(): Unit = {
+      player.moveTo(Position(center, Some(Down)))
+      enemies = Set()
+      bullets = Set()
+      collectibles = Set()
+      obstacles = Set()
+      door = None
+    }
 
     /**Advance the bullets*/
     bullets foreach(bullet => bullet.advances())
@@ -179,4 +194,11 @@ object Arena {
    *  @return true if the [[Point]] contains a [[Bullet]]
    */
   def containsBullet(p: Point): Set[Bullet] = arena.get.bullets.filter(_.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains the door or not.
+   *
+   * @param p the [[Point]] to check
+   * @return true if the [[Point]] contains the door
+   */
+  def isDoor(p: Point): Boolean = if (arena.get.door.nonEmpty) arena.get.door.get.equals(p) else false
 }
