@@ -80,7 +80,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     enemies.filter(_.lives == 0).foreach( en => player addScore en.pointsKilling )
     enemies = enemies -- enemies.filter(_.lives == 0)
 
-
     door = if(enemies.isEmpty) Some(Point(0,5)) else None
   }
 
@@ -192,4 +191,10 @@ object Arena {
    * @return true if the [[Point]] contains the door
    */
   def isDoor(p: Point): Boolean = if (arena.get.door.nonEmpty) arena.get.door.get.equals(p) else false
+
+  /** Checks whether a [[Player]] position is the same of door position or not.
+   *
+   * @return true if the [[Player]] position is the same of door position
+   */
+  def exitLevel(): Boolean = arena.get.door.isDefined && arena.get.player.position.point.equals(Point(arena.get.door.get.x, arena.get.door.get.y))
 }
