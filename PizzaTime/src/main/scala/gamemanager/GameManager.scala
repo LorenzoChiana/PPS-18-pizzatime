@@ -111,8 +111,9 @@ class GameManager extends ViewObserver {
   }
 
   private def savePlayerRankings(): Unit = {
-    implicit val formats: DefaultFormats.type = DefaultFormats
+    GameState.playerRankings = GameState.playerRankings.toSeq.sortWith(_._2 > _._2).toMap
 
+    implicit val formats: DefaultFormats.type = DefaultFormats
     val json = "Rank" ->
       GameState.playerRankings.map { player =>
         ("PlayerName" -> player._1) ~ ("Record" -> player._2)
