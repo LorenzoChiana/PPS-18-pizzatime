@@ -1,6 +1,6 @@
 package gamelogic
 
-import utilities.Direction
+import utilities.{Direction, Point}
 
 /** Represents the map where the game takes place.
  *  Implemented by [[Arena]].
@@ -14,6 +14,8 @@ trait GameMap {
   var bullets: Set[Bullet]
   var collectibles: Set[Collectible]
   var obstacles: Set[Obstacle]
+
+  var door: Option[Point]
 
   def walls: Set[Wall]
 

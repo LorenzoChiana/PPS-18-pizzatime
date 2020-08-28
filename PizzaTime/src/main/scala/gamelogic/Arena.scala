@@ -18,7 +18,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   var obstacles: Set[Obstacle] = Set()
   val walls: Set[Wall] = for (p <- bounds) yield Wall(Position(p, None))
   val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
-
+  var door: Option[Point] = None
   /** Returns a set of all the [[Entity]]s in the [[Arena]] that are relevant to the game.
    *  Those include: [[Enemy]]s, [[Bullet]]s, [[Collectible]]s and [[Obstacle]]s.
    */
@@ -67,7 +67,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     enemies.filter(_.lives == 0).foreach( en => player addScore en.pointsKilling )
     enemies = enemies -- enemies.filter(_.lives == 0)
 
-    val door: Option[Point] = if(enemies.isEmpty) Some(Point(0,5)) else None
+
+    door = if(enemies.isEmpty) Some(Point(0,5)) else None
   }
 
 }
