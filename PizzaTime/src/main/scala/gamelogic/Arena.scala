@@ -1,8 +1,9 @@
 package gamelogic
 
 import GameState._
-import Arena._
-import utilities.{Direction, Down, Point, Position}
+import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
+import gamemanager.SoundController.{play, stopSound}
+import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, Point, Position, ShootSound}
 import utilities.ImplicitConversions._
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -25,22 +26,25 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   var allGameEntities: Set[Entity] = Set() //enemies ++ bullets ++ collectibles ++ obstacles
 
   /** Generates a new level. */
-  def generateMap(): Unit = mapGen.generateLevel()
+  def generateMap(): Unit = {mapGen.generateLevel(); play(LevelMusic)}
 
   /** Updates the [[Arena]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
-    if (shoot.isDefined) bullets = bullets + Bullet(player.position)
+    if (shoot.isDefined) {bullets = bullets + Bullet(player.position); play(ShootSound)}
 
     if (movement.isDefined) {
       player.move(movement.get)
       player.position.point match {
         case p if Arena.containsCollectible(p) =>
+          play(BonusSound)
           collectibles.find(_.position.point.equals(p)).get match {
             case _: BonusLife => player.increaseLife()
             case c: BonusScore => player.addScore(c.value)
           }
           collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
-        case p if containsEnemy(p) => player.decreaseLife()
+
+        case p if containsEnemy(p) => player.decreaseLife(); play(InjurySound)
+
         case p if isDoor(p) => {
           emptyMap()
           generateMap() //new level
@@ -51,7 +55,10 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
     enemies.foreach(en => {
       en.movementBehaviour()
-      if (en.position.point.equals(player.position.point)) player.decreaseLife()
+      if (en.position.point.equals(player.position.point)) {
+        player.decreaseLife()
+        play(InjurySound)
+      }
 
       val bulletOnEnemy = containsBullet(en.position.point)
 
@@ -59,6 +66,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         en.decreaseLife()
         bullets = bullets -- bulletOnEnemy
       }
+
+      if (!player.isLive) {play(FailureSound) ; stopSound()}
     })
 
     def emptyMap(): Unit = {

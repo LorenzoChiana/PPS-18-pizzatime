@@ -1,7 +1,5 @@
 package utilities
 
-import javafx.scene.image.Image
-
 object ImageType extends Enumeration {
   val Floor: ImageVal = ImageVal("/images/textures/tile.png")
   val Wall: ImageVal = ImageVal("/images/textures/wallKitchen.png")

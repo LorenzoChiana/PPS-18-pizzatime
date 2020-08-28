@@ -11,7 +11,7 @@ import gameview.fx.FXWindow.addObserver
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 
-class Main extends Application {
+ class Main extends Application {
   def start(primaryStage: Stage): Unit = {
     initializeGame(primaryStage)
   }
