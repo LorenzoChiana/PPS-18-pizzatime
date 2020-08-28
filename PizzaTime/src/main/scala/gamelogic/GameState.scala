@@ -16,6 +16,11 @@ object GameState {
     arena.get.generateMap()
   }
 
+  def endGame(): Unit = {
+    arena.get.player.checkNewRecord()
+    addRecord()
+  }
+
   def nextStep(movement: Option[Direction], shoot: Option[Direction]): Unit = arena.get.updateMap(movement, shoot)
 
   def nextLevel(): Unit = {
@@ -23,9 +28,6 @@ object GameState {
     arena.get.generateMap()
   }
 
-  def addRecord(playerName: String, record: Int): Unit = playerRankings += (playerName -> record)
-
-  def checkRecord(playerName: String, record: Int): Boolean = true
-  //for((key, value) <- playerRankings) yield (key, value < record)
+  def addRecord(): Unit = playerRankings = playerRankings + (arena.get.player.playerName -> arena.get.player.record)
 }
 

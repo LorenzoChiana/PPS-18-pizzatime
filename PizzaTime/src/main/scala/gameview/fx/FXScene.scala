@@ -61,7 +61,9 @@ case class FXScene(windowManager: Window, stage: Stage) extends FXView(Some("Gam
       })
     }
 
-    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives + "Score: " + arena.get.player.score)
+    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives +
+      "Score: " + arena.get.player.score +
+      "Record: " + arena.get.player.record)
     userLifeLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold; -fx-background-color: #4444; " +
       "-fx-padding: 8px; -fx-background-radius: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);")
     userLifeLabel.relocate(Game.width / 3.5, 1)

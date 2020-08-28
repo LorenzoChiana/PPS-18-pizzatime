@@ -5,7 +5,6 @@ import handlers.PreferencesHandler._
 import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes._
 import SceneType._
-import gamelogic.GameState._
 import gameview.Window
 
 import scala.collection.immutable.Queue
@@ -19,11 +18,12 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
 import GameManager._
 import gamelogic.GameState
-import net.liftweb.json.JsonAST.{JField, JInt, JObject, JString}
+import gamelogic.GameState.arena
+import net.liftweb.json.JsonAST
+import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
 
 import scala.io.Source
-import scala.tools.nsc.interactive.Pickler.TildeDecorator
 import scala.util.{Failure, Success, Using}
 
 class GameManager extends ViewObserver {
@@ -31,38 +31,17 @@ class GameManager extends ViewObserver {
 
   loadPlayerRankings()
 
-  private def loadPlayerRankings(): Unit = {
-    import utilities.ImplicitConversions._
-    Using(Source.fromFile("rank.json")){ _.mkString } match {
-      case Success(stringRank) => {
-        GameState.playerRankings = (for {
-          JObject(playerRecord) <- parse(stringRank)
-          JField("PlayerName", JString(name)) <- playerRecord
-          JField("Record", JInt(record)) <- playerRecord
-        } yield name -> record
-          ).toMap
-      }
-      case Failure(error) => println("Error: " + error)
-    }
-  }
-
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {
-    startGame("Player1", gameType(Medium))
+    GameState.startGame("Player1", gameType(Medium))
     ThreadPool.execute(new GameLoop())
   }
 
   /** Notifies that the game has ended */
   def notifyEndGame(): Unit = {
     endGame = true
-    implicit val formats: DefaultFormats.type = DefaultFormats
-
-    val json = "Rank" ->
-      GameState.playerRankings.map { player =>
-        ("PlayerName" -> player._1) ~ ("Record" -> player._2)
-      }
-
-    Some(new PrintWriter("rank.json")).foreach { file => file.write(JsonAST.prettyRender(json)); file.close() }
+    GameState.endGame()
+    savePlayerRankings()
   }
 
   /** Notifies that the player has moved or shot.
@@ -82,7 +61,7 @@ class GameManager extends ViewObserver {
 
   override def onClassification(): Unit = {
     require(view.isDefined)
-    view.get.windowManager.scene_(new Intent(ClassificationScene))
+    view.get.windowManager.scene_(new Intent(PlayerRankingsScene))
   }
 
   /** Notifies the transition to the settings scene. */
@@ -116,8 +95,34 @@ class GameManager extends ViewObserver {
     windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
   }
 
+  private def loadPlayerRankings(): Unit = {
+    import utilities.ImplicitConversions._
+    Using(Source.fromFile("rank.json")){ _.mkString } match {
+      case Success(stringRank) => {
+        GameState.playerRankings = (for {
+          JObject(playerRecord) <- parse(stringRank)
+          JField("PlayerName", JString(name)) <- playerRecord
+          JField("Record", JInt(record)) <- playerRecord
+        } yield name -> record
+          ).toMap
+      }
+      case Failure(error) => println("Error: " + error)
+    }
+  }
+
+  private def savePlayerRankings(): Unit = {
+    implicit val formats: DefaultFormats.type = DefaultFormats
+
+    val json = "Rank" ->
+      GameState.playerRankings.map { player =>
+        ("PlayerName" -> player._1) ~ ("Record" -> player._2)
+      }
+
+    Some(new PrintWriter("rank.json")).foreach { file => file.write(JsonAST.prettyRender(json)); file.close() }
+  }
+
   override def startNewLevel(): Unit = {
-    nextLevel()
+    GameState.nextLevel()
   }
 }
 

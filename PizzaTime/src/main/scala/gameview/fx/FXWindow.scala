@@ -60,7 +60,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
     intent.sceneType match {
       case SceneType.MainScene => setMainScene()
-      case SceneType.ClassificationScene => setClassificationScene()
+      case SceneType.PlayerRankingsScene => setClassificationScene()
       case SceneType.SettingScene => setSettingsScene()
       case SceneType.CreditsScene => setCreditsScene()
       case SceneType.GameScene => setGameScene(stage)
