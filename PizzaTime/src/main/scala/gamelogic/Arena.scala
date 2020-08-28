@@ -172,4 +172,11 @@ object Arena {
    *  @return true if the [[Point]] contains a [[Bullet]]
    */
   def containsBullet(p: Point): Set[Bullet] = arena.get.bullets.filter(_.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains the door or not.
+   *
+   * @param p the [[Point]] to check
+   * @return true if the [[Point]] contains the door
+   */
+  def isDoor(p: Point): Boolean = if (arena.get.door.nonEmpty) arena.get.door.get.equals(p) else false
 }
