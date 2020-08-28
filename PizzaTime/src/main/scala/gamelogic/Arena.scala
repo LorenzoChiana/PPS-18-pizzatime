@@ -3,6 +3,7 @@ package gamelogic
 import GameState._
 import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
+import org.checkerframework.checker.initialization.qual.NotOnlyInitialized
 import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, Point, Position, ShootSound}
 import utilities.ImplicitConversions._
 
@@ -28,12 +29,15 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Generates a new level. */
   def generateMap(): Unit = {mapGen.generateLevel(); play(LevelMusic)}
 
+  private var lastInjury: Option[EnemyCharacter] = None
+
   /** Updates the [[Arena]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
     if (shoot.isDefined) {bullets = bullets + Bullet(player.position); play(ShootSound)}
 
     if (movement.isDefined) {
       player.move(movement.get)
+      lastInjury = None
       player.position.point match {
         case p if Arena.containsCollectible(p) =>
           play(BonusSound)
@@ -43,7 +47,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           }
           collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
 
-        case p if containsEnemy(p) => player.decreaseLife(); play(InjurySound)
+       // case p if containsEnemy(p) => player.decreaseLife(); play(InjurySound)
 
         case p if isDoor(p) => {
           emptyMap()
@@ -54,11 +58,15 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     }
 
     enemies.foreach(en => {
-      en.movementBehaviour()
-      if (en.position.point.equals(player.position.point)) {
-        player.decreaseLife()
-        play(InjurySound)
+      val enemyHaveMove =  en.movementBehaviour()
+      if (lastInjury.nonEmpty) {
+        if (en.equals(lastInjury.get) && enemyHaveMove) {
+          lastInjury = None
+          println(en)
+        }
       }
+
+      playerInjury(en)
 
       val bulletOnEnemy = containsBullet(en.position.point)
 
@@ -92,6 +100,12 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     door = if(enemies.isEmpty) Some(Point(0,5)) else None
   }
 
+  def playerInjury(enemy: EnemyCharacter): Unit =
+    if (enemy.position.point.equals(player.position.point) && lastInjury.isEmpty) {
+          lastInjury = Some(enemy)
+          player.decreaseLife()
+          play(InjurySound)
+    }
 }
 
 /** Utility methods for [[Arena]]. */
