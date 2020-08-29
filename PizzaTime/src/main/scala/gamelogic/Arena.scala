@@ -1,7 +1,7 @@
 package gamelogic
 
 import GameState._
-import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
+import gamelogic.Arena.{bounds, center, containsAsAnEnemy, containsBullet, containsEnemy, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
 import org.checkerframework.checker.initialization.qual.NotOnlyInitialized
 import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, Point, Position, ShootSound}
@@ -47,7 +47,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           }
           collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
 
-       // case p if containsEnemy(p) => player.decreaseLife(); play(InjurySound)
+        case p if containsAsAnEnemy(p).nonEmpty => playerInjury(containsAsAnEnemy(p).get)
 
         case p if isDoor(p) => {
           emptyMap()
@@ -200,6 +200,13 @@ object Arena {
    *  @return true if the [[Point]] contains a [[Enemy]]
    */
   def containsEnemy(p: Point): Boolean = arena.get.enemies.exists(_.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains a [[Enemy]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Enemy]]
+   */
+  def containsAsAnEnemy(p: Point): Option[EnemyCharacter] = arena.get.enemies.find(_.position.point.equals(p))
   
   /** Checks whether a [[Point]] contains a [[Bullet]] or not.
    *
