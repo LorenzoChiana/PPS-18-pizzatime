@@ -16,7 +16,7 @@ import javafx.scene.layout.{HBox, VBox}
 case class FXPlayerRankingsScene(override val windowManager: Window) extends FXView(Some("PlayerRankingsScene.fxml")) with Scene {
   @FXML protected var recordsContainer: VBox = _
   @FXML protected var backButton: Button = _
-  private val recordsList: Map[String, Int] = GameState.playerRankings
+  private val recordsList: Map[String, Map[String, Int]] = GameState.playerRankings
 
   recordsList foreach {
     case (name, record) => {

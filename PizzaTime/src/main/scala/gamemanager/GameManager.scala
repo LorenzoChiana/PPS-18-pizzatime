@@ -1,6 +1,6 @@
 package gamemanager
 
-import utilities.{Action, Direction, Intent, Movement, SettingPreferences, Shoot}
+import utilities.{Action, Difficulty, Direction, Intent, Movement, SettingPreferences, Shoot}
 import handlers.PreferencesHandler._
 import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes._
@@ -20,6 +20,7 @@ import GameManager._
 import gamelogic.GameState
 import gamelogic.GameState.arena
 import net.liftweb.json.JsonAST
+import net.liftweb.json.JsonAST.JNull.\
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
 
@@ -98,23 +99,23 @@ class GameManager extends ViewObserver {
   private def loadPlayerRankings(): Unit = {
     import utilities.ImplicitConversions._
     Using(Source.fromFile("rank.json")){ _.mkString } match {
-      case Success(stringRank) => {
-        GameState.playerRankings = (for {
-          JObject(playerRecord) <- parse(stringRank)
-          JField("PlayerName", JString(name)) <- playerRecord
-          JField("Record", JInt(record)) <- playerRecord
-        } yield name -> record
-          ).toMap
-      }
+      case Success(stringRank) =>
+        Difficulty.allDifficulty.foreach( difficulty => {
+          GameState.playerRankings ++= Map(difficulty.toString() -> (for {
+            JObject(playerRecord) <- parse(stringRank) \ difficulty
+            JField("PlayerName", JString(name)) <- playerRecord
+            JField("Record", JInt(record)) <- playerRecord
+          } yield name -> record).toMap)
+        })
       case Failure(error) => println("Error: " + error)
     }
   }
 
   private def savePlayerRankings(): Unit = {
-    GameState.playerRankings = GameState.playerRankings.toSeq.sortWith(_._2 > _._2).toMap
+    //GameState.playerRankings.foreach(rank => rank = rank._2.toSeq.sortWith(_._2 > _._2).toMap)
 
     implicit val formats: DefaultFormats.type = DefaultFormats
-    val json = "Rank" ->
+    val json = difficulty.toString ->
       GameState.playerRankings.map { player =>
         ("PlayerName" -> player._1) ~ ("Record" -> player._2)
       }

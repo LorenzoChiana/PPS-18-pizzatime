@@ -13,7 +13,7 @@ import utilities.{Point, Position}
 case class Player(playerName: String, var position: Position) extends MovableEntity {
   var score: Int = 0
   var lives: Int = 5
-  var record: Int = if (playerRankings isDefinedAt playerName) playerRankings(playerName) else 0
+  var record: Int = 0//if (playerRankings isDefinedAt playerName) playerRankings(playerName) else 0
 
   def addScore(s: Int): Unit = score = score + s
 

@@ -9,7 +9,7 @@ object GameState {
   var arenaWidth: Int = difficulty.arenaWidth
   var arenaHeight: Int = difficulty.arenaHeight
   var level: Int = 1
-  var playerRankings: Map[String, Int] = Map()
+  var playerRankings = Map.empty[String, Map[String, Int]]
 
   def startGame(playerName: String, mapGen: MapGenerator): Unit = {
     arena = Some(Arena(playerName, mapGen))
@@ -28,6 +28,6 @@ object GameState {
     arena.get.generateMap()
   }
 
-  def addRecord(): Unit = playerRankings = playerRankings + (arena.get.player.playerName -> arena.get.player.record)
+  def addRecord(): Unit = playerRankings //= playerRankings + (arena.get.player.playerName -> arena.get.player.record)
 }
 
