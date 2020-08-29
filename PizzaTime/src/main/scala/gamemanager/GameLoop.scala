@@ -27,12 +27,6 @@ class GameLoop() extends Runnable  {
     nextStep(checkNewMovement(), checkNewShoot())
     numCycle += 1
 
-    if (!arena.get.player.isLive) {
-      //è da notificare anche al gameManager?
-      view.get.windowManager.showMessage("GAME OVER", "You lose", Warning)
-      endGame = true
-    }
-
     println(Arena.exitLevel())
 
     /** Update view */
@@ -40,6 +34,8 @@ class GameLoop() extends Runnable  {
       case scene: FXGameScene => if(Arena.exitLevel()) { scene.endLevel(); println("exit level")} else scene.updateView()
       case _ =>
     }
+
+    if (!arena.get.player.isLive) endGame = true
   }
 
   def finishGame(): Unit = println("Finish!")
