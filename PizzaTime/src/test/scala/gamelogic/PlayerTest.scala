@@ -71,7 +71,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     collectibles = Set()
   }
 
-  it should "decrease his life is he collides with an enemy" in {
+  it should "decrease his life if he collides with an enemy" in {
     player moveTo Position(centerPoint, Some(Right))
     player.lives = 5
     enemies = enemies + Enemy(Position(stepPoint(centerPoint, Right), Some(Left)))

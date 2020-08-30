@@ -26,5 +26,21 @@ class EnemyTest extends AnyFlatSpec with Matchers {
 
   val enemy: Enemy = Enemy(Position(centerPoint, Some(Down)))
 
+  it should "collide with bonuses" in {
+    val bonusLifePoint = stepPoint(centerPoint, Right)
+    val bonusScorePoint = stepPoint(centerPoint, Left)
+    collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) + BonusScore(Position(bonusScorePoint, None), 1)
 
+    enemy moveTo Position(centerPoint, Some(Right))
+    enemy move Right
+    enemy.position.point should not equal bonusLifePoint
+    enemy.position.point shouldBe centerPoint
+
+    enemy moveTo Position(centerPoint, Some(Left))
+    enemy move Left
+    enemy.position.point should not equal bonusScorePoint
+    enemy.position.point shouldBe centerPoint
+
+    collectibles = Set()
+  }
 }
