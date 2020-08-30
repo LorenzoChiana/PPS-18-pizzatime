@@ -32,104 +32,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     player.position.point shouldEqual centerPoint
   }
 
-  it should "only change direction if the user expresses an intention to move in a different direction that it is" in {
-    player moveTo Position(centerPoint, Some(Down))
-    player move Up
-    player.position.point shouldEqual centerPoint
-    player move Left
-    player.position.point shouldEqual centerPoint
-    player move Down
-    player.position.point shouldEqual centerPoint
-    player move Right
-    player.position.point shouldEqual centerPoint
-  }
-
-  it should "move up" in {
-    player moveTo Position(centerPoint, Some(Up))
-    player move Up
-    player.position.point shouldEqual stepPoint(centerPoint, Up)
-  }
-
-  it should "move down" in {
-    player moveTo Position(centerPoint, Some(Down))
-    player move Down
-    player.position.point shouldEqual stepPoint(centerPoint, Down)
-  }
-
-  it should "move left" in {
-    player moveTo Position(centerPoint, Some(Left))
-    player move Left
-    player.position.point shouldEqual stepPoint(centerPoint, Left)
-  }
-
-  it should "move right" in {
-    player moveTo Position(centerPoint, Some(Right))
-    player move Right
-    player.position.point shouldEqual stepPoint(centerPoint, Right)
-  }
-
-  it should "move around the map" in {
-    player moveTo Position(Point(1, 1), Some(Down))
-    for (y <- walkableHeight._1 to walkableHeight._2) y match {
-      case Odd(y) =>
-        for(x <- walkableWidth._1 +1 to walkableWidth._2 ) {
-          player changeDirection Right
-          player move Right
-          player.position.point shouldEqual Point(x,y)
-        }
-        player changeDirection Down
-        player move Down
-      case Even(y) =>
-        for (x <- walkableWidth._2 -1 to walkableWidth._1 by -1) {
-          player changeDirection Left
-          player move Left
-          player.position.point shouldEqual Point(x,y)
-        }
-        player.changeDirection(Down)
-        player.move(Down)
-    }
-  }
-
-  it should "collide with the walls" in {
-    player moveTo Position(Point(1, 1), Some(Down))
-    for (y <- walkableHeight._1 to walkableHeight._2;
-         x <- walkableWidth._1 to walkableWidth._2)
-      (x, y) match {
-        case (walkableWidth._1, y) =>
-          //Muri più a sinistra
-          player changeDirection Left
-          player move Left
-          player.position.point shouldEqual Point(x,y)
-          player changeDirection Right
-          player move Right
-        case (walkableWidth._2, y) =>
-          //Muri più a destra
-          player changeDirection Right
-          player move Right
-          player.position.point shouldEqual Point(x,y)
-          player moveTo Position(Point(walkableWidth._1,y+1), Some(Down))
-        case (x, walkableHeight._1) =>
-          //Muri in alto
-          player changeDirection Up
-          player move Up
-          player.position.point shouldEqual Point(x,y)
-          player changeDirection Right
-          player move Right
-        case (x, walkableHeight._2) =>
-          //Muri in basso
-          player changeDirection Down
-          player move Down
-          player.position.point shouldEqual Point(x,y)
-          player changeDirection Right
-          player move Right
-        case _ =>
-          player changeDirection Right
-          player move Right
-      }
-  }
-
-  it should "walk over bonuses and not obstacles" in {
-
+  it should "walk over bonuses" in {
     val bonusLifePoint = stepPoint(centerPoint, Right)
     val bonusScorePoint = stepPoint(centerPoint, Left)
     collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) + BonusScore(Position(bonusScorePoint, None), 1)
@@ -142,15 +45,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     player move Left
     player.position.point shouldEqual bonusScorePoint
 
-    val obstaclePoint = stepPoint(centerPoint, Down)
-    obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
-
-    player moveTo Position(centerPoint, Some(Down))
-    player move Down
-    player.position.point shouldEqual centerPoint
-
     collectibles = Set()
-    obstacles = Set()
   }
 
   it should "increase his life if he steps on BonusLife" in {
@@ -185,13 +80,5 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     player.lives should be < 5
 
     enemies = Set()
-  }
-
-  object Even {
-    def unapply(x: Int): Option[Int] = if (x % 2 == 0) Some(x) else None
-  }
-
-  object Odd {
-    def unapply(x: Int): Option[Int] = if (x % 2 == 1) Some(x) else None
   }
 }
