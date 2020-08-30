@@ -1,6 +1,7 @@
 package gameview.fx
 
 import gamelogic.GameState
+import gamelogic.GameState.playerRankings
 import gamemanager.handlers.PreferencesHandler.difficulty
 import gameview.Window
 import gameview.scene.Scene
@@ -19,7 +20,7 @@ case class FXPlayerRankingsScene(override val windowManager: Window) extends FXV
   @FXML protected var backButton: Button = _
   @FXML protected var labelDifficulty: Label = _
   import utilities.ImplicitConversions._
-  private val recordsList: Map[String, Int] = GameState.playerRankings(difficulty)
+  private val recordsList: Map[String, Int] = if (playerRankings.nonEmpty && playerRankings.isDefinedAt(difficulty)) playerRankings(difficulty) else Map()
 
   labelDifficulty.setText(difficulty)
   recordsList foreach {

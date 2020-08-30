@@ -99,14 +99,24 @@ class GameManager extends ViewObserver {
     import utilities.ImplicitConversions._
     Using(Source.fromFile("rank.json")){ _.mkString } match {
       case Success(stringRank) =>
-        Difficulty.allDifficulty.foreach(difficulty => {
-          playerRankings = playerRankings ++ Map(difficulty.toString() -> (for {
+        Difficulty.allDifficulty.foreach( difficulty => {
+          playerRankings = playerRankings ++ Map(difficulty.toString() -> ( for {
             JObject(playerRecord) <- parse(stringRank) \ difficulty
             JField("PlayerName", JString(name)) <- playerRecord
             JField("Record", JInt(record)) <- playerRecord
           } yield name -> record).toMap)
         })
-      case Failure(error) => println("Error: " + error)
+      case Failure(_) =>
+        /*val json = allDifficulty.map { difficulty =>
+          difficulty.toString() -> ("PlayerName" -> "") ~ ("Record" -> "")
+        }*/
+        /*val fillerMap: Map[String, Map[String, Int]] = Map()
+        fillerMap.withDefaultValue(allDifficulty)
+        val json = allDifficulty.map { difficulty =>
+          difficulty ->
+        }
+
+        Some(new PrintWriter("rank.json")).foreach { file => file.write(JsonAST.prettyRender(json)); file.close() }*/
     }
   }
 
