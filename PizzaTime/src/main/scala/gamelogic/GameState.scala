@@ -28,6 +28,7 @@ object GameState {
     arena.get.generateMap()
   }
 
-  def addRecord(): Unit = playerRankings = playerRankings + (difficulty.toString -> Map(arena.get.player.playerName -> arena.get.player.record))
+  def addRecord(): Unit = playerRankings = playerRankings ++ Map(difficulty.toString -> (
+    playerRankings(difficulty.toString) ++ Map(arena.get.player.playerName -> arena.get.player.record)))
 }
 
