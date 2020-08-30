@@ -100,9 +100,9 @@ class GameManager extends ViewObserver {
     import utilities.ImplicitConversions._
     Using(Source.fromFile("rank.json")){ _.mkString } match {
       case Success(stringRank) =>
-        Difficulty.allDifficulty.foreach( difficulty => {
-          GameState.playerRankings ++= Map(difficulty.toString() -> (for {
-            JObject(playerRecord) <- parse(stringRank) \ difficulty
+        Difficulty.allDifficulty.foreach( d => {
+          GameState.playerRankings = GameState.playerRankings ++ Map(d.toString() -> (for {
+            JObject(playerRecord) <- parse(stringRank) \ d.toString()
             JField("PlayerName", JString(name)) <- playerRecord
             JField("Record", JInt(record)) <- playerRecord
           } yield name -> record).toMap)
@@ -112,13 +112,19 @@ class GameManager extends ViewObserver {
   }
 
   private def savePlayerRankings(): Unit = {
-    //GameState.playerRankings.foreach(rank => rank = rank._2.toSeq.sortWith(_._2 > _._2).toMap)
+    //GameState.playerRankings.foreach = Map(difficulty.toString -> GameState.playerRankings(difficulty).toSeq.sortWith(_._2 > _._2).toMap)
 
     implicit val formats: DefaultFormats.type = DefaultFormats
-    val json = difficulty.toString ->
-      GameState.playerRankings.map { player =>
+    val json = GameState.playerRankings.map { totalRanking =>
+      totalRanking._1 -> totalRanking._2.map { player =>
         ("PlayerName" -> player._1) ~ ("Record" -> player._2)
       }
+    }
+
+    /* val json2 = difficulty.toString ->
+       GameState.playerRankings.map { player =>
+         ("PlayerName" -> player._1) ~ ("Record" -> player._2)
+       }*/
 
     Some(new PrintWriter("rank.json")).foreach { file => file.write(JsonAST.prettyRender(json)); file.close() }
   }

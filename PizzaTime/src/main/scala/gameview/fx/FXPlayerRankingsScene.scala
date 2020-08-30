@@ -1,6 +1,7 @@
 package gameview.fx
 
 import gamelogic.GameState
+import gamemanager.handlers.PreferencesHandler.difficulty
 import gameview.Window
 import gameview.scene.Scene
 import javafx.fxml.FXML
@@ -16,8 +17,11 @@ import javafx.scene.layout.{HBox, VBox}
 case class FXPlayerRankingsScene(override val windowManager: Window) extends FXView(Some("PlayerRankingsScene.fxml")) with Scene {
   @FXML protected var recordsContainer: VBox = _
   @FXML protected var backButton: Button = _
-  private val recordsList: Map[String, Map[String, Int]] = GameState.playerRankings
+  @FXML protected var labelDifficulty: Label = _
+  import utilities.ImplicitConversions._
+  private val recordsList: Map[String, Int] = GameState.playerRankings(difficulty)
 
+  labelDifficulty.setText(difficulty)
   recordsList foreach {
     case (name, record) => {
       val hBox = new HBox()

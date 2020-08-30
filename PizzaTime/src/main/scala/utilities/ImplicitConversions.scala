@@ -14,5 +14,6 @@ object ImplicitConversions {
   implicit def tupleToPoint(tuple: (Int, Int)): Point = Point(tuple._1, tuple._2)
   implicit def bigIntToInt(bi: BigInt): Int = bi.intValue
   implicit def bigIntToInt(m: Map[String, BigInt]): Map[String, Int] = m.transform((_, value) => value.intValue)
-  implicit def diffValToInto(df: DifficultyVal): String = df.toString
+  implicit def diffValToString(dv: DifficultyVal): String = dv.toString
+  implicit def diffValueToString(dv: Difficulty.Value): String = dv.toString
 }
