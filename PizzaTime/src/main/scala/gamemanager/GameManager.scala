@@ -18,9 +18,8 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
 import GameManager._
 import gamelogic.GameState
-import gamelogic.GameState.arena
+import gamelogic.GameState.{arena, playerRankings}
 import net.liftweb.json.JsonAST
-import net.liftweb.json.JsonAST.JNull.\
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
 
@@ -101,7 +100,7 @@ class GameManager extends ViewObserver {
     Using(Source.fromFile("rank.json")){ _.mkString } match {
       case Success(stringRank) =>
         Difficulty.allDifficulty.foreach(difficulty => {
-          GameState.playerRankings = GameState.playerRankings ++ Map(difficulty.toString() -> (for {
+          playerRankings = playerRankings ++ Map(difficulty.toString() -> (for {
             JObject(playerRecord) <- parse(stringRank) \ difficulty
             JField("PlayerName", JString(name)) <- playerRecord
             JField("Record", JInt(record)) <- playerRecord
@@ -112,19 +111,15 @@ class GameManager extends ViewObserver {
   }
 
   private def savePlayerRankings(): Unit = {
-    //GameState.playerRankings = Map(difficulty.toString -> GameState.playerRankings(difficulty).toSeq.sortWith(_._2 > _._2).toMap)
+    import utilities.ImplicitConversions._
+    playerRankings = playerRankings ++ Map(difficulty.toString -> playerRankings(difficulty).toSeq.sortWith(_._2 > _._2).toMap)
 
     implicit val formats: DefaultFormats.type = DefaultFormats
-    val json = GameState.playerRankings.map { totalRanking =>
+    val json = playerRankings.map { totalRanking =>
       totalRanking._1 -> totalRanking._2.map { player =>
         ("PlayerName" -> player._1) ~ ("Record" -> player._2)
       }
     }
-
-    /* val json2 = difficulty.toString ->
-       GameState.playerRankings.map { player =>
-         ("PlayerName" -> player._1) ~ ("Record" -> player._2)
-       }*/
 
     Some(new PrintWriter("rank.json")).foreach { file => file.write(JsonAST.prettyRender(json)); file.close() }
   }
