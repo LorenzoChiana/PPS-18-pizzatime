@@ -3,7 +3,7 @@ package gamelogic
 import GameState._
 import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
-import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, Point, Position, ShootSound}
+import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, LevelUp, Point, Position, ShootSound}
 import utilities.ImplicitConversions._
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -20,20 +20,26 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   val walls: Set[Wall] = for (p <- bounds) yield Wall(Position(p, None))
   val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
   var door: Option[Point] = None
-  /** Returns a set of all the [[Entity]]s in the [[Arena]] that are relevant to the game.
-   *  Those include: [[Enemy]]s, [[Bullet]]s, [[Collectible]]s and [[Obstacle]]s.
-   */
-  var allGameEntities: Set[Entity] = Set() //enemies ++ bullets ++ collectibles ++ obstacles
+  var endedLevel: Boolean = false
+  private var lastInjury: Option[EnemyCharacter] = None
 
   /** Generates a new level. */
-  def generateMap(): Unit = {mapGen.generateLevel(); play(LevelMusic)}
+  def generateMap(): Unit = {
+    mapGen.generateLevel()
+    play(LevelMusic)
+  }
 
   /** Updates the [[Arena]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
-    if (shoot.isDefined) {bullets = bullets + Bullet(player.position); play(ShootSound)}
+    if (shoot.isDefined) {
+      bullets = bullets + Bullet(player.position)
+      play(ShootSound)
+    }
 
     if (movement.isDefined) {
       player.move(movement.get)
+      lastInjury = None
+
       player.position.point match {
         case p if Arena.containsCollectible(p) =>
           play(BonusSound)
@@ -43,34 +49,44 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           }
           collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
 
-        case p if containsEnemy(p) => player.decreaseLife(); play(InjurySound)
+        case p if containsEnemy(p).nonEmpty => playerInjury(containsEnemy(p).get)
 
-        case p if isDoor(p) => {
+        case p if isDoor(p) =>
+          endedLevel = true
+          stopSound()
           emptyMap()
-          generateMap() //new level
-        }
+          generateMap()
+
         case _ => None
       }
     }
 
     enemies.foreach(en => {
-      en.movementBehaviour()
-      if (en.position.point.equals(player.position.point)) {
-        player.decreaseLife()
-        play(InjurySound)
+      val enemyHaveMove =  en.movementBehaviour
+
+      if (lastInjury.nonEmpty) {
+        if (en.equals(lastInjury.get) && enemyHaveMove) {
+          lastInjury = None
+        }
       }
+
+      playerInjury(en)
 
       val bulletOnEnemy = containsBullet(en.position.point)
 
       if (bulletOnEnemy.nonEmpty) {
-        en.decreaseLife()
+        en.decreaseLife
         bullets = bullets -- bulletOnEnemy
       }
 
-      if (!player.isLive) {play(FailureSound) ; stopSound()}
+      if (!player.isLive) {
+        play(FailureSound)
+        stopSound()
+      }
     })
 
     def emptyMap(): Unit = {
+      println(center)
       player.moveTo(Position(center, Some(Down)))
       enemies = Set()
       bullets = Set()
@@ -79,6 +95,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       door = None
     }
 
+
     /**Advance the bullets*/
     bullets foreach(bullet => bullet.advances())
 
@@ -86,12 +103,34 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     bullets = bullets -- bullets.filter(_.unexploded == false)
 
     /**Check if any enemies are dead*/
-    enemies.filter(_.lives == 0).foreach( en => player addScore en.pointsKilling )
+    enemies.filter(!_.isLive).foreach(en => player.addScore(en.pointsKilling))
     enemies = enemies -- enemies.filter(_.lives == 0)
 
-    door = if(enemies.isEmpty) Some(Point(0,5)) else None
+    /**Check if door is open*/
+    if (enemies.isEmpty && door.isEmpty) {
+      door = Some(Point(0, 5))
+      play(LevelUp)
+    } else if (enemies.nonEmpty) {
+      door = None
+    }
   }
 
+  /** Empties the [[Arena]]. */
+  def emptyMap(): Unit = {
+    player.moveTo(Position(center, Some(Down)))
+    enemies = Set()
+    bullets = Set()
+    collectibles = Set()
+    obstacles = Set()
+    door = None
+  }
+
+  def playerInjury(enemy: EnemyCharacter): Unit =
+    if (containsEnemy(player.position.point).nonEmpty && lastInjury.isEmpty) {
+      lastInjury = Some(enemy)
+      player.decreaseLife()
+      play(InjurySound)
+    }
 }
 
 /** Utility methods for [[Arena]]. */
@@ -152,7 +191,10 @@ object Arena {
    *  @param p the [[Point]] to check
    *  @return true if the [[Point]] is clear
    */
-  def isClearFloor(p: Point): Boolean = arena.get.allGameEntities.forall(e => !e.position.point.equals(p))
+  def isClearFloor(p: Point): Boolean = {
+    (arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles)
+      .forall(!_.position.point.equals(p))
+  }
 
   /** Clears a specified [[Point]] inside the [[Arena]]'s inner bounds.
    *
@@ -160,9 +202,9 @@ object Arena {
    */
   def clearPoint(p: Point): Unit = {
     if (checkBounds(p) && !isClearFloor(p)) {
-      arena.get.allGameEntities
-        .filter(e => e.position.point.equals(p))
-        .map(e => e.remove())
+      (arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles)
+        .filter(_.position.point.equals(p))
+        .map(_.remove())
     }
   }
 
@@ -183,10 +225,10 @@ object Arena {
   /** Checks whether a [[Point]] contains a [[Enemy]] or not.
    *
    *  @param p the [[Point]] to check
-   *  @return true if the [[Point]] contains a [[Enemy]]
+   *  @return [[EnemyCharacter]] if the [[Point]] contains a [[Enemy]]
    */
-  def containsEnemy(p: Point): Boolean = arena.get.enemies.exists(_.position.point.equals(p))
-  
+  def containsEnemy(p: Point): Option[EnemyCharacter] = arena.get.enemies.find(_.position.point.equals(p))
+
   /** Checks whether a [[Point]] contains a [[Bullet]] or not.
    *
    *  @param p the [[Point]] to check
