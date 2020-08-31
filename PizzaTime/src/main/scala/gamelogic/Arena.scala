@@ -4,7 +4,7 @@ import GameState._
 import gamelogic.Arena.{bounds, center, containsAsAnEnemy, containsBullet, containsEnemy, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
 import org.checkerframework.checker.initialization.qual.NotOnlyInitialized
-import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, Point, Position, ShootSound}
+import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, LevelUp, Point, Position, ShootSound}
 import utilities.ImplicitConversions._
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -29,7 +29,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   var allGameEntities: Set[Entity] = Set() //enemies ++ bullets ++ collectibles ++ obstacles
 
   /** Generates a new level. */
-  def generateMap(): Unit = {mapGen.generateLevel(); play(LevelMusic)}
+  def generateMap(): Unit = {mapGen.generateLevel(); /*play(LevelMusic)*/}
 
   private var lastInjury: Option[EnemyCharacter] = None
 
@@ -102,7 +102,10 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     enemies.filter(_.lives == 0).foreach( en => player addScore en.pointsKilling )
     enemies = enemies -- enemies.filter(_.lives == 0)
 
-    door = if(enemies.isEmpty) Some(Point(0,5)) else None
+    if(enemies.isEmpty && door.isEmpty){
+      door = Some(Point(0,5))
+      play(LevelUp)
+    } else if (enemies.nonEmpty) door = None
   }
 
   def playerInjury(enemy: EnemyCharacter): Unit =

@@ -9,6 +9,7 @@ import java.lang.System.getProperty
    *    Failure
    *    Injury
    *    Bonus
+   *    LevelUp
    */
 
   sealed trait SoundType
@@ -24,5 +25,7 @@ import java.lang.System.getProperty
     val path: String = getProperty("user.dir")+"/src/main/resources/sounds/bonus.wav"}
   case object MenuMusic extends SoundType {
     val path: String = getProperty("user.dir")+"/src/main/resources/sounds/menu.mp3"}
+  case object LevelUpSound extends SoundType {
+    val path: String = getProperty("user.dir")+"/src/main/resources/sounds/levelUp.mp3"}
 
 

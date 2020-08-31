@@ -1,11 +1,14 @@
 package gamemanager
 
 import java.io.File
+
 import javax.sound.sampled.{AudioSystem, Clip}
+
 import scala.language.postfixOps
 import AudioSystem._
 import Clip._
-import utilities.{BonusSound, FailureSound, InjurySound, LevelMusic, MenuMusic, ShootSound, SoundType}
+import utilities.{BonusSound, FailureSound, InjurySound, LevelMusic, LevelUp, MenuMusic, ShootSound, SoundType}
+
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 
@@ -31,6 +34,7 @@ object SoundController {
     case BonusSound => playSound(BonusSound path)
     case LevelMusic => playMusic(LevelMusic path)
     case MenuMusic => playMusic(MenuMusic path)
+    case LevelUp => playMusic(LevelUp path)
     case _ =>
   }
 
