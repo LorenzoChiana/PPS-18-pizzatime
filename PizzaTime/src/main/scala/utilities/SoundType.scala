@@ -26,6 +26,6 @@ import java.lang.System.getProperty
   case object MenuMusic extends SoundType {
     val path: String = getProperty("user.dir")+"/src/main/resources/sounds/menu.mp3"}
   case object LevelUp extends SoundType {
-    val path: String = getProperty("user.dir")+"/src/main/resources/sounds/levelUp.mp3"}
+    val path: String = getProperty("user.dir")+"/src/main/resources/sounds/levelUp.wav"}
 
 

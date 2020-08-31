@@ -34,7 +34,7 @@ object SoundController {
     case BonusSound => playSound(BonusSound path)
     case LevelMusic => playMusic(LevelMusic path)
     case MenuMusic => playMusic(MenuMusic path)
-    case LevelUp => playMusic(LevelUp path)
+    case LevelUp => playSound(LevelUp path)
     case _ =>
   }
 

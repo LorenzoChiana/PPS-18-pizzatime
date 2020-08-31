@@ -1,9 +1,8 @@
 package gamelogic
 
 import GameState._
-import gamelogic.Arena.{bounds, center, containsAsAnEnemy, containsBullet, containsEnemy, isDoor, tiles}
+import gamelogic.Arena.{bounds, center, containsEnemy, containsBullet, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
-import org.checkerframework.checker.initialization.qual.NotOnlyInitialized
 import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, LevelUp, Point, Position, ShootSound}
 import utilities.ImplicitConversions._
 
@@ -49,7 +48,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           }
           collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
 
-        case p if containsAsAnEnemy(p).nonEmpty => playerInjury(containsAsAnEnemy(p).get)
+        case p if containsEnemy(p).nonEmpty => playerInjury(containsEnemy(p).get)
 
         case p if isDoor(p) => {
           endedLevel = true
@@ -67,7 +66,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       if (lastInjury.nonEmpty) {
         if (en.equals(lastInjury.get) && enemyHaveMove) {
           lastInjury = None
-          println(en)
         }
       }
 
@@ -109,7 +107,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   }
 
   def playerInjury(enemy: EnemyCharacter): Unit =
-    if (enemy.position.point.equals(player.position.point) && lastInjury.isEmpty) {
+    if (containsEnemy(player.position.point).nonEmpty && lastInjury.isEmpty) {
           lastInjury = Some(enemy)
           player.decreaseLife()
           play(InjurySound)
@@ -205,16 +203,9 @@ object Arena {
   /** Checks whether a [[Point]] contains a [[Enemy]] or not.
    *
    *  @param p the [[Point]] to check
-   *  @return true if the [[Point]] contains a [[Enemy]]
+   *  @return [[EnemyCharacter]] if the [[Point]] contains a [[Enemy]]
    */
-  def containsEnemy(p: Point): Boolean = arena.get.enemies.exists(_.position.point.equals(p))
-
-  /** Checks whether a [[Point]] contains a [[Enemy]] or not.
-   *
-   *  @param p the [[Point]] to check
-   *  @return true if the [[Point]] contains a [[Enemy]]
-   */
-  def containsAsAnEnemy(p: Point): Option[EnemyCharacter] = arena.get.enemies.find(_.position.point.equals(p))
+  def containsEnemy(p: Point): Option[EnemyCharacter] = arena.get.enemies.find(_.position.point.equals(p))
   
   /** Checks whether a [[Point]] contains a [[Bullet]] or not.
    *
