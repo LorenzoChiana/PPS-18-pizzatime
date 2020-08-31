@@ -61,6 +61,14 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       }
     }
 
+
+    /**Advance the bullets*/
+    bullets foreach(bullet => bullet.advances())
+
+    /**Check if any bullets are explode*/
+    bullets = bullets -- bullets.filter(_.unexploded == false)
+
+
     enemies.foreach(en => {
       val enemyHaveMove =  en.movementBehaviour
 
@@ -94,13 +102,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       obstacles = Set()
       door = None
     }
-
-
-    /**Advance the bullets*/
-    bullets foreach(bullet => bullet.advances())
-
-    /**Check if any bullets are explode*/
-    bullets = bullets -- bullets.filter(_.unexploded == false)
 
     /**Check if any enemies are dead*/
     enemies.filter(!_.isLive).foreach(en => player.addScore(en.pointsKilling))
