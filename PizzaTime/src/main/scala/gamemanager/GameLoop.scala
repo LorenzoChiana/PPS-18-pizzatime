@@ -6,7 +6,6 @@ import Thread.sleep
 import gamelogic.GameState._
 import GameManager._
 import gameview.fx.FXGameScene
-import utilities.MessageTypes._
 
 class GameLoop() extends Runnable  {
   def run(): Unit = {
@@ -17,27 +16,25 @@ class GameLoop() extends Runnable  {
 
       val deltaTime: Long = currentTimeMillis() - startTime
       if (deltaTime < TimeSliceMillis) sleep(TimeSliceMillis - deltaTime)
+      println("dopo delta time")
     }
 
     finishGame()
   }
 
   def gameStep(): Unit = {
+    println("inizio game step")
     nextStep(checkNewMovement(), checkNewShoot())
+    println("dopo next step")
     numCycle += 1
-
-    if (!arena.get.player.isLive) {
-      //è da notificare anche al gameManager?
-      view.get.windowManager.showMessage("GAME OVER", "You lose", Warning)
-      endGame = true
-    }
 
     /** Update view */
     view.get match {
-      case scene: FXGameScene => if(arena.get.endedLevel) { scene.endLevel(); arena.get.endedLevel = false} else scene.updateView()
+      case scene: FXGameScene => if(arena.get.endedLevel) { scene.endLevel(); arena.get.endedLevel = false; println("endlevel")} else { scene.updateView(); println("false")}
       case _ =>
     }
 
+    println("dopo updateView")
     if (!arena.get.player.isLive) endGame = true
   }
 

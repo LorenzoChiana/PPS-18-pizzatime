@@ -28,7 +28,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   var allGameEntities: Set[Entity] = Set() //enemies ++ bullets ++ collectibles ++ obstacles
 
   /** Generates a new level. */
-  def generateMap(): Unit = {mapGen.generateLevel(); play(LevelMusic)}
+  def generateMap(): Unit = {mapGen.generateLevel(); /*  play(LevelMusic) */}
 
   private var lastInjury: Option[EnemyCharacter] = None
 
@@ -50,19 +50,18 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
         case p if containsEnemy(p).nonEmpty => playerInjury(containsEnemy(p).get)
 
-        case p if isDoor(p) => {
+        case p if isDoor(p) =>
           endedLevel = true
           stopSound()
           emptyMap()
-          generateMap() //new level
+          generateMap()
 
-        }
         case _ => None
       }
     }
 
     enemies.foreach(en => {
-      val enemyHaveMove =  en.movementBehaviour()
+      val enemyHaveMove =  en.movementBehaviour
       if (lastInjury.nonEmpty) {
         if (en.equals(lastInjury.get) && enemyHaveMove) {
           lastInjury = None
@@ -74,7 +73,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       val bulletOnEnemy = containsBullet(en.position.point)
 
       if (bulletOnEnemy.nonEmpty) {
-        en.decreaseLife()
+        en.decreaseLife
         bullets = bullets -- bulletOnEnemy
       }
 
@@ -97,10 +96,11 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     bullets = bullets -- bullets.filter(_.unexploded == false)
 
     /**Check if any enemies are dead*/
-    enemies.filter(_.lives == 0).foreach( en => player addScore en.pointsKilling )
+    enemies.filter(!_.isLive).foreach( en => player addScore en.pointsKilling )
     enemies = enemies -- enemies.filter(_.lives == 0)
 
     if(enemies.isEmpty && door.isEmpty){
+      println("enemies e door empty")
       door = Some(Point(0,5))
       play(LevelUp)
     } else if (enemies.nonEmpty) door = None
