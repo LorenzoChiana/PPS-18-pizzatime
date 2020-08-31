@@ -37,7 +37,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     Action(Shoot, None) -> false,
   )
 
-  private val elements: Set[GameElements] = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
+  private var elements: Set[GameElements] = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
 
   private var userLifeLabel: Label = _
 
@@ -89,10 +89,9 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
   }
 
-  def endLevel(): Unit = ???
-
-  def endGame(): Unit = {
-
+  def endLevel(): Unit = {
+    Platform.runLater(() =>dungeon.getChildren.clear())
+    elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
   }
 }
 

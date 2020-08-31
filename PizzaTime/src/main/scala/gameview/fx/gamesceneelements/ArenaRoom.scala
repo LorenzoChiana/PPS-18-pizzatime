@@ -48,7 +48,7 @@ object ArenaRoom{
    */
   def apply(): ArenaRoom = {
     val arena: ArenaRoom = new ArenaRoom()
-    dungeon.getChildren.add(arena.arenaArea)
+    Platform.runLater(()=>dungeon.getChildren.add(arena.arenaArea))
     arena
   }
 }
