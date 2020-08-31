@@ -20,6 +20,7 @@
                 <Label id="title" text="PizzaTime"/>
                 <VBox alignment="CENTER" spacing="10">
                     <Button fx:id="startGameButton" text="Start game" minWidth="$buttonWidth" maxWidth="$buttonWidth" prefWidth="$buttonWidth"/>
+                    <Button fx:id="rankButton" text="Player rankings" minWidth="$buttonWidth" maxWidth="$buttonWidth" prefWidth="$buttonWidth"/>
                     <Button fx:id="settingsButton" text="Settings" minWidth="$buttonWidth" maxWidth="$buttonWidth" prefWidth="$buttonWidth"/>
                     <Button fx:id="creditsButton" text="Credits" minWidth="$buttonWidth" maxWidth="$buttonWidth" prefWidth="$buttonWidth"/>
                     <Button fx:id="exitButton" text="Exit to Desktop" minWidth="$buttonWidth" maxWidth="$buttonWidth" prefWidth="$buttonWidth"/>
