@@ -67,10 +67,12 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     userLifeLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold; -fx-background-color: #4444; " +
       "-fx-padding: 8px; -fx-background-radius: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);")
     userLifeLabel.relocate(Game.width / 3.5, 1)
-    dungeon.getChildren.add(userLifeLabel)
 
-    stage.setScene(scene)
-    stage.show()
+    Platform.runLater(() => {
+      dungeon.getChildren.add(userLifeLabel)
+      stage.setScene(scene)
+      stage.show()
+    })
 
     val timeline = new Timeline(new KeyFrame(Duration.millis(80), (_: ActionEvent) => {
       actions.foreach(d => if (d._2) FXWindow.observers.foreach(o => o.notifyAction(d._1)))
