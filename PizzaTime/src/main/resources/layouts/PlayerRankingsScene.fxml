@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.Double?>
+
+<fx:root type="javafx.scene.layout.BorderPane"
+         xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         stylesheets="@../styles/MainStyle.css, @../styles/DialogStyle.css" >
+
+    <fx:define>
+        <Double fx:id="labelWidth" fx:value="290" />
+        <Double fx:id="controlWidth" fx:value="120" />
+    </fx:define>
+
+    <center>
+        <VBox id="mainContainer" alignment="CENTER" spacing="30">
+            <HBox alignment="CENTER">
+                <Label text="RANKING - Difficulty: "/>
+                <Label fx:id="labelDifficulty"/>
+            </HBox>
+            <VBox fx:id="recordsContainer" spacing="15">
+
+            </VBox>
+
+            <HBox alignment="CENTER">
+                <Button fx:id="backButton" text="Back"/>
+            </HBox>
+        </VBox>
+    </center>
+</fx:root>
