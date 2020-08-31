@@ -20,6 +20,7 @@ import GameManager._
 
 class GameManager extends ViewObserver {
   lazy val windowManager: Window = view.get.windowManager
+  var endGame: Boolean = false
 
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {
@@ -75,6 +76,11 @@ class GameManager extends ViewObserver {
 
   override def startNewLevel(): Unit = {
     nextLevel()
+  }
+
+  /** Notifies that the game has ended */
+  override def notifyEndGame(): Unit = {
+    endGame = true
   }
 }
 

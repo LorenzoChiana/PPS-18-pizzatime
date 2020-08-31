@@ -11,6 +11,9 @@ trait ViewObserver {
   /** Notifies that the player has moved or shoot */
   def notifyAction(action: Action): Unit
 
+  /** Notifies that the game has ended */
+  def notifyEndGame(): Unit
+
   /** Notifies the transition to the game scene */
   def onStartGame(): Unit
 
