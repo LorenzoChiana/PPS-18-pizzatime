@@ -81,4 +81,15 @@ class PlayerTest extends AnyFlatSpec with Matchers {
 
     enemies = Set()
   }
+
+  it should "shoot in all directions" in {
+    List(Right, Left, Up, Down).foreach(direction => {
+      player moveTo Position(centerPoint, Some(direction))
+      bullets shouldBe Set()
+      nextStep(None, Some(direction))
+      bullets should not be Set()
+      bullets should contain (Bullet(Position(stepPoint(centerPoint, direction), Some(direction))))
+      bullets = Set()
+    })
+  }
 }
