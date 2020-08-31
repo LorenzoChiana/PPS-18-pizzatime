@@ -49,6 +49,19 @@ class EnemyTest extends AnyFlatSpec with Matchers {
     collectibles = Set()
   }
 
+  it should "collide with other enemies" in {
+    enemy moveTo Position(centerPoint, Some(Right))
+    val otherEnemyPoint: Point = stepPoint(centerPoint, Right)
+    val enemy2 = Enemy(Position(otherEnemyPoint, Some(Right)))
+    enemies = enemies + enemy + enemy2
+
+    enemy move Right
+    enemy.position.point should not equal otherEnemyPoint
+    enemy.position.point shouldBe centerPoint
+
+    enemies = Set()
+  }
+
   it should "lose his life when he collides with a bullet" in {
     player moveTo Position(centerPoint, Some(Right))
     enemy moveTo Position(stepPoint(centerPoint, Right), Some(Right))
@@ -58,5 +71,7 @@ class EnemyTest extends AnyFlatSpec with Matchers {
     enemy.lives shouldBe 5
     nextStep(None, Some(Right))
     enemy.lives should be < 5
+
+    enemies = Set()
   }
 }
