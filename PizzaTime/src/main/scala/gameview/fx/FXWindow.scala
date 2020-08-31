@@ -4,9 +4,9 @@ import gamemanager.handlers.PreferencesHandler
 import gamemanager.{GameManager, ViewObserver}
 import gameview.Window
 import gameview.fx.FXWindow.observers
-import gameview.scene.SceneType
+import gameview.scene.{Scene, SceneType}
 import javafx.application.Platform
-import javafx.scene.Scene
+import javafx.scene.{Scene => JFXScene}
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.control.{Alert, DialogPane}
 import javafx.scene.effect.BoxBlur
@@ -34,7 +34,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       new Image(getClass.getResource("/images/icon/icon16x16.png").toExternalForm),
       new Image(getClass.getResource("/images/icon/icon32x32.png").toExternalForm),
       new Image(getClass.getResource("/images/icon/icon64x64.png").toExternalForm))
-    stage.setScene(new Scene(windowContent))
+    stage.setScene(new JFXScene(windowContent))
     this.stage.setOnCloseRequest(_ => closeView())
   })
 
@@ -60,6 +60,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
     intent.sceneType match {
       case SceneType.MainScene => setMainScene()
+      case SceneType.PlayerRankingsScene => setClassificationScene()
       case SceneType.SettingScene => setSettingsScene()
       case SceneType.CreditsScene => setCreditsScene()
       case SceneType.GameScene => setGameScene(stage)
@@ -75,8 +76,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setMainScene(): Unit = {
-      val mainScene: gameview.scene.GameScene = FXMainGameScene(this)
-      val fxMainScene = mainScene.asInstanceOf[FXMainGameScene]
+      val mainScene: Scene = FXMainScene(this)
+      val fxMainScene = mainScene.asInstanceOf[FXMainScene]
       GameManager.view_(mainScene)
 
       Platform.runLater(() => {
@@ -85,9 +86,19 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       })
     }
 
+    def setClassificationScene(): Unit = {
+      val classificationScene: Scene = FXPlayerRankingsScene(this)
+
+      GameManager.view_(classificationScene)
+      Platform.runLater(() => {
+        windowContent.setCenter(classificationScene.asInstanceOf[FXPlayerRankingsScene])
+        Animations.Fade.fadeIn(classificationScene.asInstanceOf[FXPlayerRankingsScene])
+      })
+    }
+
     def setSettingsScene(): Unit = {
-      val settingsScene: gameview.scene.GameScene = FXSettingsGameScene(this)
-      val fxSettingsScene = settingsScene.asInstanceOf[FXSettingsGameScene]
+      val settingsScene: Scene = FXSettingsScene(this)
+      val fxSettingsScene = settingsScene.asInstanceOf[FXSettingsScene]
 
       GameManager.view_(settingsScene)
       fxSettingsScene.showCurrentPreferences(SettingPreferences(
@@ -102,8 +113,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setCreditsScene(): Unit = {
-      val creditsScene: gameview.scene.GameScene = FXCreditsGameScene(this)
-      val fxCreditsScene = creditsScene.asInstanceOf[FXCreditsGameScene]
+      val creditsScene: Scene = FXCreditsScene(this)
+      val fxCreditsScene = creditsScene.asInstanceOf[FXCreditsScene]
       //val creditsSceneObserver: CreditsSceneObserver = CreditsSceneController()
       //creditsScene.addObserver(creditsSceneObserver)
       GameManager.view_(creditsScene)
@@ -116,7 +127,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
     def setGameScene(stage: Stage): Unit = {
       observers.foreach(observer => observer.notifyStartGame())
-      val gameScene: gameview.scene.GameScene = FXGameScene(this, stage)
+      val gameScene: gameview.scene.Scene = FXGameScene(this, stage)
       val fxGameScene = gameScene.asInstanceOf[FXGameScene]
 
       GameManager.view_(gameScene)

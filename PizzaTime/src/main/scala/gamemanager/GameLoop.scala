@@ -3,12 +3,11 @@ package gamemanager
 import java.lang.System.currentTimeMillis
 import Thread.sleep
 
-import gamelogic.GameState._
 import GameManager._
+import gamelogic.GameState.{arena, nextStep}
 import gameview.fx.FXGameScene
-import utilities.MessageTypes._
 
-class GameLoop() extends Runnable  {
+class GameLoop(gameManager: GameManager) extends Runnable  {
   def run(): Unit = {
     while (!endGame) {
       val startTime: Long = currentTimeMillis()
@@ -16,21 +15,25 @@ class GameLoop() extends Runnable  {
       gameStep()
       val deltaTime: Long = currentTimeMillis() - startTime
       if (deltaTime < TimeSliceMillis) sleep(TimeSliceMillis - deltaTime)
+      println("dopo delta time")
     }
 
     finishGame()
   }
 
   def gameStep(): Unit = {
+    println("inizio game step")
     nextStep(checkNewMovement(), checkNewShoot())
+    println("dopo next step")
     numCycle += 1
 
     /** Update view */
     view.get match {
-      case scene: FXGameScene => if(arena.get.endedLevel) { scene.endLevel(); arena.get.endedLevel = false} else scene.updateView()
+      case scene: FXGameScene => if(arena.get.endedLevel) { scene.endLevel(); arena.get.endedLevel = false; println("endlevel")} else { scene.updateView(); println("false")}
       case _ =>
     }
 
+    println("dopo updateView")
     if (!arena.get.player.isLive) endGame = true
   }
 
