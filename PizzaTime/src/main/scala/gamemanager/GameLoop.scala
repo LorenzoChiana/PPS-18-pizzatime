@@ -5,7 +5,6 @@ import Thread.sleep
 
 import gamelogic.GameState._
 import GameManager._
-import gamelogic.Arena
 import gameview.fx.FXGameScene
 import utilities.MessageTypes._
 
@@ -33,11 +32,9 @@ class GameLoop() extends Runnable  {
       endGame = true
     }
 
-    println(Arena.exitLevel())
-
     /** Update view */
     view.get match {
-      case scene: FXGameScene => if(Arena.exitLevel()) { scene.endLevel(); println("exit level")} else scene.updateView()
+      case scene: FXGameScene => if(arena.get.endedLevel) { scene.endLevel(); arena.get.endedLevel = false} else scene.updateView()
       case _ =>
     }
   }

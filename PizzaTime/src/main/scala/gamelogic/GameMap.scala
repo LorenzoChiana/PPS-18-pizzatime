@@ -16,6 +16,7 @@ trait GameMap {
   var obstacles: Set[Obstacle]
 
   var door: Option[Point]
+  var endedLevel: Boolean
 
   def walls: Set[Wall]
 

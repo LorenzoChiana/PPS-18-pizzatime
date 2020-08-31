@@ -20,6 +20,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   val walls: Set[Wall] = for (p <- bounds) yield Wall(Position(p, None))
   val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
   var door: Option[Point] = None
+  var endedLevel: Boolean = false
+
   /** Returns a set of all the [[Entity]]s in the [[Arena]] that are relevant to the game.
    *  Those include: [[Enemy]]s, [[Bullet]]s, [[Collectible]]s and [[Obstacle]]s.
    */
@@ -46,8 +48,11 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         case p if containsEnemy(p) => player.decreaseLife(); play(InjurySound)
 
         case p if isDoor(p) => {
+          endedLevel = true
+          stopSound()
           emptyMap()
           generateMap() //new level
+
         }
         case _ => None
       }
