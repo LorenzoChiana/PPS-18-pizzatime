@@ -6,15 +6,12 @@ import org.scalatest.matchers.must.Matchers
 import utilities.Difficulty._
 import MapGenerator._
 import GameState._
-import utilities.{Down, Position}
-import utilities.ImplicitConversions._
 
 /** Test class for the behavior of [[Arena]]. */
 class ArenaTest extends AnyFlatSpec with Matchers {
   "The Arena" can "be generated for a game" in {
     startGame("Player1", gameType(Medium))
     checkAllNonEmpty()
-    checkEntitiesConsistency()
   }
 
   it should "have walls inside it" in {
@@ -50,7 +47,6 @@ class ArenaTest extends AnyFlatSpec with Matchers {
   it can "be emptied" in {
     arena.get.emptyMap()
     checkAllEmpty()
-    checkEntitiesConsistency()
   }
 
   private def checkAllEmpty(): Unit = {
@@ -58,7 +54,6 @@ class ArenaTest extends AnyFlatSpec with Matchers {
     assert(arena.get.bullets.isEmpty)
     assert(arena.get.collectibles.isEmpty)
     assert(arena.get.obstacles.isEmpty)
-    assert(arena.get.allGameEntities.isEmpty)
   }
 
   private def checkAllNonEmpty(): Unit = {
@@ -66,11 +61,5 @@ class ArenaTest extends AnyFlatSpec with Matchers {
     assert(arena.get.bullets.nonEmpty)
     assert(arena.get.collectibles.nonEmpty)
     assert(arena.get.obstacles.nonEmpty)
-    assert(arena.get.allGameEntities.nonEmpty)
-  }
-
-  private def checkEntitiesConsistency(): Unit = {
-    assert(arena.get.allGameEntities.size ==
-      (arena.get.enemies.size + arena.get.bullets.size + arena.get.collectibles.size + arena.get.obstacles.size))
   }
 }

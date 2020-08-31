@@ -12,7 +12,7 @@ import GameState.arena
  */
 case class Enemy(var position: Position,  var lives: Int = 5, pointsKilling: Int = 20) extends EnemyCharacter {
 
-  override def movementBehaviour(): Boolean = {
+  def movementBehaviour(): Boolean = {
     nextInt(40) match {
       case 0 => move(Up)
       case 1 => move(Down)
@@ -27,9 +27,7 @@ case class Enemy(var position: Position,  var lives: Int = 5, pointsKilling: Int
   def decreaseLife(): Unit = if (lives > 0) lives -= 1
 
   override def remove(): Boolean = {
-    if (arena.get.enemies.contains(this)) {
-      arena.get.enemies = arena.get.enemies - this
-      true
-    } else false
+    arena.get.enemies = arena.get.enemies - copy()
+    if (!arena.get.enemies.contains(copy())) true else false
   }
 }

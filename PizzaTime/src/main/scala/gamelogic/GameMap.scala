@@ -21,8 +21,6 @@ trait GameMap {
 
   def floor: Set[Floor]
 
-  def allGameEntities: Set[Entity]
-
   def generateMap(): Unit
 
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit

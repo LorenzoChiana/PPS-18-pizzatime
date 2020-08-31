@@ -1,13 +1,14 @@
 package gamelogic
 
-import MovableEntity.stepPoint
+import MovableEntity._
 import utilities.{Direction, Down, Left, Position, Right, Up}
+import GameState.arena
 
 /** A bullet fired by the [[Player]].
  *
  *  @param position its initial [[Position]]
  */
-case class Bullet(var position: Position, var unexploded: Boolean = true) extends MovableEntity{
+case class Bullet(var position: Position, var unexploded: Boolean = true) extends MovableEntity {
 
   def advances(): Unit = {
     position.dir.get match {
@@ -20,15 +21,18 @@ case class Bullet(var position: Position, var unexploded: Boolean = true) extend
 
   override def move(dir: Direction): Boolean = {
     if (canMove(stepPoint(position.point, dir))) {
-      position = Position(stepPoint(position.point, dir), Some(dir)); true
+      position = Position(stepPoint(position.point, dir), Some(dir))
+      true
     } else {
-      unexploded = false;  false
+      unexploded = false
+      false
     }
   }
 
   override def remove(): Boolean = {
     unexploded = false
-    true
+    arena.get.bullets = arena.get.bullets - copy()
+    if (!arena.get.bullets.contains(copy())) true else false
   }
 }
 

@@ -25,19 +25,18 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     val enemyNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
     //val en: Set[EnemyCharacter] = Set.tabulate(enemyNum)(id => Enemy(randomPosition))
     for (_ <- 0 to enemyNum) {
-      val e: EnemyCharacter = Enemy(randomPosition)
-      arena.get.enemies = arena.get.enemies + e
+      arena.get.enemies = arena.get.enemies + Enemy(randomPosition)
     }
   }
 
   private def generateCollectibles(): Unit = {
     val bonusNum: Int = between(difficulty.bonusRange.min, difficulty.bonusRange.max)
-   /* val collectibles: Set[Collectible] = Set.fill(bonusNum)(
-      elem = if (Random.nextInt(2) == 0)
-        BonusLife(randomPosition)
-      else
-        BonusScore(randomPosition, difficulty.bonusScore)
-    ) */
+    /* val collectibles: Set[Collectible] = Set.fill(bonusNum)(
+       elem = if (Random.nextInt(2) == 0)
+         BonusLife(randomPosition)
+       else
+         BonusScore(randomPosition, difficulty.bonusScore)
+     ) */
     for (_ <- 0 to bonusNum) {
       val bonus: Collectible = if (nextInt(2) == 0) BonusLife(randomPosition) else BonusScore(randomPosition, difficulty.bonusScore)
       arena.get.collectibles = arena.get.collectibles + bonus
@@ -48,10 +47,12 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     val obstaclesNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
     val obstacleDim: Int = between(difficulty.obstacleDimension.min, difficulty.obstacleDimension.max)
 
-    for (_ <- 0 to obstaclesNum) randomPositions(obstacleDim).foreach(p => arena.get.obstacles = arena.get.obstacles + Obstacle(p))
+    for (_ <- 0 to obstaclesNum) {
+      randomPositions(obstacleDim).foreach(p => arena.get.obstacles = arena.get.obstacles + Obstacle(p))
+    }
   }
 
-  private def levelMultiplier: Int = (GameState.level / difficulty.levelThreshold) + 1
+  private def levelMultiplier: Int = (level / difficulty.levelThreshold) + 1
 
   private def chance(prob: Double): Boolean = math.random < prob
 
