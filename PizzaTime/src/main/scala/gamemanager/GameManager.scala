@@ -151,7 +151,6 @@ object GameManager {
   var playerShoots: Queue[Option[Direction]] = Queue[Option[Direction]]()
 
   def checkNewMovement(): Option[Direction] = {
-    println("check new movement")
     playerMoves.length match {
       case 0 => None
       case _ =>
@@ -162,7 +161,6 @@ object GameManager {
   }
 
   def checkNewShoot(): Option[Direction] = {
-    println("check new shoot")
     playerShoots.length match {
       case 0 => None
       case _ =>

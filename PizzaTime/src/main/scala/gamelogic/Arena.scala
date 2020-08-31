@@ -105,7 +105,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
     /**Check if door is open*/
     if(enemies.isEmpty && door.isEmpty){
-      println("enemies e door empty")
       door = Some(Point(0,5))
       play(LevelUp)
     } else if (enemies.nonEmpty) door = None
