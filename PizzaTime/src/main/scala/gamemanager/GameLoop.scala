@@ -8,7 +8,7 @@ import gamelogic.GameState.{arena, nextStep}
 import gameview.fx.FXGameScene
 import utilities.MessageTypes._
 
-class GameLoop() extends Runnable  {
+class GameLoop(gameManager: GameManager) extends Runnable  {
   def run(): Unit = {
     while (!endGame) {
       val startTime: Long = currentTimeMillis()
@@ -27,9 +27,8 @@ class GameLoop() extends Runnable  {
     numCycle += 1
 
     if (!arena.get.player.isLive) {
-      //è da notificare anche al gameManager?
+      gameManager.notifyEndGame()
       view.get.windowManager.showMessage("GAME OVER", "You lose", Warning)
-      endGame = true
     }
 
     /** Update view */

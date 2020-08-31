@@ -35,19 +35,21 @@ class GameManager extends ViewObserver {
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {
     GameState.startGame("Player1", gameType(Medium))
-    ThreadPool.execute(new GameLoop())
+    ThreadPool.execute(new GameLoop(this))
   }
 
   /** Notifies that the game has ended */
   def notifyEndGame(): Unit = {
     endGame = true
+    GameState.endGame()
+    savePlayerRankings()
   }
 
   /** Notifies that the player has moved or shot.
    *
    *  @param action the [[Action]] notified by the view
    */
-  def notifyAction(action: Action): Unit = action.actionType match{
+  def notifyAction(action: Action): Unit = action.actionType match {
     case Movement => playerMoves = playerMoves :+ action.direction
     case Shoot => playerShoots = playerShoots :+ arena.get.player.position.dir
   }
