@@ -58,7 +58,6 @@ class ArenaTest extends AnyFlatSpec with Matchers {
 
   private def checkAllNonEmpty(): Unit = {
     assert(arena.get.enemies.nonEmpty)
-    assert(arena.get.bullets.nonEmpty)
     assert(arena.get.collectibles.nonEmpty)
     assert(arena.get.obstacles.nonEmpty)
   }

@@ -75,7 +75,7 @@ object MapGenerator {
   @scala.annotation.tailrec
   def randomPositions(dim: Int): Set[Position] = {
     var obstacles: Set[Position] = Set()
-    val x = between(1, arenaWidth - dim)
+    val x = between(1, arenaWidth - 1 - dim)
     val y = between(1, arenaHeight - 1)
 
     for (i <- 0 to dim)
