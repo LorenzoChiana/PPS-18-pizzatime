@@ -13,8 +13,11 @@ import utilities.ImplicitConversions._
  */
 case class Player(playerName: String, var position: Position) extends MovableEntity {
   var score: Int = 0
-  var lives: Int = 5
-  var record: Int = if (playerRankings(difficulty).isDefinedAt(playerName)) playerRankings(difficulty)(playerName) else 0
+  var lives: Int = 100
+  var record: Int = if (playerRankings.nonEmpty && playerRankings(difficulty).isDefinedAt(playerName))
+                      playerRankings(difficulty)(playerName)
+                    else
+                      0
 
   def addScore(s: Int): Unit = score = score + s
 
