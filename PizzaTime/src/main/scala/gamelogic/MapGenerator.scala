@@ -6,9 +6,7 @@ import utilities.{Difficulty, Down, Position}
 import utilities.Difficulty._
 import GameState._
 import utilities.ImplicitConversions._
-
-import scala.util.Random
-import scala.util.Random.between
+import scala.util.Random.{nextInt, between}
 
 /** Encapsulates the logic for generating a new level.
  *  Used by [[Arena]].
@@ -16,7 +14,6 @@ import scala.util.Random.between
  *  @param difficulty the [[Difficulty]] chosen by the user
  */
 case class MapGenerator(difficulty: Difficulty.Value) {
-
   /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
     generateEnemies()
@@ -27,10 +24,9 @@ case class MapGenerator(difficulty: Difficulty.Value) {
   private def generateEnemies(): Unit = {
     val enemyNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
     //val en: Set[EnemyCharacter] = Set.tabulate(enemyNum)(id => Enemy(randomPosition))
-    for(_ <- 0 to enemyNum){
+    for (_ <- 0 to enemyNum) {
       val e: EnemyCharacter = Enemy(randomPosition)
-      arena.get.enemies += e
-      arena.get.allGameEntities += e
+      arena.get.enemies = arena.get.enemies + e
     }
   }
 
@@ -42,19 +38,17 @@ case class MapGenerator(difficulty: Difficulty.Value) {
       else
         BonusScore(randomPosition, difficulty.bonusScore)
     ) */
-    for(_ <- 0 to bonusNum){
-      val bonus: Collectible = if(Random.nextInt(2) == 0) BonusLife(randomPosition) else BonusScore(randomPosition, difficulty.bonusScore)
-      arena.get.collectibles += bonus
-      arena.get.allGameEntities += bonus
+    for (_ <- 0 to bonusNum) {
+      val bonus: Collectible = if (nextInt(2) == 0) BonusLife(randomPosition) else BonusScore(randomPosition, difficulty.bonusScore)
+      arena.get.collectibles = arena.get.collectibles + bonus
     }
   }
 
   private def generateObstacles(): Unit = {
     val obstaclesNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
     val obstacleDim: Int = between(difficulty.obstacleDimension.min, difficulty.obstacleDimension.max)
-    for (_ <- 0 to obstaclesNum) randomPositions(obstacleDim).foreach(p => arena.get.obstacles += Obstacle(p))
 
-    arena.get.allGameEntities = arena.get.allGameEntities ++ arena.get.obstacles
+    for (_ <- 0 to obstaclesNum) randomPositions(obstacleDim).foreach(p => arena.get.obstacles = arena.get.obstacles + Obstacle(p))
   }
 
   private def levelMultiplier: Int = (GameState.level / difficulty.levelThreshold) + 1

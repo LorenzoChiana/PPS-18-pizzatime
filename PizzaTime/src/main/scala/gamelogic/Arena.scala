@@ -25,7 +25,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Returns a set of all the [[Entity]]s in the [[Arena]] that are relevant to the game.
    *  Those include: [[Enemy]]s, [[Bullet]]s, [[Collectible]]s and [[Obstacle]]s.
    */
-  var allGameEntities: Set[Entity] = Set() //enemies ++ bullets ++ collectibles ++ obstacles
+  def allGameEntities: Set[Entity] = enemies ++ bullets ++ collectibles ++ obstacles
 
   /** Generates a new level. */
   def generateMap(): Unit = {mapGen.generateLevel(); play(LevelMusic)}
@@ -82,14 +82,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       if (!player.isLive) {play(FailureSound) ; stopSound()}
     })
 
-    def emptyMap(): Unit = {
-      player.moveTo(Position(center, Some(Down)))
-      enemies = Set()
-      bullets = Set()
-      collectibles = Set()
-      obstacles = Set()
-      door = None
-    }
+    emptyMap()
 
     /**Advance the bullets*/
     bullets foreach(bullet => bullet.advances())
@@ -108,12 +101,23 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     } else if (enemies.nonEmpty) door = None
   }
 
-  def playerInjury(enemy: EnemyCharacter): Unit =
+  /** Empties the [[Arena]]. */
+  def emptyMap(): Unit = {
+    player.moveTo(Position(center, Some(Down)))
+    enemies = Set()
+    bullets = Set()
+    collectibles = Set()
+    obstacles = Set()
+    door = None
+  }
+
+  def playerInjury(enemy: EnemyCharacter): Unit = {
     if (containsEnemy(player.position.point).nonEmpty && lastInjury.isEmpty) {
-          lastInjury = Some(enemy)
-          player.decreaseLife()
-          play(InjurySound)
+      lastInjury = Some(enemy)
+      player.decreaseLife()
+      play(InjurySound)
     }
+  }
 }
 
 /** Utility methods for [[Arena]]. */

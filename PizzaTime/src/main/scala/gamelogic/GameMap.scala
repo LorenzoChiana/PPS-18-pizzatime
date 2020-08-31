@@ -6,15 +6,14 @@ import utilities.{Direction, Point}
  *  Implemented by [[Arena]].
  */
 trait GameMap {
-  def mapGen: MapGenerator
-
   def player: Player
+
+  def mapGen: MapGenerator
 
   var enemies: Set[EnemyCharacter]
   var bullets: Set[Bullet]
   var collectibles: Set[Collectible]
   var obstacles: Set[Obstacle]
-
   var door: Option[Point]
   var endedLevel: Boolean
 
@@ -22,9 +21,11 @@ trait GameMap {
 
   def floor: Set[Floor]
 
-  var allGameEntities: Set[Entity]
+  def allGameEntities: Set[Entity]
 
-  def generateMap()
+  def generateMap(): Unit
 
-  def updateMap(movement: Option[Direction], shoot: Option[Direction])
+  def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit
+
+  def emptyMap(): Unit
 }
