@@ -37,6 +37,8 @@ class GameLoop() extends Runnable  {
       case scene: FXGameScene => if(arena.get.endedLevel) { scene.endLevel(); arena.get.endedLevel = false} else scene.updateView()
       case _ =>
     }
+
+    if (!arena.get.player.isLive) endGame = true
   }
 
   def finishGame(): Unit = println("Finish!")
