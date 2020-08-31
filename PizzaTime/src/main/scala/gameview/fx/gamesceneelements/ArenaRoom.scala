@@ -18,13 +18,13 @@ class ArenaRoom extends GameElements {
    * Checks if the door should be opened
    */
   override def update(): Unit =
-    if (arena.get.door.nonEmpty)
-      Platform.runLater(() => {
+    Platform.runLater(() => {
+      if(arena.get.door.nonEmpty) {
         val door: ImageView = createTile(ImageLoader.floorImage)
         dungeon.getChildren.add(door)
         door.relocate(pointToPixel(arena.get.door.get)._1, pointToPixel(arena.get.door.get)._2)
-      })
-
+      }
+    })
 
   /**
    * Draws entities within the game arena

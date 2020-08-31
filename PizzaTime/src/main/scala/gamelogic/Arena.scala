@@ -1,7 +1,7 @@
 package gamelogic
 
 import GameState._
-import gamelogic.Arena.{bounds, center, containsEnemy, containsBullet, isDoor, tiles}
+import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
 import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, LevelUp, Point, Position, ShootSound}
 import utilities.ImplicitConversions._
@@ -39,6 +39,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     if (movement.isDefined) {
       player.move(movement.get)
       lastInjury = None
+
       player.position.point match {
         case p if Arena.containsCollectible(p) =>
           play(BonusSound)
@@ -55,12 +56,13 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           stopSound()
           emptyMap()
           generateMap()
+
         case _ => None
       }
     }
 
     enemies.foreach(en => {
-      val enemyHaveMove =  en.movementBehaviour()
+      val enemyHaveMove =  en.movementBehaviour
 
       if (lastInjury.nonEmpty) {
         if (en.equals(lastInjury.get) && enemyHaveMove) {
@@ -73,7 +75,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       val bulletOnEnemy = containsBullet(en.position.point)
 
       if (bulletOnEnemy.nonEmpty) {
-        en.decreaseLife()
+        en.decreaseLife
         bullets = bullets -- bulletOnEnemy
       }
 
@@ -92,9 +94,10 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     bullets = bullets -- bullets.filter(_.unexploded == false)
 
     /**Check if any enemies are dead*/
-    enemies.filter(_.lives == 0).foreach(en => player.addScore(en.pointsKilling))
+    enemies.filter(!_.isLive).foreach(en => player.addScore(en.pointsKilling))
     enemies = enemies -- enemies.filter(_.lives == 0)
 
+    /**Check if door is open*/
     if (enemies.isEmpty && door.isEmpty) {
       door = Some(Point(0, 5))
       play(LevelUp)

@@ -150,19 +150,23 @@ object GameManager {
   /** [[Queue]] for shoots notified but not yet processed. */
   var playerShoots: Queue[Option[Direction]] = Queue[Option[Direction]]()
 
-  def checkNewMovement(): Option[Direction] = playerMoves.length match {
-    case 0 => None
-    case _ =>
-      val direction = playerMoves.dequeue._1
-      playerMoves = playerMoves.dequeue._2
-      direction
+  def checkNewMovement(): Option[Direction] = {
+    playerMoves.length match {
+      case 0 => None
+      case _ =>
+        val direction = playerMoves.dequeue._1
+        playerMoves = playerMoves.dequeue._2
+        direction
+    }
   }
 
-  def checkNewShoot(): Option[Direction] = playerShoots.length match {
-    case 0 => None
-    case _ =>
-      val direction = playerShoots.dequeue._1
-      playerShoots = playerShoots.dequeue._2
-      direction
+  def checkNewShoot(): Option[Direction] = {
+    playerShoots.length match {
+      case 0 => None
+      case _ =>
+        val direction = playerShoots.dequeue._1
+        playerShoots = playerShoots.dequeue._2
+        direction
+    }
   }
 }

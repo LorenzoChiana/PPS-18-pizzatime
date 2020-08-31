@@ -31,12 +31,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
   private def generateCollectibles(): Unit = {
     val bonusNum: Int = between(difficulty.bonusRange.min, difficulty.bonusRange.max)
-    /* val collectibles: Set[Collectible] = Set.fill(bonusNum)(
-       elem = if (Random.nextInt(2) == 0)
-         BonusLife(randomPosition)
-       else
-         BonusScore(randomPosition, difficulty.bonusScore)
-     ) */
+
     for (_ <- 0 to bonusNum) {
       val bonus: Collectible = if (nextInt(2) == 0) BonusLife(randomPosition) else BonusScore(randomPosition, difficulty.bonusScore)
       arena.get.collectibles = arena.get.collectibles + bonus
