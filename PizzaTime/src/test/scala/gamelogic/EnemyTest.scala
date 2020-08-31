@@ -26,6 +26,11 @@ class EnemyTest extends AnyFlatSpec with Matchers {
 
   val enemy: Enemy = Enemy(Position(centerPoint, Some(Down)))
 
+  "An enemy" should "have initialized life and points killing" in {
+    enemy.lives should be > 0
+    enemy.pointsKilling should be > 0
+  }
+
   it should "collide with bonuses" in {
     val bonusLifePoint = stepPoint(centerPoint, Right)
     val bonusScorePoint = stepPoint(centerPoint, Left)
