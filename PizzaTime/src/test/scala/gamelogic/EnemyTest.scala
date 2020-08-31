@@ -1,6 +1,6 @@
 package gamelogic
 
-import gamelogic.GameState.startGame
+import gamelogic.GameState.{nextStep, startGame}
 import gamelogic.MapGenerator.gameType
 import gamelogic.MovableEntity.stepPoint
 import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
@@ -47,5 +47,16 @@ class EnemyTest extends AnyFlatSpec with Matchers {
     enemy.position.point shouldBe centerPoint
 
     collectibles = Set()
+  }
+
+  it should "lose his life when he collides with a bullet" in {
+    player moveTo Position(centerPoint, Some(Right))
+    enemy moveTo Position(stepPoint(centerPoint, Right), Some(Right))
+    enemies = enemies + enemy
+
+    enemy.lives = 5
+    enemy.lives shouldBe 5
+    nextStep(None, Some(Right))
+    enemy.lives should be < 5
   }
 }
