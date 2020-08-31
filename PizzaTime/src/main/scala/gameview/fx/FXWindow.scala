@@ -115,8 +115,6 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     def setCreditsScene(): Unit = {
       val creditsScene: Scene = FXCreditsScene(this)
       val fxCreditsScene = creditsScene.asInstanceOf[FXCreditsScene]
-      //val creditsSceneObserver: CreditsSceneObserver = CreditsSceneController()
-      //creditsScene.addObserver(creditsSceneObserver)
       GameManager.view_(creditsScene)
 
       Platform.runLater(() => {
