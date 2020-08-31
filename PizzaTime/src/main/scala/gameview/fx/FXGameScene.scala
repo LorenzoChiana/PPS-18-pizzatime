@@ -6,11 +6,11 @@ import javafx.scene.image.{Image, ImageView}
 import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
-import gamemanager.GameManager.view
 import gamemanager.handlers.PreferencesHandler
 import gameview.fx.FXGameScene.dungeon
 import gameview.fx.gamesceneelements.{ArenaRoom, Bullets, Collectibles, Enemies, GameElements, Player}
 import gameview.scene.Scene
+import gameview.scene.SceneType.MainScene
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
@@ -19,9 +19,8 @@ import javafx.scene.{Group, Scene => JFXScene}
 import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, SPACE, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
-import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up}
+import utilities.{Action, Down, Intent, Left, Movement, Point, Right, Shoot, Up}
 import javafx.scene.control.Label
-import utilities.MessageTypes.Warning
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable
@@ -85,7 +84,21 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     Platform.runLater(() =>userLifeLabel.setText(
       PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 "
         + " Score: " + arena.get.player.score + " \u2605"))
-    if (!arena.get.player.isLive) view.get.windowManager.showMessage("GAME OVER", "You lose", Warning)
+    if (!arena.get.player.isLive) showAlertMessage()
+  }
+
+  def showAlertMessage(): Unit = {
+    Platform.runLater(()=>{
+      import javafx.scene.control.Alert
+      import javafx.scene.control.ButtonType
+
+      val alert = new Alert(Alert.AlertType.NONE, "You lose", ButtonType.CLOSE)
+      alert.setTitle("GAME OVER!")
+
+      alert.showAndWait()
+          .filter(response => response == ButtonType.CLOSE)
+          .ifPresent(_ => FXWindow.observers.foreach(observer => observer.onBack()))
+    })
   }
 
   def endLevel(): Unit = {

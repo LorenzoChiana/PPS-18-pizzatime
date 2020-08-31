@@ -84,6 +84,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     })
 
     def emptyMap(): Unit = {
+      println(center)
       player.moveTo(Position(center, Some(Down)))
       enemies = Set()
       bullets = Set()
