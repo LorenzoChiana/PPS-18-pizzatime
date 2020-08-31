@@ -10,12 +10,12 @@ import gamemanager.GameManager.view
 import gamemanager.handlers.PreferencesHandler
 import gameview.fx.FXGameScene.dungeon
 import gameview.fx.gamesceneelements.{ArenaRoom, Bullets, Collectibles, Enemies, GameElements, Player}
-import gameview.scene.GameScene
+import gameview.scene.Scene
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.ActionEvent
-import javafx.scene.{Group, Scene}
+import javafx.scene.{Group, Scene => JFXScene}
 import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, SPACE, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
@@ -31,7 +31,7 @@ import scala.collection.mutable
  * @param windowManager the window on which the scene is applied
  * @param stage a window in a JavaFX desktop application
  */
-case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with GameScene {
+case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
   private val actions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false,
     Action(Movement, Some(Down)) -> false,
     Action(Movement, Some(Left)) -> false,
@@ -43,7 +43,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
   private var userLifeLabel: Label = _
 
-    val scene: Scene = new Scene(dungeon) {
+    val scene: JFXScene = new JFXScene(dungeon) {
       setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
         case UP => actions(Action(Movement, Some(Up))) = true
         case DOWN => actions(Action(Movement, Some(Down))) = true
@@ -63,7 +63,9 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       })
     }
 
-    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives + "Score: " + arena.get.player.score)
+    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives +
+      "Score: " + arena.get.player.score +
+      "Record: " + arena.get.player.record)
     userLifeLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold; -fx-background-color: #4444; " +
       "-fx-padding: 8px; -fx-background-radius: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);")
     userLifeLabel.relocate(Game.width / 3.5, 1)

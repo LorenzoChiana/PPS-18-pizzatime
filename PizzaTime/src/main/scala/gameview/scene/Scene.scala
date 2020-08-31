@@ -2,6 +2,6 @@ package gameview.scene
 
 import gameview.Window
 
-trait GameScene {
+trait Scene {
   val windowManager: Window
 }

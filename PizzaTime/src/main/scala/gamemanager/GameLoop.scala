@@ -3,11 +3,11 @@ package gamemanager
 import java.lang.System.currentTimeMillis
 import Thread.sleep
 
-import gamelogic.GameState._
 import GameManager._
+import gamelogic.GameState.{arena, nextStep}
 import gameview.fx.FXGameScene
 
-class GameLoop() extends Runnable  {
+class GameLoop(gameManager: GameManager) extends Runnable  {
   def run(): Unit = {
     while (!endGame) {
       val startTime: Long = currentTimeMillis()
