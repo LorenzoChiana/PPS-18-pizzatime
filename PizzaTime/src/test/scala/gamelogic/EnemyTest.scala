@@ -74,4 +74,18 @@ class EnemyTest extends AnyFlatSpec with Matchers {
 
     enemies = Set()
   }
+
+  it should "take the player's life away when he collides with him" in {
+    player moveTo Position(centerPoint, Some(Right))
+    enemy moveTo Position(stepPoint(centerPoint, Right), Some(Left))
+    enemies = enemies + enemy
+
+    player.lives = 5
+    player.lives shouldBe 5
+    enemy move Left
+    nextStep(None, None)
+    player.lives should be < 5
+
+    enemies = Set()
+  }
 }
