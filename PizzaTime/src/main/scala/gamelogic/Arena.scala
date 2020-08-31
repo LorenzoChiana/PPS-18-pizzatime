@@ -29,7 +29,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   var allGameEntities: Set[Entity] = Set() //enemies ++ bullets ++ collectibles ++ obstacles
 
   /** Generates a new level. */
-  def generateMap(): Unit = {mapGen.generateLevel(); /*play(LevelMusic)*/}
+  def generateMap(): Unit = {mapGen.generateLevel(); play(LevelMusic)}
 
   private var lastInjury: Option[EnemyCharacter] = None
 
