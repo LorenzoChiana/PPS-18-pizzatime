@@ -2,9 +2,10 @@ package gamemanager
 
 import java.lang.System.currentTimeMillis
 import Thread.sleep
+
 import GameManager._
 import gamelogic.GameState.{arena, nextStep}
-import gameview.fx.FXScene
+import gameview.fx.FXGameScene
 import utilities.MessageTypes._
 
 class GameLoop() extends Runnable  {
@@ -33,9 +34,11 @@ class GameLoop() extends Runnable  {
 
     /** Update view */
     view.get match {
-      case scene: FXScene => scene.updateView()
+      case scene: FXGameScene => if(arena.get.endedLevel) { scene.endLevel(); arena.get.endedLevel = false} else scene.updateView()
       case _ =>
     }
+
+    if (!arena.get.player.isLive) endGame = true
   }
 
   def finishGame(): Unit = println("Finish!")

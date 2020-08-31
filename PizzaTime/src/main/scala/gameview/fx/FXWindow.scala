@@ -127,8 +127,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
     def setGameScene(stage: Stage): Unit = {
       observers.foreach(observer => observer.notifyStartGame())
-      val gameScene: gameview.scene.Scene = FXScene(this, stage)
-      val fxGameScene = gameScene.asInstanceOf[FXScene]
+      val gameScene: gameview.scene.Scene = FXGameScene(this, stage)
+      val fxGameScene = gameScene.asInstanceOf[FXGameScene]
 
       GameManager.view_(gameScene)
 

@@ -10,15 +10,15 @@ import GameState.arena
  *  @param position its starting position
  *  @param lives its starting lives
  */
-case class Enemy(var position: Position,  var lives: Int = 5, val pointsKilling: Int = 20) extends EnemyCharacter {
+case class Enemy(var position: Position,  var lives: Int = 5, pointsKilling: Int = 20) extends EnemyCharacter {
 
-  override def movementBehaviour(): Unit = {
+  override def movementBehaviour(): Boolean = {
     nextInt(40) match {
       case 0 => move(Up)
       case 1 => move(Down)
       case 2 => move(Left)
       case 3 => move(Right)
-      case _ =>
+      case _ => false
     }
   }
 

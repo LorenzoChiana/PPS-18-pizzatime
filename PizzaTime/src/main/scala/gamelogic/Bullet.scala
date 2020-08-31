@@ -18,11 +18,11 @@ case class Bullet(var position: Position, var unexploded: Boolean = true) extend
     }
   }
 
-  override def move(dir: Direction): Unit = {
+  override def move(dir: Direction): Boolean = {
     if (canMove(stepPoint(position.point, dir))) {
-      position = Position(stepPoint(position.point, dir), Some(dir))
+      position = Position(stepPoint(position.point, dir), Some(dir)); true
     } else {
-      unexploded = false
+      unexploded = false;  false
     }
   }
 

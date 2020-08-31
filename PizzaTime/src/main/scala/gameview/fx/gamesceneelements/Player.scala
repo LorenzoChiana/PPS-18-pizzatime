@@ -3,7 +3,7 @@ package gameview.fx.gamesceneelements
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.heroImage
 import gameview.SpriteAnimation
-import gameview.fx.FXScene.{dungeon, pointToPixel, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.{dungeon, pointToPixel, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.util.Duration

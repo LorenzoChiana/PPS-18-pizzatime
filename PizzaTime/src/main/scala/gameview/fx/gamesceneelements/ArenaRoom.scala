@@ -2,7 +2,7 @@ package gameview.fx.gamesceneelements
 
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader
-import gameview.fx.FXScene.{createTile, dungeon, pointToPixel}
+import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
@@ -33,13 +33,10 @@ class ArenaRoom extends GameElements {
    */
   private def createArena(): GridPane = {
     val gridPane = new GridPane
-    Platform.runLater(() => {
       for (f <- arena.get.floor) gridPane.add(createTile(ImageLoader.floorImage), f.position.point.x, f.position.point.y)
       for (w <- arena.get.walls) gridPane.add(createTile(ImageLoader.wallImage), w.position.point.x, w.position.point.y)
       for (o <- arena.get.obstacles) gridPane.add(createTile(ImageLoader.obstacles(between(0, 3))), o.position.point.x, o.position.point.y)
       gridPane.setGridLinesVisible(false)
-
-    })
     gridPane
   }
 }
@@ -51,7 +48,7 @@ object ArenaRoom{
    */
   def apply(): ArenaRoom = {
     val arena: ArenaRoom = new ArenaRoom()
-    dungeon.getChildren.add(arena.arenaArea)
+    Platform.runLater(()=>dungeon.getChildren.add(arena.arenaArea))
     arena
   }
 }

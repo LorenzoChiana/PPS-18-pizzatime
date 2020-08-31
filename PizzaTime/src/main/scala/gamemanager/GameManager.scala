@@ -28,6 +28,7 @@ import scala.util.{Failure, Success, Using}
 
 class GameManager extends ViewObserver {
   lazy val windowManager: Window = view.get.windowManager
+  var endGame: Boolean = false
 
   loadPlayerRankings()
 
@@ -40,8 +41,6 @@ class GameManager extends ViewObserver {
   /** Notifies that the game has ended */
   def notifyEndGame(): Unit = {
     endGame = true
-    GameState.endGame()
-    savePlayerRankings()
   }
 
   /** Notifies that the player has moved or shot.
