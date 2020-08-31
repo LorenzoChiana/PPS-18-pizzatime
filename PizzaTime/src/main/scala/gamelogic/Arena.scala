@@ -1,10 +1,12 @@
 package gamelogic
 
 import GameState._
-import gamelogic.Arena.{bounds, center, containsEnemy, containsBullet, isDoor, tiles}
+import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
 import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, LevelUp, Point, Position, ShootSound}
 import utilities.ImplicitConversions._
+
+import scala.Console.println
 
 /** The playable area, populated with all the [[Entity]]s.
  *
@@ -28,7 +30,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   var allGameEntities: Set[Entity] = Set() //enemies ++ bullets ++ collectibles ++ obstacles
 
   /** Generates a new level. */
-  def generateMap(): Unit = {mapGen.generateLevel(); play(LevelMusic)}
+  def generateMap(): Unit = {mapGen.generateLevel();/* play(LevelMusic)*/}
 
   private var lastInjury: Option[EnemyCharacter] = None
 
@@ -39,6 +41,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     if (movement.isDefined) {
       player.move(movement.get)
       lastInjury = None
+
       player.position.point match {
         case p if Arena.containsCollectible(p) =>
           play(BonusSound)
@@ -55,9 +58,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           stopSound()
           emptyMap()
           generateMap() //new level
-
         }
-        case _ => None
+        case _ => None;
       }
     }
 
@@ -88,6 +90,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       bullets = Set()
       collectibles = Set()
       obstacles = Set()
+      allGameEntities = Set()
       door = None
     }
 
@@ -101,7 +104,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     enemies.filter(_.lives == 0).foreach( en => player addScore en.pointsKilling )
     enemies = enemies -- enemies.filter(_.lives == 0)
 
-    println(door)
+    /**Check if door is open*/
     if(enemies.isEmpty && door.isEmpty){
       door = Some(Point(0,5))
       play(LevelUp)

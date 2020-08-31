@@ -14,7 +14,6 @@ class GameLoop() extends Runnable  {
       val startTime: Long = currentTimeMillis()
 
       gameStep()
-
       val deltaTime: Long = currentTimeMillis() - startTime
       if (deltaTime < TimeSliceMillis) sleep(TimeSliceMillis - deltaTime)
     }
@@ -25,12 +24,6 @@ class GameLoop() extends Runnable  {
   def gameStep(): Unit = {
     nextStep(checkNewMovement(), checkNewShoot())
     numCycle += 1
-
-    if (!arena.get.player.isLive) {
-      //è da notificare anche al gameManager?
-      view.get.windowManager.showMessage("GAME OVER", "You lose", Warning)
-      endGame = true
-    }
 
     /** Update view */
     view.get match {

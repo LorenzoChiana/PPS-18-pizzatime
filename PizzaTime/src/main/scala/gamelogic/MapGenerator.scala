@@ -7,6 +7,7 @@ import utilities.Difficulty._
 import GameState._
 import utilities.ImplicitConversions._
 
+import scala.Console.println
 import scala.util.Random
 import scala.util.Random.between
 
@@ -26,7 +27,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
   private def generateEnemies(): Unit = {
     val enemyNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
-    //val en: Set[EnemyCharacter] = Set.tabulate(enemyNum)(id => Enemy(randomPosition))
+
     for(_ <- 0 to enemyNum){
       val e: EnemyCharacter = Enemy(randomPosition)
       arena.get.enemies += e
@@ -36,12 +37,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
   private def generateCollectibles(): Unit = {
     val bonusNum: Int = between(difficulty.bonusRange.min, difficulty.bonusRange.max)
-   /* val collectibles: Set[Collectible] = Set.fill(bonusNum)(
-      elem = if (Random.nextInt(2) == 0)
-        BonusLife(randomPosition)
-      else
-        BonusScore(randomPosition, difficulty.bonusScore)
-    ) */
+
     for(_ <- 0 to bonusNum){
       val bonus: Collectible = if(Random.nextInt(2) == 0) BonusLife(randomPosition) else BonusScore(randomPosition, difficulty.bonusScore)
       arena.get.collectibles += bonus
