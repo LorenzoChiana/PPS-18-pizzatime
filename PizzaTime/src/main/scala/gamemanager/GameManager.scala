@@ -28,7 +28,6 @@ import scala.util.{Failure, Success, Using}
 
 class GameManager extends ViewObserver {
   lazy val windowManager: Window = view.get.windowManager
-  var endGame: Boolean = false
 
   loadPlayerRankings()
 
