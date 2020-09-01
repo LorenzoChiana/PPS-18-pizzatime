@@ -40,7 +40,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
   private var elements: Set[GameElements] = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
 
-  private var userLifeLabel: Label = _
+  private var userStatsLabel: Label = _
 
   val scene: JFXScene = new JFXScene(dungeon) {
     setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
@@ -62,9 +62,9 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     })
   }
 
-  createLabelLife()
+  createLabelStats()
   Platform.runLater(() => {
-    dungeon.getChildren.add(userLifeLabel)
+    dungeon.getChildren.add(userStatsLabel)
     stage.setScene(scene)
     stage.show()
   })
@@ -81,9 +81,10 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   def updateView(): Unit = {
     elements.foreach(e => e.update())
     /** Updating player lives */
-    Platform.runLater(() =>userLifeLabel.setText(
-      PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 "
-        + " Score: " + arena.get.player.score + " \u2605"))
+    Platform.runLater(() => userStatsLabel.setText(
+      PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 " +
+        " Score: " + arena.get.player.score +
+        " Record: " + arena.get.player.record))
     if (!arena.get.player.isLive) showAlertMessage()
   }
 
@@ -105,15 +106,19 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     Platform.runLater(() =>dungeon.getChildren.clear())
     elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
     Platform.runLater(() => {
-      dungeon.getChildren.add(userLifeLabel)
+      dungeon.getChildren.add(userStatsLabel)
     })
   }
 
-  private def createLabelLife(): Unit = {
-    userLifeLabel = new Label(PreferencesHandler.playerName + ": " + arena.get.player.lives + "Score: " + arena.get.player.score)
-    userLifeLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold; -fx-background-color: #4444; " +
+  private def createLabelStats(): Unit = {
+    userStatsLabel = new Label(
+      PreferencesHandler.playerName + ": " + arena.get.player.lives +
+      " Score: " + arena.get.player.score +
+      " Record: " + arena.get.player.record
+    )
+    userStatsLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold; -fx-background-color: #4444; " +
       "-fx-padding: 8px; -fx-background-radius: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);")
-    userLifeLabel.relocate(Game.width / 3.5, 1)
+    userStatsLabel.relocate(Game.width / 3.5, 1)
   }
 }
 
