@@ -11,7 +11,7 @@ import org.scalatest.enablers.Emptiness.emptinessOfGenTraversable
 
 /** Test class for the behavior of [[Arena]]. */
 class ArenaTest extends AnyFlatSpec with Matchers {
-  startGame("Player1", gameType(Medium))
+  startGame("Player1", gameType(Easy))
 
   val arena: GameMap = GameState.arena.get
   import arena._
@@ -69,7 +69,7 @@ class ArenaTest extends AnyFlatSpec with Matchers {
   }
 
   "Enemies" should "be in their range" in {
-    enemies.size shouldBe mapGen.difficulty.malusRange.min +- mapGen.difficulty.malusRange.max
+    enemies.size shouldBe (mapGen.difficulty.malusRange.min * mapGen.levelMultiplier) +- (mapGen.difficulty.malusRange.max * mapGen.levelMultiplier)
   }
 
   "Collectibles" should "be in their range" in {

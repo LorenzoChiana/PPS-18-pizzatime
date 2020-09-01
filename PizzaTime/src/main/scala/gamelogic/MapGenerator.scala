@@ -2,11 +2,14 @@ package gamelogic
 
 import MapGenerator._
 import Arena._
-import utilities.{Difficulty, Down, Position}
+import utilities.{Difficulty, Down, Left, Point, Position, Right, Up}
 import utilities.Difficulty._
 import GameState._
+import Entity._
 import utilities.ImplicitConversions._
-import scala.util.Random.{nextInt, between}
+
+import scala.annotation.tailrec
+import scala.util.Random.{between, nextInt}
 
 /** Encapsulates the logic for generating a new level.
  *  Used by [[Arena]].
@@ -14,15 +17,18 @@ import scala.util.Random.{nextInt, between}
  *  @param difficulty the [[Difficulty]] chosen by the user
  */
 case class MapGenerator(difficulty: Difficulty.Value) {
+  var currentLevel: Int = 0
+
   /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
+    currentLevel += 1
     generateEnemies()
     generateCollectibles()
     generateObstacles()
   }
 
   private def generateEnemies(): Unit = {
-    val enemyNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
+    val enemyNum: Int = between(difficulty.malusRange.min * levelMultiplier, difficulty.malusRange.max * levelMultiplier)
 
     for (_ <- 0 to enemyNum) {
       arena.get.enemies = arena.get.enemies + Enemy(randomPosition)
@@ -47,11 +53,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     }
   }
 
-  private def levelMultiplier: Int = (level / difficulty.levelThreshold) + 1
-
-  private def chance(prob: Double): Boolean = math.random < prob
-
-  private def invProb(prob: Double): Double = 1 - prob
+  def levelMultiplier: Int = (arena.get.mapGen.currentLevel / difficulty.levelThreshold) + 1
 }
 
 /** Utility methods for [[MapGenerator]]. */
@@ -63,25 +65,30 @@ object MapGenerator {
    */
   def gameType(difficulty: DifficultyVal): MapGenerator = new MapGenerator(difficulty)
 
-  /** Returns a random [[Position]] on the [[Arena]]. */
-  @scala.annotation.tailrec
+  /** Returns a random and clear [[Position]] on the [[Arena]]. */
+  @tailrec
   def randomPosition: Position = {
     val x = between(1, arenaWidth - 1)
     val y = between(1, arenaHeight - 1)
+
     if (isClearFloor(x, y)) Position((x, y), Some(Down)) else randomPosition
   }
 
-  /** Returns between 1 and 4 random positions on the [[Arena]]. */
-  @scala.annotation.tailrec
+  /** Returns a set of adjacent, random and clear [[Position]]s on the [[Arena]].
+   *
+   * @param dim the number of [[Position]]s
+   */
+  @tailrec
   def randomPositions(dim: Int): Set[Position] = {
-    var obstacles: Set[Position] = Set()
-    val x = between(1, arenaWidth - 1 - dim)
-    val y = between(1, arenaHeight - 1)
+    val startingPosition: Position = randomPosition
+    var obstacles: Set[Position] = Set(startingPosition)
 
-    for (i <- 0 to dim)
-      if (isClearFloor(x + i, y) && isClearFloor(x + i, y + 1) && isClearFloor(x + i, y - 1))
-        obstacles = obstacles + Position((x + i, y), Some(Down))
+    surroundings(startingPosition.point).foreach(p => {
+      if (isClearFloor(p) && (obstacles.size < dim)) {
+        obstacles = obstacles + Position(p, Some(Down))
+      }
+    })
 
-    if (obstacles.size.equals(dim)) obstacles else randomPositions(dim)
+    if (obstacles.size == dim) obstacles else randomPositions(dim)
   }
 }

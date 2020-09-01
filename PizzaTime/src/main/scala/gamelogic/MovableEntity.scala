@@ -9,7 +9,7 @@ import utilities.{Direction, Up, Down, Left, Right, Point, Position}
  *  Implemented by [[Player]], [[Bullet]] and [[EnemyCharacter]].
  */
 trait MovableEntity extends Entity {
-  /** Returns the set of [[Point]] a [[MovableEntity]] can move to. */
+  /** Returns the set of [[Point]]s a [[MovableEntity]] can move to. */
   def surroundings: Set[Point] = {
     val surroundings: Set[Point] = Set(
       stepPoint(position.point, Up),

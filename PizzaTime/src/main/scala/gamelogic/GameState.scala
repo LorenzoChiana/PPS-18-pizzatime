@@ -8,7 +8,6 @@ object GameState {
   var arena: Option[GameMap] = None
   var arenaWidth: Int = difficulty.arenaWidth
   var arenaHeight: Int = difficulty.arenaHeight
-  var level: Int = 1
   var playerRankings = Map.empty[String, Map[String, Int]]
 
   def startGame(playerName: String, mapGen: MapGenerator): Unit = {
@@ -24,7 +23,6 @@ object GameState {
   def nextStep(movement: Option[Direction], shoot: Option[Direction]): Unit = arena.get.updateMap(movement, shoot)
 
   def nextLevel(): Unit = {
-    level = level + 1
     arena.get.generateMap()
   }
 
