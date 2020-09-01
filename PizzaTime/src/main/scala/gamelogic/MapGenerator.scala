@@ -23,7 +23,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
   private def generateEnemies(): Unit = {
     val enemyNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
-    //val en: Set[EnemyCharacter] = Set.tabulate(enemyNum)(id => Enemy(randomPosition))
+
     for (_ <- 0 to enemyNum) {
       arena.get.enemies = arena.get.enemies + Enemy(randomPosition)
     }

@@ -8,5 +8,5 @@ trait EnemyCharacter extends MovableEntity {
   def pointsKilling: Int
   def movementBehaviour: Boolean
   def isLive: Boolean
-  def decreaseLife: Unit
+  def decreaseLife(): Unit
 }
