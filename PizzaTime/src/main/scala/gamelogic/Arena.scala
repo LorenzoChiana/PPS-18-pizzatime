@@ -91,8 +91,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       }
     })
 
-    emptyMap()
-
     /**Check if any enemies are dead*/
     enemies.filter(!_.isLive).foreach(en => player.addScore(en.pointsKilling))
     enemies = enemies -- enemies.filter(!_.isLive)
