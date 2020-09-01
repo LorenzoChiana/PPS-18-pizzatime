@@ -26,7 +26,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Generates a new level. */
   def generateMap(): Unit = {
     mapGen.generateLevel()
-    play(LevelMusic)
+   /* play(LevelMusic)*/
   }
 
   /** Updates the [[Arena]] for the new logical step. */
