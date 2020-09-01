@@ -85,15 +85,15 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         bullets = bullets -- bulletOnEnemy
       }
 
-      if (!player.isLive) {
+      if (player.isDead) {
         play(FailureSound)
         stopSound()
       }
     })
 
     /**Check if any enemies are dead*/
-    enemies.filter(!_.isLive).foreach(en => player.addScore(en.pointsKilling))
-    enemies = enemies -- enemies.filter(!_.isLive)
+    enemies.filter(_.isDead).foreach(en => player.addScore(en.pointsKilling))
+    enemies = enemies -- enemies.filter(_.isDead)
 
     /**Check if door is open*/
     if (enemies.isEmpty && door.isEmpty) {

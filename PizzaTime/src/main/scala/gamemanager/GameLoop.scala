@@ -32,7 +32,7 @@ class GameLoop(gameManager: GameManager) extends Runnable  {
       case _ =>
     }
 
-    if (!arena.get.player.isLive) gameManager.notifyEndGame()
+    if (arena.get.player.isDead) gameManager.notifyEndGame()
   }
 
   def finishGame(): Unit = println("Finish!")

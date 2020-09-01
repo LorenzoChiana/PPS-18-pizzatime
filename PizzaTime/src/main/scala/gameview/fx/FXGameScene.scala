@@ -85,7 +85,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
       PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 " +
         " Score: " + arena.get.player.score +
         " Record: " + arena.get.player.record))
-    if (!arena.get.player.isLive) showAlertMessage()
+    if (arena.get.player.isDead) showAlertMessage()
   }
 
   def showAlertMessage(): Unit = {

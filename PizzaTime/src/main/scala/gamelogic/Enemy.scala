@@ -28,6 +28,8 @@ case class Enemy(var position: Position,  var lives: Int = 5, pointsKilling: Int
 
   def isLive: Boolean = lives > 0
 
+  def isDead: Boolean = !isLive
+
   override def remove(): Boolean = {
     arena.get.enemies = arena.get.enemies - copy()
     if (!arena.get.enemies.contains(copy())) true else false
