@@ -44,6 +44,15 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   it should "collide with walls" in wallsCollisionTest(enemy)
   it should "collide with obstacles" in obstaclesCollisionsTest(enemy)
 
+  enemy.moveTo(Position(Point(0,0), Some(Down)))
+  val bullet: Bullet = Bullet(Position(centerPoint, Some(Down)))
+
+  "A bullet" should "move up" in moveDirectionTest(bullet, Up)
+  it should "move down" in moveDirectionTest(bullet, Down)
+  it should "move left" in moveDirectionTest(bullet, Left)
+  it should "move right" in moveDirectionTest(bullet, Right)
+  it should "collide with obstacles" in obstaclesCollisionsTest(bullet)
+
   private def moveDirectionTest(entity: MovableEntity, direction: Direction): Unit = {
     entity moveTo Position(centerPoint, Some(direction))
     entity move direction
@@ -126,9 +135,9 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
     val obstaclePoint = stepPoint(centerPoint, Down)
     obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
 
-    player moveTo Position(centerPoint, Some(Down))
-    player move Down
-    player.position.point shouldEqual centerPoint
+    entity moveTo Position(centerPoint, Some(Down))
+    entity move Down
+    entity.position.point shouldEqual centerPoint
 
     obstacles = Set()
   }
