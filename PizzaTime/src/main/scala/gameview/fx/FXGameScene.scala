@@ -63,6 +63,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   }
 
   createLabelStats()
+
   Platform.runLater(() => {
     dungeon.getChildren.add(userStatsLabel)
     stage.setScene(scene)
@@ -80,11 +81,14 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
    */
   def updateView(): Unit = {
     elements.foreach(e => e.update())
+
     /** Updating player lives */
     Platform.runLater(() => userStatsLabel.setText(
-      PreferencesHandler.playerName + ": " + arena.get.player.lives + " \u2764 " +
-        " Score: " + arena.get.player.score +
-        " Record: " + arena.get.player.record))
+      PreferencesHandler.playerName + ": " + arena.get.player.lives +
+        "   Level: " + arena.get.mapGen.currentLevel +
+        "   Score: " + arena.get.player.score +
+        "   Record: " + arena.get.player.record))
+
     if (arena.get.player.isDead) showAlertMessage()
   }
 
@@ -113,8 +117,10 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   private def createLabelStats(): Unit = {
     userStatsLabel = new Label(
       PreferencesHandler.playerName + ": " + arena.get.player.lives +
-      " Score: " + arena.get.player.score +
-      " Record: " + arena.get.player.record
+        " Level: " + arena.get.mapGen.currentLevel +
+        " Score: " + arena.get.player.score +
+        " Record: " + arena.get.player.record
+
     )
     userStatsLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold; -fx-background-color: #4444; " +
       "-fx-padding: 8px; -fx-background-radius: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);")
