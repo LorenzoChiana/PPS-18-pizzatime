@@ -6,9 +6,9 @@ import Thread.sleep
 import GameManager._
 import gamelogic.GameState.{arena, nextStep}
 import gameview.fx.FXGameScene
-import utilities.MessageTypes.Warning
 
-class GameLoop(gameManager: GameManager) extends Runnable  {
+class GameLoop() extends Runnable  {
+
   def run(): Unit = {
     while (!endGame) {
       val startTime: Long = currentTimeMillis()
@@ -27,12 +27,13 @@ class GameLoop(gameManager: GameManager) extends Runnable  {
     numCycle += 1
 
     /** Update view */
-    view.get match {
-      case scene: FXGameScene => if(arena.get.endedLevel) {scene.endLevel(); arena.get.endedLevel = false} else {scene.updateView()}
-      case _ =>
-    }
+    if (view.nonEmpty)
+      view.get match {
+        case scene: FXGameScene => if(arena.get.endedLevel) {scene.endLevel(); arena.get.endedLevel = false} else {scene.updateView()}
+        case _ =>
+      }
 
-    if (arena.get.player.isDead) gameManager.notifyEndGame()
+    if (arena.get.player.isDead) notifyEndGame()
   }
 
   def finishGame(): Unit = println("Finish!")

@@ -16,7 +16,6 @@ import java.util.concurrent.Executors.newFixedThreadPool
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
-import GameManager._
 import gamelogic.GameState
 import gamelogic.GameState.{arena, playerRankings}
 import net.liftweb.json.JsonAST
@@ -26,15 +25,30 @@ import net.liftweb.json._
 import scala.io.Source
 import scala.util.{Failure, Success, Using}
 
-class GameManager extends ViewObserver {
+object GameManager extends ViewObserver {
+  val NumThreads: Int = getRuntime.availableProcessors() + 1
+  val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
+  val TimeSliceMillis: Int = 50
+  var view: Option[Scene] = None
+  def view_(view: Scene): Unit = this.view = Some(view)
+
+  var numCycle: Int = 0
   lazy val windowManager: Window = view.get.windowManager
+  /****/
+  var endGame: Boolean = false
+
+  /** [[Queue]] for movements notified but not yet processed. */
+  var playerMoves: Queue[Option[Direction]] = Queue[Option[Direction]]()
+
+  /** [[Queue]] for shoots notified but not yet processed. */
+  var playerShoots: Queue[Option[Direction]] = Queue[Option[Direction]]()
 
   loadPlayerRankings()
 
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {
     GameState.startGame("Player1", gameType(Medium))
-    ThreadPool.execute(new GameLoop(this))
+    ThreadPool.execute(new GameLoop())
   }
 
   /** Notifies that the game has ended */
@@ -130,24 +144,6 @@ class GameManager extends ViewObserver {
   override def startNewLevel(): Unit = {
     GameState.nextLevel()
   }
-}
-
-object GameManager {
-  val NumThreads: Int = getRuntime.availableProcessors() + 1
-  val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
-  val TimeSliceMillis: Int = 50
-  var view: Option[Scene] = None
-  def view_(view: Scene): Unit = this.view = Some(view)
-
-  var numCycle: Int = 0
-
-  var endGame: Boolean = false
-
-  /** [[Queue]] for movements notified but not yet processed. */
-  var playerMoves: Queue[Option[Direction]] = Queue[Option[Direction]]()
-
-  /** [[Queue]] for shoots notified but not yet processed. */
-  var playerShoots: Queue[Option[Direction]] = Queue[Option[Direction]]()
 
   def checkNewMovement(): Option[Direction] = {
     playerMoves.length match {

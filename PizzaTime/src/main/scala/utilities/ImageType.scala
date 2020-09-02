@@ -1,6 +1,6 @@
 package utilities
 
-object ImageType extends Enumeration {
+object ImageType {
   val Floor: ImageVal = ImageVal("/images/textures/tile.png")
   val Wall: ImageVal = ImageVal("/images/textures/wallKitchen.png")
   val Obstacle1: ImageVal = ImageVal("/images/sprites/obstacle1.png")

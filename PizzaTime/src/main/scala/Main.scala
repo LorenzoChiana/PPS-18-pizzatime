@@ -18,7 +18,7 @@ import ExecutionContext.Implicits.global
 
   private def initializeGame(primaryStage: Stage): Future[Unit] = Future {
     val view: Window = FXWindow(primaryStage, "PizzaTime")
-    val observers: Set[ViewObserver] = Set(new GameManager())
+    val observers: Set[ViewObserver] = Set(GameManager)
     addObserver(observers)
     view.scene_(new Intent(MainScene))
     view.showView()

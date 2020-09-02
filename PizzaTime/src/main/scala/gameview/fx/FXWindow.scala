@@ -97,6 +97,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     }
 
     def setSettingsScene(): Unit = {
+
       val settingsScene: Scene = FXSettingsScene(this)
       val fxSettingsScene = settingsScene.asInstanceOf[FXSettingsScene]
 
