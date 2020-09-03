@@ -92,6 +92,9 @@ class GameManager extends ViewObserver {
     playerName_(settingPreferences.playerName)
     difficulty_(settingPreferences.difficulty)
 
+    GameState.arenaWidth = settingPreferences.difficulty.arenaWidth
+    GameState.arenaHeight = settingPreferences.difficulty.arenaHeight
+
     windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
   }
 
