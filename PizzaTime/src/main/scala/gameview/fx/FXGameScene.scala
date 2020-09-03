@@ -7,6 +7,7 @@ import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
 import gamemanager.handlers.PreferencesHandler
+import gamemanager.handlers.PreferencesHandler.difficulty
 import gameview.fx.FXGameScene.dungeon
 import gameview.fx.gamesceneelements.{ArenaRoom, Bullets, Collectibles, Enemies, GameElements, Player}
 import gameview.scene.Scene
@@ -107,11 +108,9 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   }
 
   def endLevel(): Unit = {
-    Platform.runLater(() =>dungeon.getChildren.clear())
+    Platform.runLater(() => dungeon.getChildren.clear())
     elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
-    Platform.runLater(() => {
-      dungeon.getChildren.add(userStatsLabel)
-    })
+    Platform.runLater(() => dungeon.getChildren.add(userStatsLabel))
   }
 
   private def createLabelStats(): Unit = {
