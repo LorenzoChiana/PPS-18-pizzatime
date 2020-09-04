@@ -92,7 +92,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   stage.setWidth(statsPane.getMinWidth + stage.getWidth)
 
   val timeline = new Timeline(new KeyFrame(Duration.millis(80), (_: ActionEvent) => {
-    actions.foreach(d => if (d._2) FXWindow.observers.foreach(o => o.notifyAction(d._1)))
+    actions.foreach(d => if (d._2) FXWindow.observers.foreach(_.notifyAction(d._1)))
   }))
   timeline.setCycleCount(Animation.INDEFINITE)
   timeline.play()
@@ -124,7 +124,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
       alert.showAndWait()
           .filter(response => response == ButtonType.CLOSE)
-          .ifPresent(_ => FXWindow.observers.foreach(observer => observer.onBack()))
+          .ifPresent(_ => FXWindow.observers.foreach(_.onBack()))
     })
   }
 

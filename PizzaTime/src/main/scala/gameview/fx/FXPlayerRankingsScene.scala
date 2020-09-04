@@ -31,6 +31,5 @@ case class FXPlayerRankingsScene(override val windowManager: Window) extends FXV
       recordsContainer.getChildren.add(hBox)
   }
 
-
-  backButton.setOnMouseClicked(_ => FXWindow.observers.foreach(observer => observer.onBack()))
+  backButton.setOnMouseClicked(_ => FXWindow.observers.foreach(_.onBack()))
 }
