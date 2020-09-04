@@ -25,5 +25,6 @@ object ImageLoader {
   val bulletImage: Image = generateImage(Bullet.path)
   val bonusScoreImage: Image = generateImage(BonusScore.path)
 
+
   private def generateImage(path: String) = new Image(getClass.getResourceAsStream(path))
 }

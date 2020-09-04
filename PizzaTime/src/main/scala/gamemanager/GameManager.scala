@@ -56,6 +56,7 @@ object GameManager extends ViewObserver {
     endGame = true
     GameState.endGame()
     savePlayerRankings()
+    onBack()
   }
 
   /** Notifies that the player has moved or shot.
@@ -63,8 +64,8 @@ object GameManager extends ViewObserver {
    *  @param action the [[Action]] notified by the view
    */
   def notifyAction(action: Action): Unit = action.actionType match {
-    case Movement => playerMoves = playerMoves :+ action.direction
-    case Shoot => playerShoots = playerShoots :+ arena.get.player.position.dir
+    case Movement => println("move"); playerMoves = playerMoves :+ action.direction
+    case Shoot => println("shoot"); playerShoots = playerShoots :+ arena.get.player.position.dir
   }
 
   /** Notifies the transition to the game scene. */
@@ -106,6 +107,9 @@ object GameManager extends ViewObserver {
     playerName_(settingPreferences.playerName)
     difficulty_(settingPreferences.difficulty)
 
+    GameState.arenaWidth = settingPreferences.difficulty.arenaWidth
+    GameState.arenaHeight = settingPreferences.difficulty.arenaHeight
+
     windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
   }
 
@@ -141,9 +145,7 @@ object GameManager extends ViewObserver {
     Some(new PrintWriter("rank.json")).foreach { file => file.write(JsonAST.prettyRender(json)); file.close() }
   }
 
-  override def startNewLevel(): Unit = {
-    GameState.nextLevel()
-  }
+  override def startNewLevel(): Unit = GameState.nextLevel()
 
   def checkNewMovement(): Option[Direction] = {
     playerMoves.length match {
