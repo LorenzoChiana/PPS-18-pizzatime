@@ -16,7 +16,7 @@ import javafx.animation.Timeline
 import javafx.event.ActionEvent
 import javafx.geometry.Pos
 import javafx.scene.Group
-import javafx.scene.input.KeyCode.{A, DOWN, LEFT, RIGHT, UP}
+import javafx.scene.input.KeyCode.{A, S, D, W, J}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
 import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up}
@@ -72,19 +72,19 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   statsPane.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #c9beeb, #a8c0ce); ")
 
   stage.getScene.setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
-    case UP => actions(Action(Movement, Some(Up))) = true
-    case DOWN => actions(Action(Movement, Some(Down))) = true
-    case LEFT => actions(Action(Movement, Some(Left))) = true
-    case RIGHT => actions(Action(Movement, Some(Right))) = true
-    case A => actions(Action(Shoot, None)) = true
+    case W => actions(Action(Movement, Some(Up))) = true
+    case S => actions(Action(Movement, Some(Down))) = true
+    case A => actions(Action(Movement, Some(Left))) = true
+    case D => actions(Action(Movement, Some(Right))) = true
+    case J => actions(Action(Shoot, None)) = true
     case _ => None
   })
   stage.getScene.setOnKeyReleased((keyEvent: KeyEvent) => keyEvent.getCode match {
-    case UP => actions(Action(Movement, Some(Up))) = false
-    case DOWN => actions(Action(Movement, Some(Down))) = false
-    case LEFT => actions(Action(Movement, Some(Left))) = false
-    case RIGHT => actions(Action(Movement, Some(Right))) = false
-    case A => actions(Action(Shoot, None)) = false
+    case W => actions(Action(Movement, Some(Up))) = false
+    case S => actions(Action(Movement, Some(Down))) = false
+    case A => actions(Action(Movement, Some(Left))) = false
+    case D => actions(Action(Movement, Some(Right))) = false
+    case J => actions(Action(Shoot, None)) = false
     case _ => None
   })
 
@@ -131,7 +131,6 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   def endLevel(): Unit = {
     Platform.runLater(() => dungeon.getChildren.clear())
     elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
-    //Platform.runLater(() => dungeon.getChildren.add(userStatsLabel))
   }
 
   def createLabel(text: String, rowIndex: Int): Label = {

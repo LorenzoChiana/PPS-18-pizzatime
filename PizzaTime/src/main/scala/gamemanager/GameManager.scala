@@ -64,8 +64,8 @@ object GameManager extends ViewObserver {
    *  @param action the [[Action]] notified by the view
    */
   def notifyAction(action: Action): Unit = action.actionType match {
-    case Movement => println("move"); playerMoves = playerMoves :+ action.direction
-    case Shoot => println("shoot"); playerShoots = playerShoots :+ arena.get.player.position.dir
+    case Movement => playerMoves = playerMoves :+ action.direction
+    case Shoot => playerShoots = playerShoots :+ arena.get.player.position.dir
   }
 
   /** Notifies the transition to the game scene. */
