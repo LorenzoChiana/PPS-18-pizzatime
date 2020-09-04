@@ -13,6 +13,7 @@ import scala.util.Random.between
 /** [[GridPane]] representing [[ArenaRoom]]*/
 class ArenaRoom extends GameElements {
   val arenaArea: GridPane = createArena()
+  val door: ImageView = createTile(ImageLoader.floorImage)
 
   /**
    * Checks if the door should be opened
@@ -21,10 +22,12 @@ class ArenaRoom extends GameElements {
 
   private def createDoor(): Unit ={
     Platform.runLater(() => {
-      if(arena.get.door.nonEmpty) {
-        val door: ImageView = createTile(ImageLoader.floorImage)
+      if(arena.get.door.isDefined && !dungeon.getChildren.contains(door)) {
+        println("prima if")
         dungeon.getChildren.add(door)
         door.relocate(pointToPixel(arena.get.door.get)._1, pointToPixel(arena.get.door.get)._2)
+      } else if(arena.get.door.isEmpty){
+        dungeon.getChildren.remove(door)
       }
     })
   }
@@ -35,10 +38,13 @@ class ArenaRoom extends GameElements {
    */
   private def createArena(): GridPane = {
     val gridPane = new GridPane
-      for (f <- arena.get.floor) gridPane.add(createTile(ImageLoader.floorImage), f.position.point.x, f.position.point.y)
-      for (w <- arena.get.walls) gridPane.add(createTile(ImageLoader.wallImage), w.position.point.x, w.position.point.y)
-      for (o <- arena.get.obstacles) gridPane.add(createTile(ImageLoader.obstacles(between(0, 3))), o.position.point.x, o.position.point.y)
-      gridPane.setGridLinesVisible(false)
+
+    for (f <- arena.get.floor) gridPane.add(createTile(ImageLoader.floorImage), f.position.point.x, f.position.point.y)
+    for (w <- arena.get.walls) gridPane.add(createTile(ImageLoader.wallImage), w.position.point.x, w.position.point.y)
+    for (o <- arena.get.obstacles) gridPane.add(createTile(ImageLoader.obstacles(between(0, 3))), o.position.point.x, o.position.point.y)
+
+    gridPane.setGridLinesVisible(false)
+
     createDoor()
 
     gridPane

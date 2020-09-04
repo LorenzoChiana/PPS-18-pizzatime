@@ -40,7 +40,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Updates the [[Arena]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
     if (shoot.isDefined) {
-      bullets = bullets + Bullet(player.position)
+      bullets = bullets + Bullet(Position(player.position.point, shoot))
       play(ShootSound)
     }
 
@@ -110,10 +110,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         play(LevelUp)
       }
     } else if (enemies.nonEmpty && !player.position.point.equals(door.get)) {
-      println("sono entrata nell'else")
       door = None
     }
-    println(door)
   }
 
   /** Empties the [[Arena]]. */
