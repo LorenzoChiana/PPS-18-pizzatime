@@ -2,13 +2,13 @@ package gamelogic
 
 import gamelogic.GameState.{nextStep, startGame}
 import gamelogic.MapGenerator.gameType
-import gamelogic.MovableEntity.stepPoint
+import gamelogic.Entity.stepPoint
 import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import utilities.Difficulty.Easy
-import utilities.{Down, Left, Point, Position, Right, Up}
+import utilities.{Down, Left, Point, Position, Right}
 
 class EnemyTest extends AnyFlatSpec with Matchers {
   difficulty_(Easy)

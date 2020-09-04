@@ -10,7 +10,6 @@ import gamemanager.handlers.PreferencesHandler
 import gameview.fx.FXGameScene.dungeon
 import gameview.fx.gamesceneelements.{ArenaRoom, Bullets, Collectibles, Enemies, GameElements, Player}
 import gameview.scene.Scene
-import gameview.scene.SceneType.MainScene
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
@@ -19,7 +18,7 @@ import javafx.scene.{Group, Scene => JFXScene}
 import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, SPACE, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
-import utilities.{Action, Down, Intent, Left, Movement, Point, Right, Shoot, Up}
+import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up}
 import javafx.scene.control.Label
 
 import scala.collection.immutable.HashSet
@@ -38,7 +37,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     Action(Shoot, None) -> false,
   )
 
-  private var elements: Set[GameElements] = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
+  private var elements: Set[GameElements] = HashSet(ArenaRoom(), Enemies(), Collectibles(), Bullets(), Player())
 
   private var userStatsLabel: Label = _
 
@@ -107,7 +106,7 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   }
 
   def endLevel(): Unit = {
-    Platform.runLater(() =>dungeon.getChildren.clear())
+    Platform.runLater(() => dungeon.getChildren.clear())
     elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
     Platform.runLater(() => {
       dungeon.getChildren.add(userStatsLabel)

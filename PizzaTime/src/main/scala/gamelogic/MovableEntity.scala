@@ -1,7 +1,6 @@
 package gamelogic
 
-import utilities.ImplicitConversions._
-import MovableEntity._
+import Entity._
 import Arena._
 import utilities.{Direction, Up, Down, Left, Right, Point, Position}
 
@@ -62,17 +61,3 @@ trait MovableEntity extends Entity {
   }
 }
 
-/** Utility methods for [[MovableEntity]]. */
-object MovableEntity {
-  /** Returns the adjacent [[Point]] in a given [[Direction]].
-   *
-   *  @param p the starting [[Point]]
-   *  @param dir the [[Direction]] to consider
-   */
-  def stepPoint(p: Point, dir: Direction): Point = dir match {
-    case Up => (p.x, p.y - 1)
-    case Down => (p.x, p.y + 1)
-    case Left => (p.x - 1, p.y)
-    case Right => (p.x + 1, p.y)
-  }
-}

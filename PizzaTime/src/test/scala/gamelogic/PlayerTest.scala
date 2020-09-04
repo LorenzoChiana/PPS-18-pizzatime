@@ -2,7 +2,7 @@ package gamelogic
 
 import gamelogic.GameState.{nextStep, startGame}
 import gamelogic.MapGenerator.gameType
-import gamelogic.MovableEntity.stepPoint
+import gamelogic.Entity.stepPoint
 import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers

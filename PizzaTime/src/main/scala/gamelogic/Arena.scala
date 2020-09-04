@@ -3,7 +3,7 @@ package gamelogic
 import GameState._
 import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
-import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, LevelMusic, LevelUp, Point, Position, ShootSound}
+import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, Left, LevelMusic, LevelUp, Point, Position, Right, ShootSound, Up}
 import utilities.ImplicitConversions._
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -26,7 +26,15 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Generates a new level. */
   def generateMap(): Unit = {
     mapGen.generateLevel()
-   /* play(LevelMusic)*/
+    door = Some(MapGenerator.randomPositionWall.position.point)
+    println("generateMap door: " + door.get)
+    door.get match {
+      case Point(0, _) => player.moveTo(Position(door.get, Some(Right)))
+      case Point(_, 0) => player.moveTo(Position(door.get, Some(Down)))
+      case Point(x, _) if x.equals(arenaWidth-1) => player.moveTo(Position(door.get, Some(Left)))
+      case Point(_, y) if y.equals(arenaHeight-1) => player.moveTo(Position(door.get, Some(Up)))
+    }
+    /*play(LevelMusic)*/
   }
 
   /** Updates the [[Arena]] for the new logical step. */
@@ -96,12 +104,16 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     enemies = enemies -- enemies.filter(_.isDead)
 
     /**Check if door is open*/
-    if (enemies.isEmpty && door.isEmpty) {
-      door = Some(Point(0, 5))
-      play(LevelUp)
-    } else if (enemies.nonEmpty) {
+    if (door.isEmpty) {
+      if(enemies.isEmpty){
+        door = Some(MapGenerator.randomPositionWall.position.point)
+        play(LevelUp)
+      }
+    } else if (enemies.nonEmpty && !player.position.point.equals(door.get)) {
+      println("sono entrata nell'else")
       door = None
     }
+    println(door)
   }
 
   /** Empties the [[Arena]]. */

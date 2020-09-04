@@ -17,7 +17,9 @@ class ArenaRoom extends GameElements {
   /**
    * Checks if the door should be opened
    */
-  override def update(): Unit =
+  override def update(): Unit = createDoor()
+
+  private def createDoor(): Unit ={
     Platform.runLater(() => {
       if(arena.get.door.nonEmpty) {
         val door: ImageView = createTile(ImageLoader.floorImage)
@@ -25,7 +27,7 @@ class ArenaRoom extends GameElements {
         door.relocate(pointToPixel(arena.get.door.get)._1, pointToPixel(arena.get.door.get)._2)
       }
     })
-
+  }
   /**
    * Draws entities within the game arena
    *
@@ -37,6 +39,8 @@ class ArenaRoom extends GameElements {
       for (w <- arena.get.walls) gridPane.add(createTile(ImageLoader.wallImage), w.position.point.x, w.position.point.y)
       for (o <- arena.get.obstacles) gridPane.add(createTile(ImageLoader.obstacles(between(0, 3))), o.position.point.x, o.position.point.y)
       gridPane.setGridLinesVisible(false)
+    createDoor()
+
     gridPane
   }
 }

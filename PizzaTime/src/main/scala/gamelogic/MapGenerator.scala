@@ -2,7 +2,7 @@ package gamelogic
 
 import MapGenerator._
 import Arena._
-import utilities.{Difficulty, Down, Left, Point, Position, Right, Up}
+import utilities.{Difficulty, Down, Point, Position}
 import utilities.Difficulty._
 import GameState._
 import Entity._
@@ -25,6 +25,11 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     generateEnemies()
     generateCollectibles()
     generateObstacles()
+  }
+
+  def generateDoor(): Option[Point] = {
+    //isClearFloor(Point())
+    Some(Point(0,0))
   }
 
   private def generateEnemies(): Unit = {
@@ -64,6 +69,19 @@ object MapGenerator {
    *  @return the new [[MapGenerator]] instance
    */
   def gameType(difficulty: DifficultyVal): MapGenerator = new MapGenerator(difficulty)
+
+  /** Returns a random and clear [[Position]] on the wall. */
+  @tailrec
+  def randomPositionWall: Wall = {
+    val wall = arena.get.walls.iterator.drop(between(0, arena.get.walls.size)).next
+    wall.position.point match {
+      case Point(0,0) => randomPositionWall
+      case Point(0, y) if y.equals(arenaHeight-1) => randomPositionWall
+      case Point(x, 0) if x.equals(arenaWidth-1) => randomPositionWall
+      case Point(x, y) if x.equals(arenaWidth-1) && y.equals(arenaHeight-1) => randomPositionWall
+      case _ => if(surroundings(wall.position.point).size < 1) randomPositionWall else wall
+    }
+  }
 
   /** Returns a random and clear [[Position]] on the [[Arena]]. */
   @tailrec

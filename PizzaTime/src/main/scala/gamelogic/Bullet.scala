@@ -1,6 +1,6 @@
 package gamelogic
 
-import MovableEntity._
+import Entity._
 import utilities.{Direction, Down, Left, Position, Right, Up}
 import GameState.arena
 

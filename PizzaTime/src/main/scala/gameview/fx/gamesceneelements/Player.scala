@@ -47,7 +47,13 @@ object Player{
     val p: Player = new Player()
     p.player setFitHeight tileHeight
     p.player setFitWidth tileWidth
-
+    arena.get.player.position.dir match {
+      case Some(Up) => p.heroAnimation.offsetY = 260; p.heroAnimation.play()
+      case Some(Down) => p.heroAnimation.offsetY = 0; p.heroAnimation.play()
+      case Some(Left) => p.heroAnimation.offsetY = 130; p.heroAnimation.play()
+      case Some(Right) => p.heroAnimation.offsetY = 390; p.heroAnimation.play()
+      case _ => None
+    }
     Platform.runLater(() => {
       p.player relocate(pointToPixel(arena.get.player.position.point)._1, pointToPixel(arena.get.player.position.point)._2)
       dungeon.getChildren.add(p.player)
