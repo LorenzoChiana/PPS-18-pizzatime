@@ -140,7 +140,7 @@ object GameManager {
   val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
   val TimeSliceMillis: Int = 50
   var view: Option[Scene] = None
-  def view_(view: Scene): Unit = this.view = Some(view)
+  def view_(scene: Scene): Unit = view = Some(scene)
 
   var numCycle: Int = 0
 
