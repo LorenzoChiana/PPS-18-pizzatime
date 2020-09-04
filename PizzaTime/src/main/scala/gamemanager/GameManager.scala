@@ -145,9 +145,7 @@ object GameManager extends ViewObserver {
     Some(new PrintWriter("rank.json")).foreach { file => file.write(JsonAST.prettyRender(json)); file.close() }
   }
 
-  override def startNewLevel(): Unit = {
-    GameState.nextLevel()
-  }
+  override def startNewLevel(): Unit = GameState.nextLevel()
 
   def checkNewMovement(): Option[Direction] = {
     playerMoves.length match {

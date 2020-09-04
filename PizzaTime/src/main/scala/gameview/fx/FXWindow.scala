@@ -30,19 +30,16 @@ case class FXWindow(stage: Stage, title: String) extends Window {
     stage.setResizable(false)
     stage.setTitle(title)
     windowContent.getStylesheets.add(getClass.getResource("/styles/MainStyle.css").toExternalForm)
-    this.stage.getIcons.addAll(
+    stage.getIcons.addAll(
       new Image(getClass.getResource("/images/icon/icon16x16.png").toExternalForm),
       new Image(getClass.getResource("/images/icon/icon32x32.png").toExternalForm),
       new Image(getClass.getResource("/images/icon/icon64x64.png").toExternalForm))
     stage.setScene(new JFXScene(windowContent))
-    this.stage.setOnCloseRequest(_ => closeView())
+    stage.setOnCloseRequest(_ => closeView())
   })
 
   override def showView(): Unit = {
-    Platform.runLater(() => {
-      centerOnScreen()
-      this.stage.show()
-    })
+    Platform.runLater(() => stage.show())
   }
 
   override def closeView(): Unit = {
@@ -71,7 +68,6 @@ case class FXWindow(stage: Stage, title: String) extends Window {
         stage.setMinHeight(WindowSize.Menu.height)
         stage.setMinWidth(WindowSize.Menu.width)
         windowContent.setId("mainDecoratedContainer")
-        centerOnScreen()
       })
     }
 
@@ -88,11 +84,12 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
     def setClassificationScene(): Unit = {
       val classificationScene: Scene = FXPlayerRankingsScene(this)
-
+      val fxClassificationScene = classificationScene.asInstanceOf[FXPlayerRankingsScene]
       GameManager.view_(classificationScene)
+
       Platform.runLater(() => {
-        windowContent.setCenter(classificationScene.asInstanceOf[FXPlayerRankingsScene])
-        Animations.Fade.fadeIn(classificationScene.asInstanceOf[FXPlayerRankingsScene])
+        windowContent.setCenter(fxClassificationScene)
+        Animations.Fade.fadeIn(fxClassificationScene)
       })
     }
 
@@ -100,8 +97,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
       val settingsScene: Scene = FXSettingsScene(this)
       val fxSettingsScene = settingsScene.asInstanceOf[FXSettingsScene]
-
       GameManager.view_(settingsScene)
+
       fxSettingsScene.showCurrentPreferences(SettingPreferences(
         PreferencesHandler.playerName,
         PreferencesHandler.difficulty
@@ -128,7 +125,6 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       observers.foreach(observer => observer.notifyStartGame())
       val gameScene: gameview.scene.Scene = FXGameScene(this, stage)
       val fxGameScene = gameScene.asInstanceOf[FXGameScene]
-
       GameManager.view_(gameScene)
 
       Platform.runLater(() => {
@@ -182,13 +178,6 @@ case class FXWindow(stage: Stage, title: String) extends Window {
       windowContent.setEffect(new BoxBlur(0, 0, 0))
     })
   }
-
-  private def centerOnScreen(): Unit = {
-    val primScreenBounds = Screen.getPrimary.getVisualBounds
-    this.stage.setX((primScreenBounds.getWidth - this.stage.getWidth) / 2)
-    this.stage.setY((primScreenBounds.getHeight - this.stage.getHeight) / 2)
-  }
-
 }
 
 /**
