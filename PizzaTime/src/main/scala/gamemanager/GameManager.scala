@@ -56,7 +56,7 @@ object GameManager extends ViewObserver {
     endGame = true
     GameState.endGame()
     savePlayerRankings()
-    onBack()
+    //onBack()
   }
 
   /** Notifies that the player has moved or shot.
