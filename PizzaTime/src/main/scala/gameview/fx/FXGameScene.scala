@@ -7,21 +7,21 @@ import javafx.stage.Stage
 import utilities.WindowSize.Game
 import gamelogic.GameState._
 import gamemanager.handlers.PreferencesHandler
-import gamemanager.handlers.PreferencesHandler.difficulty
 import gameview.fx.FXGameScene.dungeon
 import gameview.fx.gamesceneelements.{ArenaRoom, Bullets, Collectibles, Enemies, GameElements, Player}
 import gameview.scene.Scene
-import gameview.scene.SceneType.MainScene
 import javafx.animation.Animation
 import javafx.animation.KeyFrame
 import javafx.animation.Timeline
 import javafx.event.ActionEvent
-import javafx.scene.{Group, Scene => JFXScene}
-import javafx.scene.input.KeyCode.{DOWN, LEFT, RIGHT, SPACE, UP}
+import javafx.geometry.Pos
+import javafx.scene.Group
+import javafx.scene.input.KeyCode.{A, DOWN, LEFT, RIGHT, UP}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
-import utilities.{Action, Down, Intent, Left, Movement, Point, Right, Shoot, Up}
-import javafx.scene.control.Label
+import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up}
+import javafx.scene.control.{Button, Label}
+import javafx.scene.layout.GridPane
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable
@@ -41,35 +41,55 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
 
   private var elements: Set[GameElements] = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
 
-  private var userStatsLabel: Label = _
+  private val root: GridPane = new GridPane()
 
-  val scene: JFXScene = new JFXScene(dungeon) {
-    setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
-      case UP => actions(Action(Movement, Some(Up))) = true
-      case DOWN => actions(Action(Movement, Some(Down))) = true
-      case LEFT => actions(Action(Movement, Some(Left))) = true
-      case RIGHT => actions(Action(Movement, Some(Right))) = true
-      case SPACE => actions(Action(Shoot, None)) = true
-      case _ => None
-    })
+  root.add(dungeon, 0,0)
 
-    setOnKeyReleased((keyEvent: KeyEvent) => keyEvent.getCode match {
-      case UP => actions(Action(Movement, Some(Up))) = false
-      case DOWN => actions(Action(Movement, Some(Down))) = false
-      case LEFT => actions(Action(Movement, Some(Left))) = false
-      case RIGHT => actions(Action(Movement, Some(Right))) = false
-      case SPACE => actions(Action(Shoot, None)) = false
-      case _ => None
-    })
-  }
+  val statsPane = new GridPane()
+  var backButton: Button = new Button("End game")
+  val lifeLabel: Label = createLabel(PreferencesHandler.playerName + ": " + arena.get.player.lives,0)
+  val levelLabel: Label = createLabel("Level: " + arena.get.mapGen.currentLevel, 1)
+  val scoreLabel: Label = createLabel("Score: " + arena.get.player.score, 2)
+  val recordLabel: Label = createLabel(" Record: " + arena.get.player.record, 3)
 
-  createLabelStats()
+  val buttonStyle: String = "-fx-background-color: #f6f6f6; -fx-font-style: italic; -fx-font-size: 25; -fx-text-fill: #5c656c; " +
+    "-fx-font-weight: bold; -fx-padding: 8px; -fx-background-radius:1; -fx-border-color: #c3c3c3; -fx-border-width: 2 2 2 2;"
+  val buttonStyleHover: String = "-fx-background-color: #c3c3c3; -fx-font-style: italic; -fx-font-size: 25; -fx-text-fill: #5c656c; " +
+    "-fx-font-weight: bold; -fx-padding: 8px; -fx-background-radius:1; -fx-border-color: #c3c3c3; -fx-border-width: 2 2 2 2;"
 
-  Platform.runLater(() => {
-    dungeon.getChildren.add(userStatsLabel)
-    stage.setScene(scene)
-    stage.show()
+  backButton.setOnMouseClicked(_ => FXWindow.observers.foreach(_.notifyEndGame()))
+  statsPane.add(backButton, 0,4)
+
+  backButton.setAlignment(Pos.CENTER)
+  backButton.setStyle(buttonStyle)
+  backButton.setOnMouseEntered(_ => backButton.setStyle(buttonStyleHover))
+  backButton.setOnMouseExited(_ => backButton.setStyle(buttonStyle))
+
+  root.add(statsPane, 1,0)
+  statsPane.setMinWidth(150)
+  statsPane.setAlignment(Pos.CENTER)
+
+  statsPane.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #c9beeb, #a8c0ce); ")
+
+  stage.getScene.setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
+    case UP => actions(Action(Movement, Some(Up))) = true
+    case DOWN => actions(Action(Movement, Some(Down))) = true
+    case LEFT => actions(Action(Movement, Some(Left))) = true
+    case RIGHT => actions(Action(Movement, Some(Right))) = true
+    case A => actions(Action(Shoot, None)) = true
+    case _ => None
   })
+  stage.getScene.setOnKeyReleased((keyEvent: KeyEvent) => keyEvent.getCode match {
+    case UP => actions(Action(Movement, Some(Up))) = false
+    case DOWN => actions(Action(Movement, Some(Down))) = false
+    case LEFT => actions(Action(Movement, Some(Left))) = false
+    case RIGHT => actions(Action(Movement, Some(Right))) = false
+    case A => actions(Action(Shoot, None)) = false
+    case _ => None
+  })
+
+  stage.getScene.setRoot(root)
+  stage.setWidth(statsPane.getMinWidth + stage.getWidth)
 
   val timeline = new Timeline(new KeyFrame(Duration.millis(80), (_: ActionEvent) => {
     actions.foreach(d => if (d._2) FXWindow.observers.foreach(o => o.notifyAction(d._1)))
@@ -83,12 +103,13 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   def updateView(): Unit = {
     elements.foreach(e => e.update())
 
-    /** Updating player lives */
-    Platform.runLater(() => userStatsLabel.setText(
-      PreferencesHandler.playerName + ": " + arena.get.player.lives +
-        "   Level: " + arena.get.mapGen.currentLevel +
-        "   Score: " + arena.get.player.score +
-        "   Record: " + arena.get.player.record))
+    /** Updating player's label */
+    Platform.runLater(() => {
+      lifeLabel.setText(PreferencesHandler.playerName + ": " + arena.get.player.lives)
+      levelLabel.setText("Level: " + arena.get.mapGen.currentLevel)
+      scoreLabel.setText("Score: " + arena.get.player.score )
+      recordLabel.setText("Record: " + arena.get.player.record)
+    })
 
     if (arena.get.player.isDead) showAlertMessage()
   }
@@ -110,20 +131,14 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
   def endLevel(): Unit = {
     Platform.runLater(() => dungeon.getChildren.clear())
     elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
-    Platform.runLater(() => dungeon.getChildren.add(userStatsLabel))
+    //Platform.runLater(() => dungeon.getChildren.add(userStatsLabel))
   }
 
-  private def createLabelStats(): Unit = {
-    userStatsLabel = new Label(
-      PreferencesHandler.playerName + ": " + arena.get.player.lives +
-        " Level: " + arena.get.mapGen.currentLevel +
-        " Score: " + arena.get.player.score +
-        " Record: " + arena.get.player.record
-
-    )
-    userStatsLabel.setStyle("-fx-font-style: italic; -fx-font-size: 40; -fx-text-fill: #92de34; -fx-font-weight: bold; -fx-background-color: #4444; " +
-      "-fx-padding: 8px; -fx-background-radius: 20px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 10, 0, 0, 0);")
-    userStatsLabel.relocate(Game.width / 3.5, 1)
+  def createLabel(text: String, rowIndex: Int): Label = {
+    val label: Label = new Label(text)
+    label.setStyle("-fx-font-style: italic; -fx-font-size: 25; -fx-text-fill: #5c656c; -fx-font-weight: bold; -fx-padding: 8px;")
+    statsPane.add(label, 0, rowIndex)
+    label
   }
 }
 

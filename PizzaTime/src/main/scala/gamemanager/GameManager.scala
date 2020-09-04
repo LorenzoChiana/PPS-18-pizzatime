@@ -56,6 +56,7 @@ object GameManager extends ViewObserver {
     endGame = true
     GameState.endGame()
     savePlayerRankings()
+    onBack()
   }
 
   /** Notifies that the player has moved or shot.
@@ -63,8 +64,8 @@ object GameManager extends ViewObserver {
    *  @param action the [[Action]] notified by the view
    */
   def notifyAction(action: Action): Unit = action.actionType match {
-    case Movement => playerMoves = playerMoves :+ action.direction
-    case Shoot => playerShoots = playerShoots :+ arena.get.player.position.dir
+    case Movement => println("move"); playerMoves = playerMoves :+ action.direction
+    case Shoot => println("shoot"); playerShoots = playerShoots :+ arena.get.player.position.dir
   }
 
   /** Notifies the transition to the game scene. */
