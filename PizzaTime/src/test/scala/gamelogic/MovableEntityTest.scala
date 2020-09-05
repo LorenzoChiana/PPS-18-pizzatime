@@ -1,8 +1,8 @@
 package gamelogic
 
-import gamelogic.GameState.startGame
-import gamelogic.MapGenerator.gameType
-import gamelogic.MovableEntity.stepPoint
+import GameState.startGame
+import MapGenerator.gameType
+import Entity._
 import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
@@ -47,7 +47,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   private def moveDirectionTest(entity: MovableEntity, direction: Direction): Unit = {
     entity moveTo Position(centerPoint, Some(direction))
     entity move direction
-    entity.position.point shouldEqual stepPoint(centerPoint, direction)
+    entity.position.point shouldEqual nearPoint(centerPoint, direction)
   }
 
   private def changeDirectionTest(entity: MovableEntity): Unit = {
@@ -123,7 +123,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   }
 
   private def obstaclesCollisionsTest(entity: MovableEntity): Unit = {
-    val obstaclePoint = stepPoint(centerPoint, Down)
+    val obstaclePoint = nearPoint(centerPoint, Down)
     obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
 
     player moveTo Position(centerPoint, Some(Down))

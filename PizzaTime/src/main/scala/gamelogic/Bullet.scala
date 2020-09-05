@@ -1,6 +1,6 @@
 package gamelogic
 
-import MovableEntity._
+import Entity._
 import utilities.{Direction, Down, Left, Position, Right, Up}
 import GameState.arena
 
@@ -23,8 +23,8 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
   def checkInRange: Boolean = if (bulletRange < range){ bulletRange = bulletRange + 1; true} else {bulletRange = 0; false}
 
   override def move(dir: Direction): Boolean = {
-    if (canMove(stepPoint(position.point, dir)) && checkInRange) {
-      position = Position(stepPoint(position.point, dir), Some(dir))
+    if (canMove(nearPoint(position.point, dir)) && checkInRange) {
+      position = Position(nearPoint(position.point, dir), Some(dir))
       true
     } else {
       unexploded = false

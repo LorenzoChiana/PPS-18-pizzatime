@@ -1,8 +1,8 @@
 package gamelogic
 
-import gamelogic.GameState.{nextStep, startGame}
-import gamelogic.MapGenerator.gameType
-import gamelogic.MovableEntity.stepPoint
+import GameState.{nextStep, startGame}
+import MapGenerator.gameType
+import Entity._
 import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
@@ -33,8 +33,8 @@ class PlayerTest extends AnyFlatSpec with Matchers {
   }
 
   it should "walk over bonuses" in {
-    val bonusLifePoint = stepPoint(centerPoint, Right)
-    val bonusScorePoint = stepPoint(centerPoint, Left)
+    val bonusLifePoint = nearPoint(centerPoint, Right)
+    val bonusScorePoint = nearPoint(centerPoint, Left)
     collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) + BonusScore(Position(bonusScorePoint, None), 1)
 
     player moveTo Position(centerPoint, Some(Right))
@@ -51,7 +51,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
   it should "increase his life if he steps on BonusLife" in {
     player moveTo Position(centerPoint, Some(Right))
     player.lives = 1
-    collectibles = collectibles + BonusLife(Position(stepPoint(centerPoint, Right), None))
+    collectibles = collectibles + BonusLife(Position(nearPoint(centerPoint, Right), None))
     player.lives shouldEqual 1
     nextStep(Some(Right), None)
     player.lives should be > 1
@@ -63,7 +63,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     player moveTo Position(centerPoint, Some(Right))
     player.score = 0
     val scoreToIncrease = 5
-    collectibles = collectibles + BonusScore(Position(stepPoint(centerPoint, Right), None), scoreToIncrease)
+    collectibles = collectibles + BonusScore(Position(nearPoint(centerPoint, Right), None), scoreToIncrease)
     player.score shouldBe 0
     nextStep(Some(Right), None)
     player.score shouldBe scoreToIncrease
@@ -74,7 +74,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
   it should "decrease his life if he collides with an enemy" in {
     player moveTo Position(centerPoint, Some(Right))
     player.lives = 5
-    enemies = enemies + Enemy(Position(stepPoint(centerPoint, Right), Some(Left)))
+    enemies = enemies + Enemy(Position(nearPoint(centerPoint, Right), Some(Left)))
     player.lives shouldBe 5
     nextStep(Some(Right), None)
     player.lives should be < 5
@@ -88,7 +88,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
       bullets shouldBe Set()
       nextStep(None, Some(direction))
       bullets should not be Set()
-      bullets should contain (Bullet(Position(stepPoint(centerPoint, direction), Some(direction))))
+      bullets should contain (Bullet(Position(nearPoint(centerPoint, direction), Some(direction))))
       bullets = Set()
     })
   }

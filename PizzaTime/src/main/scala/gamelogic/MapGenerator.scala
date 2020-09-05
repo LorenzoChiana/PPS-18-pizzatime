@@ -5,9 +5,7 @@ import Arena._
 import utilities.{Difficulty, Down, Position}
 import utilities.Difficulty._
 import GameState._
-import Entity._
 import utilities.ImplicitConversions._
-
 import scala.annotation.tailrec
 import scala.util.Random.{between, nextInt}
 
