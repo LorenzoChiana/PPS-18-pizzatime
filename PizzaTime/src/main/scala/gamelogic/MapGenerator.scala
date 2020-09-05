@@ -47,11 +47,29 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     val obstacleDim: Int = between(difficulty.obstacleDimension.min, difficulty.obstacleDimension.max)
 
     for (_ <- 0 to obstaclesNum) {
-      randomPositions(obstacleDim).foreach(p => arena.get.obstacles = arena.get.obstacles + Obstacle(p))
+      val obstacles: Set[Obstacle] = randomAdjacentObstacles(obstacleDim)
+      arena.get.obstacles = arena.get.obstacles ++ obstacles
     }
   }
 
   def levelMultiplier: Int = (arena.get.mapGen.currentLevel / difficulty.levelThreshold) + 1
+
+  @tailrec
+  private def randomAdjacentObstacles(dim: Int): Set[Obstacle] = {
+    val startingObstacle: Obstacle = Obstacle(randomPosition)
+    var obstacles: Set[Obstacle] = Set(startingObstacle)
+
+    startingObstacle.surroundings.foreach(p => {
+      if (isClearFloor(p) && (obstacles.size < dim)) {
+        val newObstacle: Obstacle = Obstacle(Position(p, Some(Down)))
+        if (arena.get.door.isDefined && !newObstacle.surroundings.contains(arena.get.door.get)) {
+          obstacles = obstacles + newObstacle
+        }
+      }
+    })
+
+    if (obstacles.size == dim) obstacles else randomAdjacentObstacles(dim)
+  }
 }
 
 /** Utility methods for [[MapGenerator]]. */
@@ -70,23 +88,5 @@ object MapGenerator {
     val y = between(1, arenaHeight - 1)
 
     if (isClearFloor(x, y)) Position((x, y), Some(Down)) else randomPosition
-  }
-
-  /** Returns a set of adjacent, random and clear [[Position]]s on the [[Arena]].
-   *
-   * @param dim the number of [[Position]]s
-   */
-  @tailrec
-  def randomPositions(dim: Int): Set[Position] = {
-    val startingPosition: Position = randomPosition
-    var obstacles: Set[Position] = Set(startingPosition)
-
-    surroundings(startingPosition.point).foreach(p => {
-      if (isClearFloor(p) && (obstacles.size < dim)) {
-        obstacles = obstacles + Position(p, Some(Down))
-      }
-    })
-
-    if (obstacles.size == dim) obstacles else randomPositions(dim)
   }
 }
