@@ -87,7 +87,6 @@ object MapGenerator {
   def randomPosition: Position = {
     val x = between(1, arenaWidth - 1)
     val y = between(1, arenaHeight - 1)
-
     if (isClearFloor(x, y) && !surroundings(Point(x, y)).contains(arena.get.door.get)) Position((x, y), Some(Down)) else randomPosition
   }
 
@@ -101,7 +100,7 @@ object MapGenerator {
     var obstacles: Set[Position] = Set(startingPosition)
 
     surroundings(startingPosition.point).foreach(p => {
-      if (isClearFloor(p) && (obstacles.size < dim)) {
+      if (isClearFloor(p) && (obstacles.size < dim) && !surroundings(p).contains(arena.get.door.get)) {
         obstacles = obstacles + Position(p, Some(Down))
       }
     })

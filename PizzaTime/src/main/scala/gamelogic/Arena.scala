@@ -35,7 +35,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       case Point(x, _) if x.equals(arenaWidth-1) => player.moveTo(Position(door.get, Some(Left)))
       case Point(_, y) if y.equals(arenaHeight-1) => player.moveTo(Position(door.get, Some(Up)))
     }
-    play(LevelMusic)
+    /*play(LevelMusic)*/
   }
 
   /** Updates the [[Arena]] for the new logical step. */

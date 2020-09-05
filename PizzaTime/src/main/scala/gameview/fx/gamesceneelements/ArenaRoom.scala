@@ -23,7 +23,6 @@ class ArenaRoom extends GameElements {
   private def createDoor(): Unit ={
     Platform.runLater(() => {
       if(arena.get.door.isDefined && !dungeon.getChildren.contains(door)) {
-        println("prima if")
         dungeon.getChildren.add(door)
         door.relocate(pointToPixel(arena.get.door.get)._1, pointToPixel(arena.get.door.get)._2)
       } else if(arena.get.door.isEmpty){
