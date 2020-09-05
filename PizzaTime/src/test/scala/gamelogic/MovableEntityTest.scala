@@ -48,8 +48,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
 
   private def advancedMovableTests(entityName: String, entity: MovableEntity): Unit = {
     basicMovableTests(entityName, entity)
-    entityName should "only change direction if the user expresses an intention to move in a different direction that it is" in changeDirectionTest(entity)
-    it should "move around the map" in walkAroundMapTest(entity)
+    entityName should "move around the map" in walkAroundMapTest(entity)
     it should "collide with walls" in wallsCollisionTest(entity)
   }
 
@@ -57,14 +56,6 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
     entity moveTo Position(centerPoint, Some(direction))
     entity move direction
     entity.position.point shouldEqual stepPoint(centerPoint, direction)
-  }
-
-  private def changeDirectionTest(entity: MovableEntity): Unit = {
-    entity moveTo Position(centerPoint, Some(Down))
-    List(Up, Left, Down, Right).foreach(direction => {
-      entity move direction
-      entity.position.point shouldEqual centerPoint
-    })
   }
 
   private def walkAroundMapTest(entity: MovableEntity): Unit = {
