@@ -23,8 +23,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   enemies = Set()
   collectibles = Set()
 
-  "The player" should "only change direction if the user expresses an intention to move in a different direction that it is" in changeDirectionTest(player)
-  it should "move up" in moveDirectionTest(player, Up)
+  "The player" should "move up" in moveDirectionTest(player, Up)
   it should "move down" in moveDirectionTest(player, Down)
   it should "move left" in moveDirectionTest(player, Left)
   it should "move right" in moveDirectionTest(player, Right)
@@ -35,8 +34,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   player.moveTo(Position(Point(0,0), Some(Down)))
   val enemy: Enemy = Enemy(Position(centerPoint, Some(Down)))
 
-  "An enemy" should "only change direction if the user expresses an intention to move in a different direction that it is" in changeDirectionTest(enemy)
-  it should "move up" in moveDirectionTest(enemy, Up)
+  "An enemy" should "move up" in moveDirectionTest(enemy, Up)
   it should "move down" in moveDirectionTest(enemy, Down)
   it should "move left" in moveDirectionTest(enemy, Left)
   it should "move right" in moveDirectionTest(enemy, Right)
