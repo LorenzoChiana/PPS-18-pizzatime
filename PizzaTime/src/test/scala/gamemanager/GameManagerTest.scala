@@ -33,13 +33,13 @@ class GameManagerTest extends AnyFlatSpec with Matchers {
   }
 
   "When a shoot is notified" should "be added" in {
-    notifyAction(Action (Shoot, None))
+    notifyAction(Action (Shoot, Some(Up)))
     playerShoots.length must be (1)
   }
 
   "When the loop checks for a new shoot, if the shoot is present" should "be returned" in {
     val newAction = checkNewShoot()
-    newAction.get must be (arena.get.player.position.dir.get)
+    newAction.get must be (Up)
   }
 
   "When the loop checks for a new movement, if the movement isn't present" should "be return None" in {

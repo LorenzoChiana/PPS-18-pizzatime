@@ -2,7 +2,7 @@ package gamelogic
 
 import MapGenerator._
 import Arena._
-import utilities.{Difficulty, Down, Left, Point, Position, Right, Up}
+import utilities.{Difficulty, Down, Position}
 import utilities.Difficulty._
 import GameState._
 import Entity._

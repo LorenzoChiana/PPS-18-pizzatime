@@ -32,7 +32,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Updates the [[Arena]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
     if (shoot.isDefined) {
-      bullets = bullets + Bullet(player.position)
+      player.changeDirection(shoot.get)
+      bullets = bullets + Bullet(Position(player.position.point, shoot))
       play(ShootSound)
     }
 
