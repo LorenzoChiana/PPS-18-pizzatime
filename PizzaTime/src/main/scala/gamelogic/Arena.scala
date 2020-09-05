@@ -25,16 +25,17 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   /** Generates a new level. */
   def generateMap(): Unit = {
+    if (door.isEmpty) door = Some(MapGenerator.randomPositionWall.position.point)
+
     mapGen.generateLevel()
-    door = Some(MapGenerator.randomPositionWall.position.point)
-    println("generateMap door: " + door.get)
+    //door = Some(MapGenerator.randomPositionWall.position.point)
     door.get match {
       case Point(0, _) => player.moveTo(Position(door.get, Some(Right)))
       case Point(_, 0) => player.moveTo(Position(door.get, Some(Down)))
       case Point(x, _) if x.equals(arenaWidth-1) => player.moveTo(Position(door.get, Some(Left)))
       case Point(_, y) if y.equals(arenaHeight-1) => player.moveTo(Position(door.get, Some(Up)))
     }
-    /*play(LevelMusic)*/
+    play(LevelMusic)
   }
 
   /** Updates the [[Arena]] for the new logical step. */
@@ -45,7 +46,9 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     }
 
     if (movement.isDefined) {
+      println(player.position)
       player.move(movement.get)
+      println(player.position)
       lastInjury = None
 
       player.position.point match {
@@ -63,6 +66,12 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           endedLevel = true
           stopSound()
           emptyMap()
+          door.get match {
+            case Point(0, y) => door = Some(Point(arenaWidth - 1, y))
+            case Point(x, 0) => door = Some(Point(x, arenaHeight))
+            case Point(x, y) if x.equals(arenaWidth-1) => door = Some(Point(0, y))
+            case Point(x, y) if y.equals(arenaHeight-1) => door = Some(Point(x, 0))
+          }
           generateMap()
 
         case _ => None
@@ -110,6 +119,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         play(LevelUp)
       }
     } else if (enemies.nonEmpty && !player.position.point.equals(door.get)) {
+      println("enemies è pieno e il player non è nella porta")
       door = None
     }
   }
@@ -121,7 +131,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     bullets = Set()
     collectibles = Set()
     obstacles = Set()
-    door = None
   }
 
   def playerInjury(enemy: EnemyCharacter): Unit =
@@ -240,7 +249,7 @@ object Arena {
    * @param p the [[Point]] to check
    * @return true if the [[Point]] contains the door
    */
-  def isDoor(p: Point): Boolean = if (arena.get.door.nonEmpty) arena.get.door.get.equals(p) else false
+  def isDoor(p: Point): Boolean = arena.get.door.nonEmpty && arena.get.door.get.equals(p)
 
   /** Checks whether a [[Player]] position is the same of door position or not.
    *

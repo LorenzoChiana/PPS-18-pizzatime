@@ -21,15 +21,14 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
   /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
-    currentLevel += 1
+    incLevel()
     generateEnemies()
     generateCollectibles()
     generateObstacles()
   }
 
-  def generateDoor(): Option[Point] = {
-    //isClearFloor(Point())
-    Some(Point(0,0))
+  private def incLevel(): Unit = {
+    currentLevel = currentLevel + 1
   }
 
   private def generateEnemies(): Unit = {
@@ -89,7 +88,7 @@ object MapGenerator {
     val x = between(1, arenaWidth - 1)
     val y = between(1, arenaHeight - 1)
 
-    if (isClearFloor(x, y)) Position((x, y), Some(Down)) else randomPosition
+    if (isClearFloor(x, y) && !surroundings(Point(x, y)).contains(arena.get.door.get)) Position((x, y), Some(Down)) else randomPosition
   }
 
   /** Returns a set of adjacent, random and clear [[Position]]s on the [[Arena]].

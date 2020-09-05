@@ -13,16 +13,16 @@ case class Wall(var position: Position) extends Entity
 object Wall {
 
   /** Returns the set of [[Point]]s defining the [[Entity]]'s surroundings.
-   *
+   * c'è un problema
    *  @param p the starting [[Point]]
    */
-  def surrounding(p: Point): Set[Point] = {
+  def surroundingFree(p: Point): Set[Point] = {
     Set(
       stepPoint(p, Up),
       stepPoint(p, Down),
       stepPoint(p, Left),
       stepPoint(p, Right)
-    ).filter(p => p.x >= 0 && p.x < arenaWidth && p.y >= 0 && p.y < arenaHeight)
+    ).filter(p => p.x >= 0 && p.x < arenaWidth && p.y >= 0 && p.y < arenaHeight && Arena.isClearFloor(p))
   }
 
 }
