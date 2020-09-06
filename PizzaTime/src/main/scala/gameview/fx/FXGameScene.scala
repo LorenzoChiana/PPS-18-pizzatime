@@ -109,7 +109,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
 
 /** Utility methods for [[FXGameScene]]. */
 object FXGameScene {
-  @FXML protected val dungeon: Group = new Group()
+  @FXML val dungeon: Group = new Group()
   /**
    * Defines the width of each tile that will make up the arena
    *
