@@ -183,7 +183,7 @@ object Arena {
    *  @return true if the [[Arena]] can be populated with [[Entity]]s, false otherwise
    */
   def checkArenaPopulation(fillRatio: Double = FillRatio): Boolean = {
-    (arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles)
+    (arena.get.enemies ++ arena.get.collectibles ++ arena.get.obstacles)
       .size < (arena.get.floor.size * fillRatio)
   }
 
