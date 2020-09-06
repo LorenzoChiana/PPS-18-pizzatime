@@ -125,6 +125,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
 /** Utility methods for [[Arena]]. */
 object Arena {
+  val FillRatio: Double = 0.7
+
   /** Creates an [[Arena]].
    *
    *  @param playerName the [[Player]]'s name
@@ -174,6 +176,15 @@ object Arena {
       (p.x < arenaWidth) && (p.y < arenaHeight)
     else
       (p.x > 0) && (p.y > 0) && (p.x < arenaWidth - 1) && (p.y < arenaHeight - 1)
+  }
+
+  /** Checks whether the [[Arena]] is too full or not.
+   *
+   *  @return true if the [[Arena]] can be populated with [[Entity]]s, false otherwise
+   */
+  def checkArenaPopulation(fillRatio: Double = FillRatio): Boolean = {
+    (arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles)
+      .size < (arena.get.floor.size * fillRatio)
   }
 
   /** Checks whether a [[Point]] is clear or not (meaning if the [[Point]] is not occupied by any [[Entity]]).

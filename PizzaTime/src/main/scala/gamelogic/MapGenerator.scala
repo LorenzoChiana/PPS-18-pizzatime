@@ -29,7 +29,9 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     val enemyNum: Int = between(difficulty.enemiesRange.min * levelMultiplier, difficulty.enemiesRange.max * levelMultiplier)
 
     for (_ <- 0 to enemyNum) {
-      arena.get.enemies = arena.get.enemies + Enemy(randomPosition)
+      if (checkArenaPopulation()) {
+        arena.get.enemies = arena.get.enemies + Enemy(randomPosition)
+      }
     }
   }
 
@@ -37,8 +39,10 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     val bonusNum: Int = between(difficulty.collectiblesRange.min, difficulty.collectiblesRange.max)
 
     for (_ <- 0 to bonusNum) {
-      val bonus: Collectible = if (nextInt(2) == 0) BonusLife(randomPosition) else BonusScore(randomPosition, difficulty.bonusScore)
-      arena.get.collectibles = arena.get.collectibles + bonus
+      if (checkArenaPopulation()) {
+        val bonus: Collectible = if (nextInt(2) == 0) BonusLife(randomPosition) else BonusScore(randomPosition, difficulty.bonusScore)
+        arena.get.collectibles = arena.get.collectibles + bonus
+      }
     }
   }
 
@@ -47,8 +51,10 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     val obstacleDim: Int = between(difficulty.obstacleDimension.min, difficulty.obstacleDimension.max)
 
     for (_ <- 0 to obstaclesNum) {
-      val obstacles: Set[Obstacle] = randomAdjacentObstacles(obstacleDim)
-      arena.get.obstacles = arena.get.obstacles ++ obstacles
+      if (checkArenaPopulation()) {
+        val obstacles: Set[Obstacle] = randomAdjacentObstacles(obstacleDim)
+        arena.get.obstacles = arena.get.obstacles ++ obstacles
+      }
     }
   }
 
