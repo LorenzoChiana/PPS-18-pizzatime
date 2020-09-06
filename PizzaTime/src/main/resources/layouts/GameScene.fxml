@@ -10,7 +10,7 @@
 
     <center>
             <GridPane fx:id="root">
-                <GridPane fx:id="statsPane" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <GridPane fx:id="statsPane" GridPane.columnIndex="1" GridPane.rowIndex="0" minWidth="160">
                     <VBox>
                         <Label fx:id="lifeLabel" text="PlayerName: Life"/>
                         <Label fx:id="levelLabel" text="Level"/>
