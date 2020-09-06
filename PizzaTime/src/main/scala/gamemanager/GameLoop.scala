@@ -5,7 +5,7 @@ import Thread.sleep
 
 import GameManager._
 import gamelogic.GameState.{arena, nextStep}
-import gameview.fx.FXGameScene
+import gameview.fx.{FXGameFake, FXGameScene}
 
 class GameLoop() extends Runnable  {
 
@@ -29,7 +29,7 @@ class GameLoop() extends Runnable  {
     /** Update view */
     if (view.nonEmpty)
       view.get match {
-        case scene: FXGameScene => if(arena.get.endedLevel) {scene.endLevel(); arena.get.endedLevel = false} else {scene.updateView()}
+        case scene: FXGameFake => if(arena.get.endedLevel) {scene.endLevel(); arena.get.endedLevel = false} else {scene.updateView()}
         case _ =>
       }
 

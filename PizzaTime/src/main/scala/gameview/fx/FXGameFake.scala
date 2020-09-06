@@ -20,7 +20,7 @@ import javafx.scene.layout.{AnchorPane, GridPane}
 import javafx.stage.Stage
 import javafx.util.Duration
 import utilities.WindowSize.Game
-import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up}
+import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up, WindowSize}
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable
@@ -36,13 +36,15 @@ case class FXGameFake(override val windowManager: Window, stage: Stage) extends 
   private var elements: Set[GameElements] = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
 
   @FXML protected var root: GridPane = _
-  @FXML protected var gameContainer: AnchorPane = _
+ // @FXML protected var gameContainer: GridPane = _
   @FXML protected var statsPane: GridPane = _
   @FXML protected var lifeLabel: Label = _
   @FXML protected var levelLabel: Label = _
   @FXML protected var scoreLabel: Label = _
   @FXML protected var recordLabel: Label = _
   @FXML protected var backButton: Button = _
+
+  root.add(dungeon, 0, 0)
 
   val buttonStyle: String = "-fx-background-color: #f6f6f6; -fx-font-style: italic; -fx-font-size: 25; -fx-text-fill: #5c656c; " +
     "-fx-font-weight: bold; -fx-padding: 8px; -fx-background-radius:1; -fx-border-color: #c3c3c3; -fx-border-width: 2 2 2 2;"
@@ -57,10 +59,12 @@ case class FXGameFake(override val windowManager: Window, stage: Stage) extends 
 
   initLabels()
 
-  statsPane.setMinWidth(150)
+  statsPane.setMinWidth(160)
   statsPane.setAlignment(Pos.CENTER)
 
   statsPane.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #c9beeb, #a8c0ce); ")
+
+ // gameContainer.setMinSize(WindowSize.Game.width, WindowSize.Game.height)
 
   stage.getScene.setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
     case W => actions(Action(Movement, Some(Up))) = true
@@ -78,6 +82,8 @@ case class FXGameFake(override val windowManager: Window, stage: Stage) extends 
     case J => actions(Action(Shoot, None)) = false
     case _ => None
   })
+
+  stage.setWidth(statsPane.getMinWidth + stage.getWidth)
 
   val timeline = new Timeline(new KeyFrame(Duration.millis(80), (_: ActionEvent) => {
     actions.foreach(d => if (d._2) FXWindow.observers.foreach(_.notifyAction(d._1)))
@@ -123,7 +129,7 @@ case class FXGameFake(override val windowManager: Window, stage: Stage) extends 
 
 /** Utility methods for [[FXGameFake]]. */
 object FXGameFake {
-  @FXML protected var dungeon: Group = _
+  @FXML protected var dungeon: Group = new Group()
   /**
    * Defines the width of each tile that will make up the arena
    *
