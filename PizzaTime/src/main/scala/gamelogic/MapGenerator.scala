@@ -26,7 +26,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
   }
 
   private def generateEnemies(): Unit = {
-    val enemyNum: Int = between(difficulty.malusRange.min * levelMultiplier, difficulty.malusRange.max * levelMultiplier)
+    val enemyNum: Int = between(difficulty.enemiesRange.min * levelMultiplier, difficulty.enemiesRange.max * levelMultiplier)
 
     for (_ <- 0 to enemyNum) {
       arena.get.enemies = arena.get.enemies + Enemy(randomPosition)
@@ -34,7 +34,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
   }
 
   private def generateCollectibles(): Unit = {
-    val bonusNum: Int = between(difficulty.bonusRange.min, difficulty.bonusRange.max)
+    val bonusNum: Int = between(difficulty.collectiblesRange.min, difficulty.collectiblesRange.max)
 
     for (_ <- 0 to bonusNum) {
       val bonus: Collectible = if (nextInt(2) == 0) BonusLife(randomPosition) else BonusScore(randomPosition, difficulty.bonusScore)
@@ -43,7 +43,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
   }
 
   private def generateObstacles(): Unit = {
-    val obstaclesNum: Int = between(difficulty.malusRange.min, difficulty.malusRange.max)
+    val obstaclesNum: Int = between(difficulty.obstaclesRange.min, difficulty.obstaclesRange.max)
     val obstacleDim: Int = between(difficulty.obstacleDimension.min, difficulty.obstacleDimension.max)
 
     for (_ <- 0 to obstaclesNum) {
