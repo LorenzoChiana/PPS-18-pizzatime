@@ -53,6 +53,10 @@ class ArenaTest extends AnyFlatSpec with Matchers {
     assert(obstacles.forall(obstacle => checkBounds(obstacle.position.point)))
   }
 
+  it should "not be too full" in {
+    checkArenaPopulation() shouldBe true
+  }
+
   it can "be emptied" in {
     emptyMap()
     enemies shouldBe empty
@@ -63,9 +67,11 @@ class ArenaTest extends AnyFlatSpec with Matchers {
 
   it can "be generated again" in {
     mapGen.generateLevel()
+    endedLevel shouldBe false
     enemies should not be empty
     collectibles should not be empty
     obstacles should not be empty
+    checkArenaPopulation() shouldBe true
   }
 
   "Enemies" should "be in their range" in {
@@ -77,6 +83,6 @@ class ArenaTest extends AnyFlatSpec with Matchers {
   }
 
   "Obstacles" should "be in their range" in {
-    obstacles.size shouldBe mapGen.difficulty.enemiesRange.min +- mapGen.difficulty.enemiesRange.max
+    obstacles.size shouldBe mapGen.difficulty.obstaclesRange.min +- mapGen.difficulty.obstaclesRange.max
   }
 }
