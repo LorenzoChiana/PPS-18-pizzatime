@@ -34,5 +34,5 @@ case class Player(playerName: String, var position: Position) extends MovableEnt
 
   def isDead: Boolean = !isLive
 
-  override def canMove(p: Point): Boolean = super.canMove(p) || isDoor(p)
+  override def canMoveIn(p: Point): Boolean = super.canMoveIn(p) || isDoor(p)
 }

@@ -23,7 +23,7 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
   def checkInRange: Boolean = if (bulletRange < range){ bulletRange = bulletRange + 1; true} else {bulletRange = 0; false}
 
   override def move(dir: Direction): Boolean = {
-    if (canMove(nearPoint(position.point, dir)) && checkInRange) {
+    if (canMoveIn(nearPoint(position.point, dir)) && checkInRange) {
       position = Position(nearPoint(position.point, dir), Some(dir))
       true
     } else {
@@ -31,6 +31,8 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
       false
     }
   }
+
+  override def canMove: Boolean = canMoveIn(nearPoint(position.point, position.dir.get))
 
   override def remove(): Boolean = {
     unexploded = false

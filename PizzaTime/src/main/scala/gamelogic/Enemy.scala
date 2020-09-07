@@ -22,7 +22,7 @@ case class Enemy(var position: Position,  var lives: Int = 5, pointsKilling: Int
     }
   }
 
-  override def canMove(p: Point): Boolean = super.canMove(p) && !containsCollectible(p) && containsEnemy(p).isEmpty
+  override def canMoveIn(p: Point): Boolean = super.canMoveIn(p) && !containsCollectible(p) && containsEnemy(p).isEmpty
 
   def decreaseLife(): Unit = if (lives > 0) lives -= 1
 
