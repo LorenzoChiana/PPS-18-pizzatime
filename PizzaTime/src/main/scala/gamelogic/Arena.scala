@@ -28,7 +28,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     if (door.isEmpty) door = Some(MapGenerator.randomPositionWall.position.point)
 
     mapGen.generateLevel()
-    //door = Some(MapGenerator.randomPositionWall.position.point)
     door.get match {
       case Point(0, _) => player.moveTo(Position(door.get, Some(Right)))
       case Point(_, 0) => player.moveTo(Position(door.get, Some(Down)))
