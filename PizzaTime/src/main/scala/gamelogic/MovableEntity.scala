@@ -3,7 +3,7 @@ package gamelogic
 import utilities.ImplicitConversions._
 import MovableEntity._
 import Arena._
-import utilities.{Direction, Up, Down, Left, Right, Point, Position}
+import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 
 /** An entity that can move.
  *  Implemented by [[Player]], [[Bullet]] and [[EnemyCharacter]].
@@ -24,7 +24,13 @@ trait MovableEntity extends Entity {
    *
    *  @param p the [[Point]] to check
    */
-  def canMove(p: Point): Boolean = surroundings.contains(p) && !containsObstacle(p)
+  def canMoveIn(p: Point): Boolean = surroundings.contains(p) && !containsObstacle(p)
+
+  /** Check if an entity can move
+   *
+   * @return true if there is a [[Point]] transitable
+   */
+  def canMove: Boolean = List(Up, Down, Right, Left).forall(direction => canMoveIn(stepPoint(position.point, direction)))
 
   /** Moves the [[MovableEntity]] one step forward in a given [[Direction]].
    *
@@ -32,7 +38,7 @@ trait MovableEntity extends Entity {
    *  @return true if the movement occurred, false otherwise
    */
   def move(dir: Direction): Boolean = {
-    if (dir.equals(position.dir.get) && canMove(stepPoint(position.point, dir))) {
+    if (dir.equals(position.dir.get) && canMoveIn(stepPoint(position.point, dir))) {
       position = Position(stepPoint(position.point, dir), Some(dir))
       true
     } else {
