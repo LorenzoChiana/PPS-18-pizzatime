@@ -1,8 +1,9 @@
 package gamelogic
 
-import gamelogic.GameState.{nextStep, startGame}
-import gamelogic.MapGenerator.gameType
-import gamelogic.Entity.stepPoint
+import GameState.{nextStep, startGame}
+import MapGenerator.gameType
+import Entity._
+
 import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
@@ -32,8 +33,8 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   }
 
   it should "collide with bonuses" in {
-    val bonusLifePoint = stepPoint(centerPoint, Right)
-    val bonusScorePoint = stepPoint(centerPoint, Left)
+    val bonusLifePoint = nearPoint(centerPoint, Right)
+    val bonusScorePoint = nearPoint(centerPoint, Left)
     collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) + BonusScore(Position(bonusScorePoint, None), 1)
 
     enemy moveTo Position(centerPoint, Some(Right))
@@ -51,7 +52,7 @@ class EnemyTest extends AnyFlatSpec with Matchers {
 
   it should "collide with other enemies" in {
     enemy moveTo Position(centerPoint, Some(Right))
-    val otherEnemyPoint: Point = stepPoint(centerPoint, Right)
+    val otherEnemyPoint: Point = nearPoint(centerPoint, Right)
     val enemy2 = Enemy(Position(otherEnemyPoint, Some(Right)))
     enemies = enemies + enemy + enemy2
 
@@ -64,7 +65,7 @@ class EnemyTest extends AnyFlatSpec with Matchers {
 
   it should "lose his life when he collides with a bullet" in {
     player moveTo Position(centerPoint, Some(Right))
-    enemy moveTo Position(stepPoint(centerPoint, Right), Some(Right))
+    enemy moveTo Position(nearPoint(centerPoint, Right), Some(Right))
     enemies = enemies + enemy
 
     enemy.lives = 5
@@ -77,7 +78,7 @@ class EnemyTest extends AnyFlatSpec with Matchers {
 
   it should "take the player's life away when he collides with him" in {
     player moveTo Position(centerPoint, Some(Right))
-    enemy moveTo Position(stepPoint(centerPoint, Right), Some(Left))
+    enemy moveTo Position(nearPoint(centerPoint, Right), Some(Left))
     enemies = enemies + enemy
 
     player.lives = 5
