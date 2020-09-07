@@ -21,7 +21,7 @@ case class FXSettingsScene(override val windowManager: Window) extends FXView(So
     difficultyComboBox.setItems(difficultyList)
   })
 
-  backButton.setOnMouseClicked(_ => FXWindow.observers.foreach(observer => observer.onBack()))
+  backButton.setOnMouseClicked(_ => FXWindow.observers.foreach(_.onBack()))
 
   saveButton.setOnMouseClicked(_ => {
     val selection = difficultyComboBox.getSelectionModel
