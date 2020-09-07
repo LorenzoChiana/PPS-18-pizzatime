@@ -15,7 +15,7 @@ object Difficulty extends Enumeration {
     arenaHeight = 8,
     enemiesRange = Range(1, 3),
     collectiblesRange = Range(3, 5),
-    obstaclesRange = Range(1, 2),
+    obstaclesRange = Range(1, 3),
     maxLife = 8,
     bonusScore = 40,
     obstacleDimension = Range(1, 2),
@@ -26,7 +26,7 @@ object Difficulty extends Enumeration {
     arenaHeight = 12,
     enemiesRange = Range(5, 8),
     collectiblesRange = Range(3, 5),
-    obstaclesRange = Range(3, 5),
+    obstaclesRange = Range(5, 8),
     maxLife = 5,
     bonusScore = 30,
     obstacleDimension = Range(1, 3),
@@ -37,10 +37,10 @@ object Difficulty extends Enumeration {
     arenaHeight = 18,
     enemiesRange = Range(10, 20),
     collectiblesRange = Range(3, 5),
-    obstaclesRange = Range(3, 8),
+    obstaclesRange = Range(8, 12),
     maxLife = 3,
     bonusScore = 20,
-    obstacleDimension = Range(1, 3),
+    obstacleDimension = Range(1, 4),
     levelThreshold = 3
   )
   val Extreme: DifficultyVal = DifficultyVal(
@@ -48,10 +48,10 @@ object Difficulty extends Enumeration {
     arenaHeight = 24,
     enemiesRange = Range(20, 30),
     collectiblesRange = Range(1, 3),
-    obstaclesRange = Range(3, 10),
+    obstaclesRange = Range(12, 16),
     maxLife = 1,
     bonusScore = 10,
-    obstacleDimension = Range(1, 3),
+    obstacleDimension = Range(1, 5),
     levelThreshold = 1
   )
   val allDifficulty = Seq(Easy, Medium, Hard, Extreme)

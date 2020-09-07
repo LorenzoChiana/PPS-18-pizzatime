@@ -19,10 +19,10 @@ class ArenaRoom extends GameElements {
    */
   override def update(): Unit =
     Platform.runLater(() => {
-      if(arena.get.door.nonEmpty) {
+      if (arena.get.door.isDefined) {
         val door: ImageView = createTile(ImageLoader.floorImage)
         dungeon.getChildren.add(door)
-        door.relocate(pointToPixel(arena.get.door.get)._1, pointToPixel(arena.get.door.get)._2)
+        door.relocate(pointToPixel(arena.get.door.get.position.point)._1, pointToPixel(arena.get.door.get.position.point)._2)
       }
     })
 

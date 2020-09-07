@@ -19,7 +19,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   var obstacles: Set[Obstacle] = Set()
   val walls: Set[Wall] = for (p <- bounds) yield Wall(Position(p, None))
   val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
-  var door: Option[Point] = None
+  var door: Option[Door] = None
   var endedLevel: Boolean = false
   private var lastInjury: Option[EnemyCharacter] = None
 
@@ -96,9 +96,9 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     enemies.filter(_.isDead).foreach(en => player.addScore(en.pointsKilling))
     enemies = enemies -- enemies.filter(_.isDead)
 
-    /**Check if door is open*/
+    /**Check if [[Door]] is open*/
     if (enemies.isEmpty && door.isEmpty) {
-      door = Some(Point(0, 5))
+      door = Some(Door(Position(Point(0, 5), Some(Down))))
       play(LevelUp)
     } else if (enemies.nonEmpty) {
       door = None
@@ -180,21 +180,21 @@ object Arena {
 
   /** Checks whether the [[Arena]] is too full or not.
    *
-   *  @return true if the [[Arena]] can be populated with [[Entity]]s, false otherwise
+   *  @return true if the [[Arena]] can be populated with [[Entity]]s
    */
   def checkArenaPopulation(fillRatio: Double = FillRatio): Boolean = {
-    (arena.get.enemies ++ arena.get.collectibles ++ arena.get.obstacles)
-      .size < (arena.get.floor.size * fillRatio)
+    val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.collectibles ++ arena.get.obstacles
+    allEntities.size < (arena.get.floor.size * fillRatio)
   }
 
-  /** Checks whether a [[Point]] is clear or not (meaning if the [[Point]] is not occupied by any [[Entity]]).
+  /** Checks whether a [[Point]] is clear or not (meaning if it's not occupied by any [[Entity]]).
    *
    *  @param p the [[Point]] to check
    *  @return true if the [[Point]] is clear
    */
   def isClearFloor(p: Point): Boolean = {
-    (arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles)
-      .forall(!_.position.point.equals(p))
+    val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles
+    allEntities.forall(!_.position.point.equals(p))
   }
 
   /** Clears a specified [[Point]] inside the [[Arena]]'s inner bounds.
@@ -203,11 +203,17 @@ object Arena {
    */
   def clearPoint(p: Point): Unit = {
     if (checkBounds(p) && !isClearFloor(p)) {
-      (arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles)
-        .filter(_.position.point.equals(p))
-        .map(_.remove())
+      val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles
+      allEntities.filter(_.position.point.equals(p)).map(_.remove())
     }
   }
+
+  /** Checks whether a [[Point]] is on the entrance of the [[Arena]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] is in the [[Door]]'s surroundings
+   */
+  def isEntrance(p: Point): Boolean = arena.get.door.isDefined && arena.get.door.get.surroundings.contains(p)
 
   /** Checks whether a [[Point]] contains an [[Obstacle]] or not.
    *
@@ -237,16 +243,16 @@ object Arena {
    */
   def containsBullet(p: Point): Set[Bullet] = arena.get.bullets.filter(_.position.point.equals(p))
 
-  /** Checks whether a [[Point]] contains the door or not.
+  /** Checks whether a [[Point]] contains the [[Door]] or not.
    *
    * @param p the [[Point]] to check
-   * @return true if the [[Point]] contains the door
+   * @return true if the [[Point]] contains the [[Door]]
    */
-  def isDoor(p: Point): Boolean = if (arena.get.door.nonEmpty) arena.get.door.get.equals(p) else false
+  def isDoor(p: Point): Boolean = if (arena.get.door.isDefined) arena.get.door.get.position.point.equals(p) else false
 
-  /** Checks whether a [[Player]] position is the same of door position or not.
+  /** Checks whether a [[Player]] is exiting the level or not.
    *
-   * @return true if the [[Player]] position is the same of door position
+   * @return true if the [[Player]]'s [[Position]] is the same as the [[Door]]'s
    */
-  def exitLevel(): Boolean = arena.get.door.isDefined && arena.get.player.position.point.equals(Point(arena.get.door.get.x, arena.get.door.get.y))
+  def exitLevel(): Boolean = arena.get.door.isDefined && arena.get.player.position.point.equals(arena.get.door.get.position.point)
 }

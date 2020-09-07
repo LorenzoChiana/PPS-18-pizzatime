@@ -2,11 +2,9 @@ package gamelogic
 
 import MapGenerator._
 import Arena._
-import utilities.{Difficulty, Down, Position}
+import utilities.{Difficulty, Down, Point, Position}
 import utilities.Difficulty._
 import GameState._
-import utilities.ImplicitConversions._
-import scala.annotation.tailrec
 import scala.util.Random.{between, nextInt}
 
 /** Encapsulates the logic for generating a new level.
@@ -30,7 +28,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
     for (_ <- 0 to enemyNum) {
       if (checkArenaPopulation()) {
-        arena.get.enemies = arena.get.enemies + Enemy(randomPosition)
+        arena.get.enemies = arena.get.enemies + Enemy(randomClearPosition)
       }
     }
   }
@@ -40,7 +38,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
     for (_ <- 0 to bonusNum) {
       if (checkArenaPopulation()) {
-        val bonus: Collectible = if (nextInt(2) == 0) BonusLife(randomPosition) else BonusScore(randomPosition, difficulty.bonusScore)
+        val bonus: Collectible = if (nextInt(2) == 0) BonusLife(randomClearPosition) else BonusScore(randomClearPosition, difficulty.bonusScore)
         arena.get.collectibles = arena.get.collectibles + bonus
       }
     }
@@ -60,21 +58,22 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
   def levelMultiplier: Int = (arena.get.mapGen.currentLevel / difficulty.levelThreshold) + 1
 
-  @tailrec
   private def randomAdjacentObstacles(dim: Int): Set[Obstacle] = {
-    val startingObstacle: Obstacle = Obstacle(randomPosition)
+    var startingObstacle: Obstacle = Obstacle(randomClearPosition)
     var obstacles: Set[Obstacle] = Set(startingObstacle)
 
-    startingObstacle.surroundings.foreach(p => {
-      if (isClearFloor(p) && (obstacles.size < dim)) {
-        val newObstacle: Obstacle = Obstacle(Position(p, Some(Down)))
-        if (arena.get.door.isDefined && !newObstacle.surroundings.contains(arena.get.door.get)) {
-          obstacles = obstacles + newObstacle
+    while (obstacles.size < dim) {
+      startingObstacle.surroundings.foreach(p => {
+        if (isClearFloor(p) && !isEntrance(p) && (obstacles.size < dim)) {
+          obstacles = obstacles + Obstacle(Position(p, Some(Down)))
         }
+      })
+      if (obstacles.size < dim) {
+        startingObstacle = Obstacle(randomClearPosition)
+        obstacles = Set(startingObstacle)
       }
-    })
-
-    if (obstacles.size == dim) obstacles else randomAdjacentObstacles(dim)
+    }
+    obstacles
   }
 }
 
@@ -87,12 +86,15 @@ object MapGenerator {
    */
   def gameType(difficulty: DifficultyVal): MapGenerator = new MapGenerator(difficulty)
 
-  /** Returns a random and clear [[Position]] on the [[Arena]]. */
-  @tailrec
-  def randomPosition: Position = {
-    val x = between(1, arenaWidth - 1)
-    val y = between(1, arenaHeight - 1)
+  /** Returns a random and clear [[Position]] on the [[Arena]] (meaning that it's not occupied by any [[Entity]] and it's not on the entrance). */
+  def randomClearPosition: Position = {
+    val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles
+    val clearPoints: Set[Point] = arena.get.floor.map(_.position.point).diff(allEntities.map(_.position.point))
+    var clearPoint: Point = clearPoints.toVector(nextInt(clearPoints.size))
 
-    if (isClearFloor(x, y)) Position((x, y), Some(Down)) else randomPosition
+    while (isEntrance(clearPoint)) {
+      clearPoint = clearPoints.toVector(nextInt(clearPoints.size))
+    }
+    Position(clearPoint, Some(Down))
   }
 }

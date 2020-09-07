@@ -17,7 +17,7 @@ trait MovableEntity extends Entity {
   /** Moves the [[MovableEntity]] one step forward in a given [[Direction]].
    *
    *  @param dir the [[Direction]] of movement
-   *  @return true if the movement occurred, false otherwise
+   *  @return true if the movement occurred
    */
   def move(dir: Direction): Boolean = {
     if (canMove(nearPoint(position.point, dir))) {
@@ -40,7 +40,7 @@ trait MovableEntity extends Entity {
   /** Moves the [[MovableEntity]] to the specified [[Position]].
    *
    *  @param pos the destination's [[Position]]
-   *  @return true if the movement occurred, false otherwise
+   *  @return true if the movement occurred
    */
   def moveTo(pos: Position): Boolean = {
     if (!containsObstacle(pos.point)) {
