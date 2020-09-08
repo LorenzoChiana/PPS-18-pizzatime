@@ -1,6 +1,6 @@
 package gameview.fx
 
-import gamelogic.GameState.{arena, arenaHeight, arenaWidth}
+import gamelogic.GameState.{arena, arenaHeight, arenaWidth, worldRecord}
 import gamemanager.handlers.PreferencesHandler
 import gameview.Window
 import gameview.fx.FXGameScene.dungeon
@@ -11,7 +11,7 @@ import javafx.application.Platform
 import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.Group
-import javafx.scene.input.KeyCode.{A, S, D, W, LEFT, RIGHT, UP, DOWN}
+import javafx.scene.input.KeyCode.{A, D, DOWN, LEFT, RIGHT, S, UP, W}
 import javafx.scene.control.{Button, Label}
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.KeyEvent
@@ -39,7 +39,8 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   @FXML protected var lifeLabel: Label = _
   @FXML protected var levelLabel: Label = _
   @FXML protected var scoreLabel: Label = _
-  @FXML protected var recordLabel: Label = _
+  @FXML protected var worldRecordLabel: Label = _
+  @FXML protected var playerRecordLabel: Label = _
   @FXML protected var endButton: Button = _
   @FXML protected var backButton: Button = _
   @FXML protected var loseLabel: Label = _
@@ -94,7 +95,8 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
       lifeLabel.setText(PreferencesHandler.playerName + ": " + arena.get.player.lives)
       levelLabel.setText("Level: " + arena.get.mapGen.currentLevel)
       scoreLabel.setText("Score: " + arena.get.player.score )
-      recordLabel.setText("Record: " + arena.get.player.record)
+      worldRecordLabel.setText("World record: " + worldRecord)
+      playerRecordLabel.setText("Your record: " + arena.get.player.record)
     })
 
     if (arena.get.player.isDead) showEndGameGraphic()

@@ -17,7 +17,7 @@ import java.util.concurrent.Executors.newFixedThreadPool
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
 import gamelogic.GameState
-import gamelogic.GameState.playerRankings
+import gamelogic.GameState.{playerRankings, worldRecord}
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
@@ -48,8 +48,9 @@ object GameManager extends ViewObserver {
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {
     endGame = false
-    GameState.startGame("Player1", gameType(Medium))
+    GameState.startGame(playerName, gameType(difficulty))
     ThreadPool.execute(new GameLoop())
+    loadWorldRecord()
   }
 
   /** Notifies that the game has ended */
@@ -113,6 +114,7 @@ object GameManager extends ViewObserver {
     windowManager.showMessage("Save confirmation", "Settings saved successfully.", Info)
   }
 
+  /** Loads player rankings from file */
   private def loadPlayerRankings(): Unit = {
     import utilities.ImplicitConversions._
     Using(Source.fromFile("rank.json")){ _.mkString } match {
@@ -125,12 +127,11 @@ object GameManager extends ViewObserver {
           } yield name -> record).toMap)
         })
       case Failure(_) =>
-        allDifficulty.foreach(difficulty => {
-          playerRankings = playerRankings ++ Map(difficulty.toString() -> Map())
-        })
+        allDifficulty.foreach(difficulty => playerRankings = playerRankings ++ Map(difficulty.toString() -> Map()))
     }
   }
 
+  /** Saves player rankings into file */
   private def savePlayerRankings(): Unit = {
     import utilities.ImplicitConversions._
     playerRankings = playerRankings ++ Map(difficulty.toString -> playerRankings(difficulty).toSeq.sortWith(_._2 > _._2).toMap)
@@ -144,6 +145,11 @@ object GameManager extends ViewObserver {
 
     Some(new PrintWriter("rank.json")).foreach { file => file.write(JsonAST.prettyRender(json)); file.close() }
   }
+
+  import utilities.ImplicitConversions._
+  /** Loads the world record from the ranking */
+  def loadWorldRecord(): Unit =
+    worldRecord = if (playerRankings(difficulty).nonEmpty) playerRankings(difficulty).maxBy(_._2)._2 else 0
 
   override def startNewLevel(): Unit = GameState.nextLevel()
 

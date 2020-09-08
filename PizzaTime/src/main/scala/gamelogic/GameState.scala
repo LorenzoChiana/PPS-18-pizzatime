@@ -9,6 +9,7 @@ object GameState {
   var arenaWidth: Int = difficulty.arenaWidth
   var arenaHeight: Int = difficulty.arenaHeight
   var playerRankings = Map.empty[String, Map[String, Int]]
+  var worldRecord: Int = 0
 
 
   def startGame(playerName: String, mapGen: MapGenerator): Unit = {
@@ -17,7 +18,7 @@ object GameState {
   }
 
   def endGame(): Unit = {
-    arena.get.player.checkNewRecord()
+    arena.get.player.checkNewOwnRecord()
     addRecord()
   }
 
