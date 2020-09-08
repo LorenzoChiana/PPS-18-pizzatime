@@ -1,28 +1,18 @@
 package gamelogic
 
-import gamelogic.Entity.stepPoint
-import gamelogic.GameState.{arenaHeight, arenaWidth}
-import utilities.{Down, Left, Point, Position, Right, Up}
+import utilities.{Point, Position}
 
 /** The [[GameMap]]'s wall, situated on its bounds.
  *
  *  @param position its [[Position]]
  */
-case class Wall(var position: Position) extends Entity
+case class Wall(var position: Position) extends Entity{
 
-object Wall {
-
-  /** Returns the set of [[Point]]s defining the [[Entity]]'s surroundings.
-   * c'è un problema
-   *  @param p the starting [[Point]]
+  /**
+   * Returns the set of [[Point]]s defining the [[Wall]]'s surroundings without obstacle .
    */
-  def surroundingFree(p: Point): Set[Point] = {
-    Set(
-      stepPoint(p, Up),
-      stepPoint(p, Down),
-      stepPoint(p, Left),
-      stepPoint(p, Right)
-    ).filter(p => p.x >= 0 && p.x < arenaWidth && p.y >= 0 && p.y < arenaHeight && Arena.isClearFloor(p))
+  override def surroundings: Set[Point] = {
+  super.surroundings
+    .filter(p => Arena.isClearFloor(p))
   }
-
 }

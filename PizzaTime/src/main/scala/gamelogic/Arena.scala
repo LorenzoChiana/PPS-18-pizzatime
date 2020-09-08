@@ -25,10 +25,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   /** Generates a new level. */
   def generateMap(): Unit = {
-
     if (door.isEmpty) door = Some(Door(MapGenerator.randomPositionWall.position))
     else walls = walls.filter(!_.position.point.equals(door.get.position.point))
-
 
     mapGen.generateLevel()
     door.get.position.point match {
