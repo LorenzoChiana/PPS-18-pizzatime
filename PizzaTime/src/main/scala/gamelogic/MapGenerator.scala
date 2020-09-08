@@ -96,8 +96,9 @@ object MapGenerator {
   @tailrec
   def randomPositionWall: Wall = {
     val wall = arena.get.walls.iterator.drop(between(0, arena.get.walls.size)).next
+
     wall.position.point match {
-      case Point(0,0) => randomPositionWall
+      case Point(0, 0) => randomPositionWall
       case Point(0, y) if y.equals(arenaHeight-1) => randomPositionWall
       case Point(x, 0) if x.equals(arenaWidth-1) => randomPositionWall
       case Point(x, y) if x.equals(arenaWidth-1) && y.equals(arenaHeight-1) => randomPositionWall
