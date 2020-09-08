@@ -148,7 +148,8 @@ object GameManager extends ViewObserver {
 
   import utilities.ImplicitConversions._
   /** Loads the world record from the ranking */
-  def loadWorldRecord(): Unit = worldRecord = playerRankings(difficulty).maxBy(_._2)._2
+  def loadWorldRecord(): Unit =
+    worldRecord = if (playerRankings(difficulty).nonEmpty) playerRankings(difficulty).maxBy(_._2)._2 else 0
 
   override def startNewLevel(): Unit = GameState.nextLevel()
 
