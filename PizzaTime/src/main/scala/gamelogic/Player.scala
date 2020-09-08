@@ -1,6 +1,6 @@
 package gamelogic
 
-import gamelogic.GameState.playerRankings
+import gamelogic.GameState.{playerRankings, worldRecord}
 import gamelogic.Arena.isDoor
 import gamemanager.handlers.PreferencesHandler.difficulty
 import utilities.{Point, Position}
@@ -21,10 +21,13 @@ case class Player(playerName: String, var position: Position) extends MovableEnt
 
   def addScore(s: Int): Unit = {
     score += s
-    checkNewRecord()
+    checkNewOwnRecord()
+    checkNewWorldRecord()
   }
 
-  def checkNewRecord(): Unit = if (score > record) record = score
+  def checkNewOwnRecord(): Unit = if (score > record) record = score
+
+  def checkNewWorldRecord(): Unit = if (record > worldRecord) worldRecord = record
 
   def increaseLife(): Unit = if (lives < difficulty.maxLife) lives += 1
 
