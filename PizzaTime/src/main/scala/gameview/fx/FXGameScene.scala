@@ -16,7 +16,7 @@ import javafx.animation.Timeline
 import javafx.event.ActionEvent
 import javafx.geometry.Pos
 import javafx.scene.Group
-import javafx.scene.input.KeyCode.{A, S, D, W, J}
+import javafx.scene.input.KeyCode.{A, S, D, W, LEFT, RIGHT, UP, DOWN}
 import javafx.scene.input.KeyEvent
 import javafx.util.Duration
 import utilities.{Action, Down, Left, Movement, Point, Right, Shoot, Up}
@@ -76,7 +76,10 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     case S => actions(Action(Movement, Some(Down))) = true
     case A => actions(Action(Movement, Some(Left))) = true
     case D => actions(Action(Movement, Some(Right))) = true
-    case J => actions(Action(Shoot, None)) = true
+    case UP => actions(Action(Shoot, Some(Up))) = true
+    case DOWN => actions(Action(Shoot, Some(Down))) = true
+    case LEFT => actions(Action(Shoot, Some(Left))) = true
+    case RIGHT => actions(Action(Shoot, Some(Right))) = true
     case _ => None
   })
   stage.getScene.setOnKeyReleased((keyEvent: KeyEvent) => keyEvent.getCode match {
@@ -84,7 +87,10 @@ case class FXGameScene(windowManager: Window, stage: Stage) extends FXView(Some(
     case S => actions(Action(Movement, Some(Down))) = false
     case A => actions(Action(Movement, Some(Left))) = false
     case D => actions(Action(Movement, Some(Right))) = false
-    case J => actions(Action(Shoot, None)) = false
+    case UP => actions(Action(Shoot, Some(Up))) = false
+    case DOWN => actions(Action(Shoot, Some(Down))) = false
+    case LEFT => actions(Action(Shoot, Some(Left))) = false
+    case RIGHT => actions(Action(Shoot, Some(Right))) = false
     case _ => None
   })
 

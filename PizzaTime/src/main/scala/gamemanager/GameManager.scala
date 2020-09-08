@@ -17,7 +17,7 @@ import java.util.concurrent.Executors.newFixedThreadPool
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
 import gamelogic.GameState
-import gamelogic.GameState.{arena, playerRankings}
+import gamelogic.GameState.playerRankings
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
@@ -56,7 +56,6 @@ object GameManager extends ViewObserver {
     endGame = true
     GameState.endGame()
     savePlayerRankings()
-    onBack()
   }
 
   /** Notifies that the player has moved or shot.
@@ -65,7 +64,7 @@ object GameManager extends ViewObserver {
    */
   def notifyAction(action: Action): Unit = action.actionType match {
     case Movement => playerMoves = playerMoves :+ action.direction
-    case Shoot => playerShoots = playerShoots :+ arena.get.player.position.dir
+    case Shoot => playerShoots = playerShoots :+ action.direction
   }
 
   /** Notifies the transition to the game scene. */

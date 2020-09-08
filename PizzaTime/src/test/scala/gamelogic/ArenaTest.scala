@@ -69,14 +69,14 @@ class ArenaTest extends AnyFlatSpec with Matchers {
   }
 
   "Enemies" should "be in their range" in {
-    enemies.size shouldBe (mapGen.difficulty.malusRange.min * mapGen.levelMultiplier) +- (mapGen.difficulty.malusRange.max * mapGen.levelMultiplier)
+    enemies.size shouldBe (mapGen.difficulty.enemiesRange.min * mapGen.levelMultiplier) +- (mapGen.difficulty.enemiesRange.max * mapGen.levelMultiplier)
   }
 
   "Collectibles" should "be in their range" in {
-    collectibles.size shouldBe mapGen.difficulty.bonusRange.min +- mapGen.difficulty.bonusRange.max
+    collectibles.size shouldBe mapGen.difficulty.collectiblesRange.min +- mapGen.difficulty.collectiblesRange.max
   }
 
   "Obstacles" should "be in their range" in {
-    obstacles.size shouldBe mapGen.difficulty.malusRange.min +- mapGen.difficulty.malusRange.max
+    obstacles.size shouldBe mapGen.difficulty.enemiesRange.min +- mapGen.difficulty.enemiesRange.max
   }
 }

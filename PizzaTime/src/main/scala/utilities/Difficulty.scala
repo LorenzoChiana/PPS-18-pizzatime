@@ -2,8 +2,9 @@ package utilities
 
 import scala.language.implicitConversions
 import gamelogic.Collectible
-import gamelogic.Entity
-import gamelogic.GameState._
+import gamelogic.Enemy
+import gamelogic.Obstacle
+import gamelogic.Arena
 
 /** Represents the various difficulties that the game can have.
  *  The options are: easy, medium, hard or extreme.
@@ -12,9 +13,9 @@ object Difficulty extends Enumeration {
   val Easy: DifficultyVal = DifficultyVal(
     arenaWidth = 12,
     arenaHeight = 8,
-    bonusRange = Range(3, 5),
-    malusRange = Range(1, 3),
-    bonusProb = 0.8,
+    enemiesRange = Range(1, 3),
+    collectiblesRange = Range(3, 5),
+    obstaclesRange = Range(1, 2),
     maxLife = 8,
     bonusScore = 40,
     obstacleDimension = Range(1, 2),
@@ -23,9 +24,9 @@ object Difficulty extends Enumeration {
   val Medium: DifficultyVal = DifficultyVal(
     arenaWidth = 18,
     arenaHeight = 12,
-    bonusRange = Range(2, 5),
-    malusRange = Range(6, 8),
-    bonusProb = 0.5,
+    enemiesRange = Range(5, 8),
+    collectiblesRange = Range(3, 5),
+    obstaclesRange = Range(3, 5),
     maxLife = 5,
     bonusScore = 30,
     obstacleDimension = Range(1, 3),
@@ -34,9 +35,9 @@ object Difficulty extends Enumeration {
   val Hard: DifficultyVal = DifficultyVal(
     arenaWidth = 27,
     arenaHeight = 18,
-    bonusRange = Range(3, 5),
-    malusRange = Range(12, 20),
-    bonusProb = 0.3,
+    enemiesRange = Range(10, 20),
+    collectiblesRange = Range(3, 5),
+    obstaclesRange = Range(3, 8),
     maxLife = 3,
     bonusScore = 20,
     obstacleDimension = Range(1, 3),
@@ -45,9 +46,9 @@ object Difficulty extends Enumeration {
   val Extreme: DifficultyVal = DifficultyVal(
     arenaWidth = 36,
     arenaHeight = 24,
-    bonusRange = Range(1, 3),
-    malusRange = Range(24, 40),
-    bonusProb = 0.1,
+    enemiesRange = Range(20, 30),
+    collectiblesRange = Range(1, 3),
+    obstaclesRange = Range(3, 10),
     maxLife = 1,
     bonusScore = 10,
     obstacleDimension = Range(1, 3),
@@ -59,19 +60,19 @@ object Difficulty extends Enumeration {
    *
    *  @param arenaWidth the width of the [[Arena]]
    *  @param arenaHeight the height of the [[Arena]]
-   *  @param bonusRange the [[Range]] of number of bonus [[Entity]]s (i.e. [[Collectible]]s)
-   *  @param malusRange the [[Range]] of number of malus [[Entity]]s (i.e. [[Enemy]]s or [[Obstacle]]s)
-   *  @param bonusProb the probability of having bonuses
+   *  @param enemiesRange the [[Range]] of number of [[Enemy]]s
+   *  @param collectiblesRange the [[Range]] of number of [[Collectible]]s
+   *  @param obstaclesRange the [[Range]] of number of [[Obstacle]]s
    *  @param maxLife a value that represents the maximum number of lives
    *  @param bonusScore the score given by the score-related [[Collectible]]s
-   *  @param obstacleDimension the dimension of the [[Obstacle]]s
+   *  @param obstacleDimension the [[Range]] of dimension of the [[Obstacle]]s
    *  @param levelThreshold a threshold that affects level generation
    */
   case class DifficultyVal(arenaWidth: Int,
                            arenaHeight: Int,
-                           bonusRange: Range,
-                           malusRange: Range,
-                           bonusProb: Double,
+                           enemiesRange: Range,
+                           collectiblesRange: Range,
+                           obstaclesRange: Range,
                            maxLife: Int,
                            bonusScore: Int,
                            obstacleDimension: Range,

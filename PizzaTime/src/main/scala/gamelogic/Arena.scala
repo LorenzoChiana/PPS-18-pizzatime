@@ -29,7 +29,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     else walls = walls - walls.find(_.position.point.equals(door.get)).get
 
     mapGen.generateLevel()
-
     door.get match {
       case Point(0, _) => player.moveTo(Position(door.get, Some(Right)))
       case Point(_, 0) => player.moveTo(Position(door.get, Some(Down)))
@@ -42,14 +41,13 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Updates the [[Arena]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
     if (shoot.isDefined) {
+      player.changeDirection(shoot.get)
       bullets = bullets + Bullet(Position(player.position.point, shoot))
       play(ShootSound)
     }
 
     if (movement.isDefined) {
-      println(player.position)
       player.move(movement.get)
-      println(player.position)
       lastInjury = None
 
       player.position.point match {
@@ -120,7 +118,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         play(LevelUp)
       }
     } else if (enemies.nonEmpty && !player.position.point.equals(door.get)) {
-      println("enemies è pieno e il player non è nella porta")
       walls = walls + Wall(Position(door.get, None))
       door = None
     }

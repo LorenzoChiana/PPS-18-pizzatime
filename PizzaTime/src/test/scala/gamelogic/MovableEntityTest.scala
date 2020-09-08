@@ -3,6 +3,9 @@ package gamelogic
 import gamelogic.GameState.startGame
 import gamelogic.MapGenerator.gameType
 import gamelogic.Entity.stepPoint
+import GameState.startGame
+import MapGenerator.gameType
+import Entity._
 import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
@@ -23,8 +26,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   enemies = Set()
   collectibles = Set()
 
-  "The player" should "only change direction if the user expresses an intention to move in a different direction that it is" in changeDirectionTest(player)
-  it should "move up" in moveDirectionTest(player, Up)
+  "The player" should "move up" in moveDirectionTest(player, Up)
   it should "move down" in moveDirectionTest(player, Down)
   it should "move left" in moveDirectionTest(player, Left)
   it should "move right" in moveDirectionTest(player, Right)
@@ -35,8 +37,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   player.moveTo(Position(Point(0,0), Some(Down)))
   val enemy: Enemy = Enemy(Position(centerPoint, Some(Down)))
 
-  "An enemy" should "only change direction if the user expresses an intention to move in a different direction that it is" in changeDirectionTest(enemy)
-  it should "move up" in moveDirectionTest(enemy, Up)
+  "An enemy" should "move up" in moveDirectionTest(enemy, Up)
   it should "move down" in moveDirectionTest(enemy, Down)
   it should "move left" in moveDirectionTest(enemy, Left)
   it should "move right" in moveDirectionTest(enemy, Right)
@@ -47,7 +48,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   private def moveDirectionTest(entity: MovableEntity, direction: Direction): Unit = {
     entity moveTo Position(centerPoint, Some(direction))
     entity move direction
-    entity.position.point shouldEqual stepPoint(centerPoint, direction)
+    entity.position.point shouldEqual nearPoint(centerPoint, direction)
   }
 
   private def changeDirectionTest(entity: MovableEntity): Unit = {
@@ -123,7 +124,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   }
 
   private def obstaclesCollisionsTest(entity: MovableEntity): Unit = {
-    val obstaclePoint = stepPoint(centerPoint, Down)
+    val obstaclePoint = nearPoint(centerPoint, Down)
     obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
 
     player moveTo Position(centerPoint, Some(Down))
