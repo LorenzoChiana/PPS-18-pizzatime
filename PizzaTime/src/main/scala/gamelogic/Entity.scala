@@ -18,7 +18,10 @@ trait Entity {
       nearPoint(position.point, Down),
       nearPoint(position.point, Left),
       nearPoint(position.point, Right)
-    )
+    ).filter(p => p.x >= 0 && p.y >= 0 && p.x < GameState.arenaWidth && p.y < GameState.arenaHeight)
+
+    println("surroundings: " + surroundings)
+    println( surroundings -- bounds)
     surroundings -- bounds
   }
 
