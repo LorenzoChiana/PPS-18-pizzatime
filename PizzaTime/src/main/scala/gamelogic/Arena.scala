@@ -3,7 +3,7 @@ package gamelogic
 import GameState._
 import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
 import gamemanager.SoundController.{play, stopSound}
-import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, Left, LevelMusic, LevelUp, Point, Position, Right, ShootSound, Up}
+import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, Left, LevelUp, Point, Position, Right, ShootSound, Up}
 import utilities.ImplicitConversions._
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -17,7 +17,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   var bullets: Set[Bullet] = Set()
   var collectibles: Set[Collectible] = Set()
   var obstacles: Set[Obstacle] = Set()
-  val walls: Set[Wall] = for (p <- bounds) yield Wall(Position(p, None))
+  var walls: Set[Wall] = for (p <- bounds) yield Wall(Position(p, None))
   val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
   var door: Option[Point] = None
   var endedLevel: Boolean = false
@@ -26,9 +26,10 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Generates a new level. */
   def generateMap(): Unit = {
     if (door.isEmpty) door = Some(MapGenerator.randomPositionWall.position.point)
+    else walls = walls - walls.find(_.position.point.equals(door.get)).get
 
     mapGen.generateLevel()
-    //door = Some(MapGenerator.randomPositionWall.position.point)
+
     door.get match {
       case Point(0, _) => player.moveTo(Position(door.get, Some(Right)))
       case Point(_, 0) => player.moveTo(Position(door.get, Some(Down)))
@@ -120,6 +121,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       }
     } else if (enemies.nonEmpty && !player.position.point.equals(door.get)) {
       println("enemies è pieno e il player non è nella porta")
+      walls = walls + Wall(Position(door.get, None))
       door = None
     }
   }
