@@ -23,13 +23,14 @@ class ArenaRoom extends GameElements {
     Platform.runLater(() => {
       if(arena.get.door.isDefined && !dungeon.getChildren.contains(door)) {
         dungeon.getChildren.add(door)
-        positionDoor = (pointToPixel(arena.get.door.get)._1, pointToPixel(arena.get.door.get)._2)
+        positionDoor = (pointToPixel(arena.get.door.get.position.point)._1, pointToPixel(arena.get.door.get.position.point)._2)
         door.relocate(positionDoor._1, positionDoor._2)
       } else if(arena.get.door.isEmpty){
         dungeon.getChildren.remove(door)
         val wall: ImageView = createTile(ImageLoader.wallImage)
         wall.relocate(positionDoor._1, positionDoor._2)
         dungeon.getChildren.add(wall)
+
       }
     })
   }

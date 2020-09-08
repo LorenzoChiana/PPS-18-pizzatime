@@ -1,6 +1,5 @@
 package gamemanager
 
-import gamelogic.GameState.arena
 import gamelogic.GameState
 import gamemanager.GameManager._
 import org.scalatest.flatspec.AnyFlatSpec

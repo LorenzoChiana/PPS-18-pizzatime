@@ -26,24 +26,34 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   enemies = Set()
   collectibles = Set()
 
-  "The player" should "move up" in moveDirectionTest(player, Up)
-  it should "move down" in moveDirectionTest(player, Down)
-  it should "move left" in moveDirectionTest(player, Left)
-  it should "move right" in moveDirectionTest(player, Right)
-  it should "move around the map" in walkAroundMapTest(player)
-  it should "collide with walls" in wallsCollisionTest(player)
-  it should "collide with obstacles" in obstaclesCollisionsTest(player)
+  val enemy: Enemy = Enemy(Position(Point(0,0), Some(Down)))
+  val bullet: Bullet = Bullet(Position(Point(0,0), Some(Down)))
 
-  player.moveTo(Position(Point(0,0), Some(Down)))
-  val enemy: Enemy = Enemy(Position(centerPoint, Some(Down)))
+  List(player, enemy, bullet).foreach(entity => {
+    entity moveTo Position(centerPoint, Some(Down))
+    movableEntityTests(entity)
+    entity moveTo Position(Point(0,0), Some(Down))
+  })
 
-  "An enemy" should "move up" in moveDirectionTest(enemy, Up)
-  it should "move down" in moveDirectionTest(enemy, Down)
-  it should "move left" in moveDirectionTest(enemy, Left)
-  it should "move right" in moveDirectionTest(enemy, Right)
-  it should "move around the map" in walkAroundMapTest(enemy)
-  it should "collide with walls" in wallsCollisionTest(enemy)
-  it should "collide with obstacles" in obstaclesCollisionsTest(enemy)
+  private def movableEntityTests(entity: MovableEntity): Unit = entity match {
+    case _: Bullet => basicMovableTests("A Bullet", entity)
+    case _: Player => //advancedMovableTests("The player", entity)
+    case _: Enemy => advancedMovableTests("An enemy", entity)
+  }
+
+  private def basicMovableTests(entityName: String, entity: MovableEntity): Unit = {
+    entityName should "move up" in moveDirectionTest(entity, Up)
+    it should "move down" in moveDirectionTest(entity, Down)
+    it should "move left" in moveDirectionTest(entity, Left)
+    it should "move right" in moveDirectionTest(entity, Right)
+    it should "collide with obstacles" in obstaclesCollisionsTest(entity)
+  }
+
+  private def advancedMovableTests(entityName: String, entity: MovableEntity): Unit = {
+    basicMovableTests(entityName, entity)
+    entityName should "move around the map" in walkAroundMapTest(entity)
+    it should "collide with walls" in wallsCollisionTest(entity)
+  }
 
   private def moveDirectionTest(entity: MovableEntity, direction: Direction): Unit = {
     entity moveTo Position(centerPoint, Some(direction))
@@ -51,37 +61,27 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
     entity.position.point shouldEqual nearPoint(centerPoint, direction)
   }
 
-  private def changeDirectionTest(entity: MovableEntity): Unit = {
-    entity moveTo Position(centerPoint, Some(Down))
-    entity move Up
-    entity.position.point shouldEqual centerPoint
-    entity move Left
-    entity.position.point shouldEqual centerPoint
-    entity move Down
-    entity.position.point shouldEqual centerPoint
-    entity move Right
-    entity.position.point shouldEqual centerPoint
-  }
-
   private def walkAroundMapTest(entity: MovableEntity): Unit = {
+    val left = walkableWidth._1
+    val right = walkableWidth._2
+    val up = walkableHeight._1
+    val down = walkableHeight._2
     entity moveTo Position(Point(1, 1), Some(Down))
-    for (y <- walkableHeight._1 to walkableHeight._2) y match {
-      case Odd(y) =>
-        for(x <- walkableWidth._1 +1 to walkableWidth._2 ) {
-          entity changeDirection Right
-          entity move Right
-          entity.position.point shouldEqual Point(x,y)
-        }
-        entity changeDirection Down
-        entity move Down
-      case Even(y) =>
-        for (x <- walkableWidth._2 -1 to walkableWidth._1 by -1) {
-          entity changeDirection Left
-          entity move Left
-          entity.position.point shouldEqual Point(x,y)
-        }
-        entity.changeDirection(Down)
-        entity.move(Down)
+
+    for (y <- up to down) {
+      y match {
+        case Odd(y) =>
+          for(x <- left +1 to right) {
+            entity changeDirectionAndMove Right
+            entity.position.point shouldEqual Point(x,y)
+          }
+        case Even(y) =>
+          for(x <- right -1 to left by -1) {
+            entity changeDirectionAndMove Left
+            entity.position.point shouldEqual Point(x,y)
+          }
+      }
+      entity changeDirectionAndMove Down
     }
   }
 
@@ -92,34 +92,26 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
       (x, y) match {
         case (walkableWidth._1, y) =>
           //Muri più a sinistra
-          entity changeDirection Left
-          entity move Left
+          entity changeDirectionAndMove Left
           entity.position.point shouldEqual Point(x,y)
-          entity changeDirection Right
-          entity move Right
+          entity changeDirectionAndMove Right
         case (walkableWidth._2, y) =>
           //Muri più a destra
-          entity changeDirection Right
-          entity move Right
+          entity changeDirectionAndMove Right
           entity.position.point shouldEqual Point(x,y)
           entity moveTo Position(Point(walkableWidth._1,y+1), Some(Down))
         case (x, walkableHeight._1) =>
           //Muri in alto
-          entity changeDirection Up
-          entity move Up
+          entity changeDirectionAndMove Up
           entity.position.point shouldEqual Point(x,y)
-          entity changeDirection Right
-          entity move Right
+          entity changeDirectionAndMove Right
         case (x, walkableHeight._2) =>
           //Muri in basso
-          entity changeDirection Down
-          entity move Down
+          entity changeDirectionAndMove Down
           entity.position.point shouldEqual Point(x,y)
-          entity changeDirection Right
-          entity move Right
+          entity changeDirectionAndMove Right
         case _ =>
-          entity changeDirection Right
-          entity move Right
+          entity changeDirectionAndMove Right
       }
   }
 
@@ -127,9 +119,9 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
     val obstaclePoint = nearPoint(centerPoint, Down)
     obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
 
-    player moveTo Position(centerPoint, Some(Down))
-    player move Down
-    player.position.point shouldEqual centerPoint
+    entity moveTo Position(centerPoint, Some(Down))
+    entity move Down
+    entity.position.point shouldEqual centerPoint
 
     obstacles = Set()
   }

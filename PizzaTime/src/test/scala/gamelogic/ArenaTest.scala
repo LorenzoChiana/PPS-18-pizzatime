@@ -11,7 +11,7 @@ import org.scalatest.enablers.Emptiness.emptinessOfGenTraversable
 
 /** Test class for the behavior of [[Arena]]. */
 class ArenaTest extends AnyFlatSpec with Matchers {
-  startGame("Player1", gameType(Easy))
+  startGame("Player1", gameType(Medium))
 
   val arena: GameMap = GameState.arena.get
   import arena._
@@ -23,38 +23,38 @@ class ArenaTest extends AnyFlatSpec with Matchers {
     obstacles should not be empty
   }
 
+  it should "not be too full" in {
+    checkArenaPopulation() shouldBe true
+  }
+
   it should "have walls inside it" in {
     walls should not be empty
-    assert(walls.forall(wall => checkBounds(wall.position.point, bounds = true)))
+    walls.forall(wall => checkBounds(wall.position.point, bounds = true)) shouldBe true
   }
 
   it should "have floor inside the walls" in {
     floor should not be empty
-    assert(floor.forall(tile => checkBounds(tile.position.point)))
+    floor.forall(tile => checkBounds(tile.position.point)) shouldBe true
   }
 
-  it should "have the player inside the walls" in {
-    assert(checkBounds(player.position.point))
-  }
+  /*it should "have the player inside the walls" in {
+    checkBounds(player.position.point) shouldBe true
+  }*/
 
   it should "have enemies inside the walls" in {
-    assert(enemies.forall(enemy => checkBounds(enemy.position.point)))
+    enemies.forall(enemy => checkBounds(enemy.position.point)) shouldBe true
   }
 
   it should "have bullets inside the walls" in {
-    assert(bullets.forall(bullet => checkBounds(bullet.position.point)))
+    bullets.forall(bullet => checkBounds(bullet.position.point)) shouldBe true
   }
 
   it should "have collectibles inside the walls" in {
-    assert(collectibles.forall(collectible => checkBounds(collectible.position.point)))
+    collectibles.forall(collectible => checkBounds(collectible.position.point)) shouldBe true
   }
 
   it should "have obstacles inside the walls" in {
-    assert(obstacles.forall(obstacle => checkBounds(obstacle.position.point)))
-  }
-
-  it should "not be too full" in {
-    checkArenaPopulation() shouldBe true
+    obstacles.forall(obstacle => checkBounds(obstacle.position.point)) shouldBe true
   }
 
   it can "be emptied" in {

@@ -28,10 +28,6 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     player.playerName shouldBe "Player1"
   }
 
-  it should "be in the center of the map" in {
-    player.position.point shouldEqual centerPoint
-  }
-
   it should "walk over bonuses" in {
     val bonusLifePoint = nearPoint(centerPoint, Right)
     val bonusScorePoint = nearPoint(centerPoint, Left)

@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
 <fx:root type="javafx.scene.layout.BorderPane"
          xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
-         stylesheets="@../styles/MainStyle.css, @../styles/DialogStyle.css" >
+         stylesheets="@../styles/MainStyle.css, @../styles/DialogStyle.css, @../styles/GameStatsStyle.css" >
+    <center>
+            <GridPane fx:id="root">
+                <GridPane fx:id="statsPane" GridPane.columnIndex="1" GridPane.rowIndex="0" minWidth="200">
+                    <VBox>
+                        <Label fx:id="lifeLabel" text="PlayerName: Life"/>
+                        <Label fx:id="levelLabel" text="Level"/>
+                        <Label fx:id="scoreLabel" text="Score: 0"/>
+                        <Label fx:id="recordLabel" text="Record: 0"/>
+                        <Label fx:id="loseLabel" text="You Lose." visible="false"/>
+                        <Button fx:id="endButton" text="End game"/>
+                        <Button fx:id="backButton" text="Back to Menu" visible="false"/>
+                    </VBox>
+                </GridPane>
+            </GridPane>
+    </center>
 </fx:root>
 
