@@ -2,7 +2,7 @@ package gamelogic
 
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 import Entity._
-import gamelogic.Arena.bounds
+import Arena.{bounds, checkBounds}
 import utilities.ImplicitConversions._
 
 /** Represents a basic entity, defined by a [[Position]].
@@ -18,7 +18,7 @@ trait Entity {
       nearPoint(position.point, Down),
       nearPoint(position.point, Left),
       nearPoint(position.point, Right)
-    ).filter(p => p.x >= 0 && p.y >= 0 && p.x < GameState.arenaWidth && p.y < GameState.arenaHeight)
+    ).filter(checkBounds(_))
 
     surroundings -- bounds
   }

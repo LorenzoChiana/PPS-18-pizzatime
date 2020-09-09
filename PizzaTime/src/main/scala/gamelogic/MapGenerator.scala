@@ -71,7 +71,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
     while (obstacles.size < dim) {
       startingObstacle.surroundings.foreach(p => {
-        if (isClearFloor(p) && !isEntrance(p) && (obstacles.size < dim)) {
+        if (isClearFloor(p) && (obstacles.size < dim)) {
           obstacles = obstacles + Obstacle(Position(p, Some(Down)))
         }
       })
@@ -109,21 +109,11 @@ object MapGenerator {
    */
   def gameType(difficulty: DifficultyVal): MapGenerator = new MapGenerator(difficulty)
 
-  /** Returns a random and clear [[Position]] on the [[Wall]]s. */
-  def randomClearWallPosition: Position = {
-    /*val wall: Wall = arena.get.walls.iterator.drop(between(0, arena.get.walls.size)).next
-
-    wall.position.point match {
-      case Point(0, 0) => randomClearWallPosition
-      case Point(0, y) if y.equals(arenaHeight - 1) => randomClearWallPosition
-      case Point(x, 0) if x.equals(arenaWidth - 1) => randomClearWallPosition
-      case Point(x, y) if x.equals(arenaWidth - 1) && y.equals(arenaHeight - 1) => randomClearWallPosition
-      case _ => if (wall.surroundings.size < 1) randomClearWallPosition else wall
-    }*/
-
+  /** Returns a random [[Position]] on the [[Wall]]s. */
+  def randomWallPosition: Position = {
     var wall: Wall = arena.get.walls.toVector(nextInt(arena.get.walls.size))
 
-    while (wall.surroundings.size < 1) {
+    while (wall.surroundings.isEmpty) {
       wall = arena.get.walls.toVector(nextInt(arena.get.walls.size))
     }
     wall.position
