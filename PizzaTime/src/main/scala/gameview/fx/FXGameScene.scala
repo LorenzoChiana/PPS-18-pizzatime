@@ -78,7 +78,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
 
   stage.setWidth(WindowSize.Game.width + statsPane.getMinWidth)
 
-  val timeline = new Timeline(new KeyFrame(Duration.millis(80), (_: ActionEvent) => {
+  val timeline = new Timeline(new KeyFrame(Duration.millis(150), (_: ActionEvent) => {
     actions.foreach(d => if (d._2) FXWindow.observers.foreach(_.notifyAction(d._1)))
   }))
   timeline.setCycleCount(Animation.INDEFINITE)

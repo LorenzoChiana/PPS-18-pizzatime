@@ -82,7 +82,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     bullets foreach(bullet => bullet.advances())
 
     /**Check if any bullets are explode*/
-    bullets = bullets -- bullets.filter(_.unexploded == false)
+    bullets = bullets -- bullets.filter(!_.unexploded)
 
     enemies.foreach(en => {
       val enemyHaveMove = en.movementBehaviour
