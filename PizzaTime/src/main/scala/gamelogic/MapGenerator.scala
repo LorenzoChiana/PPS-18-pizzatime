@@ -5,7 +5,7 @@ import Arena._
 import utilities.{Difficulty, Down, Point, Position}
 import utilities.Difficulty._
 import GameState._
-
+import utilities.ImplicitConversions._
 import scala.annotation.tailrec
 import scala.util.Random.{between, nextInt}
 
@@ -52,14 +52,15 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
   private def generateObstacles(): Unit = {
     val obstaclesNum: Int = between(difficulty.obstaclesRange.min, difficulty.obstaclesRange.max)
-    val obstacleDim: Int = between(difficulty.obstacleDimension.min, difficulty.obstacleDimension.max)
 
     for (_ <- 0 to obstaclesNum) {
       if (checkArenaPopulation()) {
+        val obstacleDim: Int = between(difficulty.obstacleDimension.min, difficulty.obstacleDimension.max)
         val obstacles: Set[Obstacle] = randomAdjacentObstacles(obstacleDim)
         arena.get.obstacles = arena.get.obstacles ++ obstacles
       }
     }
+    removeFloorBorderObstacles()
   }
 
   def levelMultiplier: Int = (arena.get.mapGen.currentLevel / difficulty.levelThreshold) + 1
@@ -81,6 +82,22 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     }
     obstacles
   }
+
+  private def removeFloorBorderObstacles(): Unit = {
+    var floorBorders: Set[Point] = Set()
+
+    for (
+      x <- 0 until arenaWidth;
+      y <- 0 until arenaHeight
+    ) floorBorders = floorBorders ++ Set[Point](
+      (x, 1),
+      (1, y),
+      (x, arenaHeight - 2),
+      (arenaWidth - 2, y)
+    )
+
+    arena.get.obstacles.filter(obstacle => floorBorders.contains(obstacle.position.point)).map(_.remove())
+  }
 }
 
 /** Utility methods for [[MapGenerator]]. */
@@ -92,18 +109,24 @@ object MapGenerator {
    */
   def gameType(difficulty: DifficultyVal): MapGenerator = new MapGenerator(difficulty)
 
-  /** Returns a random and clear [[Position]] on the wall. */
-  @tailrec
-  def randomPositionWall: Wall = {
-    val wall = arena.get.walls.iterator.drop(between(0, arena.get.walls.size)).next
+  /** Returns a random and clear [[Position]] on the [[Wall]]s. */
+  def randomClearWallPosition: Position = {
+    /*val wall: Wall = arena.get.walls.iterator.drop(between(0, arena.get.walls.size)).next
 
     wall.position.point match {
-      case Point(0, 0) => randomPositionWall
-      case Point(0, y) if y.equals(arenaHeight-1) => randomPositionWall
-      case Point(x, 0) if x.equals(arenaWidth-1) => randomPositionWall
-      case Point(x, y) if x.equals(arenaWidth-1) && y.equals(arenaHeight-1) => randomPositionWall
-      case _ => if(wall.surroundings.size < 1) randomPositionWall else wall
+      case Point(0, 0) => randomClearWallPosition
+      case Point(0, y) if y.equals(arenaHeight - 1) => randomClearWallPosition
+      case Point(x, 0) if x.equals(arenaWidth - 1) => randomClearWallPosition
+      case Point(x, y) if x.equals(arenaWidth - 1) && y.equals(arenaHeight - 1) => randomClearWallPosition
+      case _ => if (wall.surroundings.size < 1) randomClearWallPosition else wall
+    }*/
+
+    var wall: Wall = arena.get.walls.toVector(nextInt(arena.get.walls.size))
+
+    while (wall.surroundings.size < 1) {
+      wall = arena.get.walls.toVector(nextInt(arena.get.walls.size))
     }
+    wall.position
   }
 
   /** Returns a random and clear [[Position]] on the [[Arena]] (meaning that it's not occupied by any [[Entity]] and it's not on the entrance). */

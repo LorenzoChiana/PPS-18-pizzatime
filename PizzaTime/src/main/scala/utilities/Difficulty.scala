@@ -2,6 +2,9 @@ package utilities
 
 import scala.language.implicitConversions
 import gamelogic.Collectible
+import gamelogic.Arena
+import gamelogic.Enemy
+import gamelogic.Obstacle
 
 /** Represents the various difficulties that the game can have.
  *  The options are: easy, medium, hard or extreme.

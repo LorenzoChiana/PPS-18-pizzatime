@@ -1,8 +1,9 @@
 package gamelogic
 
 import GameState._
-import gamelogic.Arena.{bounds, center, containsBullet, containsEnemy, isDoor, tiles}
-import gamemanager.SoundController.{play, stopSound}
+import Arena._
+import MapGenerator._
+import gamemanager.SoundController._
 import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, Left, LevelUp, Point, Position, Right, ShootSound, Up}
 import utilities.ImplicitConversions._
 
@@ -25,15 +26,15 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   /** Generates a new level. */
   def generateMap(): Unit = {
-    if (door.isEmpty) door = Some(Door(MapGenerator.randomPositionWall.position))
-    else walls = walls.filter(!_.position.point.equals(door.get.position.point))
+    if (door.isEmpty) door = Some(Door(randomClearWallPosition))
+    walls = walls.filter(!_.position.point.equals(door.get.position.point))
 
     mapGen.generateLevel()
     door.get.position.point match {
       case Point(0, _) => player.moveTo(Position(door.get.position.point, Some(Right)))
       case Point(_, 0) => player.moveTo(Position(door.get.position.point, Some(Down)))
-      case Point(x, _) if x.equals(arenaWidth-1) => player.moveTo(Position(door.get.position.point, Some(Left)))
-      case Point(_, y) if y.equals(arenaHeight-1) => player.moveTo(Position(door.get.position.point, Some(Up)))
+      case Point(x, _) if x.equals(arenaWidth - 1) => player.moveTo(Position(door.get.position.point, Some(Left)))
+      case Point(_, y) if y.equals(arenaHeight - 1) => player.moveTo(Position(door.get.position.point, Some(Up)))
     }
     /*play(LevelMusic)*/
   }
@@ -113,8 +114,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
     /**Check if door is open*/
     if (door.isEmpty) {
-      if(enemies.isEmpty){
-        door = Some(Door(MapGenerator.randomPositionWall.position))
+      if (enemies.isEmpty) {
+        door = Some(Door(randomClearWallPosition))
         play(LevelUp)
       }
     } else if (enemies.nonEmpty && !player.position.point.equals(door.get.position.point)) {
@@ -219,10 +220,8 @@ object Arena {
    *  @param p the [[Point]] to clear
    */
   def clearPoint(p: Point): Unit = {
-    if (checkBounds(p) && !isClearFloor(p)) {
-      val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles
-      allEntities.filter(_.position.point.equals(p)).map(_.remove())
-    }
+    val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles
+    allEntities.filter(_.position.point.equals(p)).map(_.remove())
   }
 
   /** Checks whether a [[Point]] is on the entrance of the [[Arena]] or not.
@@ -230,7 +229,7 @@ object Arena {
    *  @param p the [[Point]] to check
    *  @return true if the [[Point]] is in the [[Door]]'s surroundings
    */
-  def isEntrance(p: Point): Boolean = arena.get.door.isDefined && arena.get.door.get.surroundings.contains(p)
+  def isEntrance(p: Point): Boolean = checkBounds(p) && arena.get.door.isDefined && arena.get.door.get.surroundings.contains(p)
 
   /** Checks whether a [[Point]] contains an [[Obstacle]] or not.
    *

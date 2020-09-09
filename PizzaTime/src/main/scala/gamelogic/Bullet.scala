@@ -9,6 +9,7 @@ import GameState.arena
  *  @param position its initial [[Position]]
  */
 case class Bullet(var position: Position, var unexploded: Boolean = true, range: Int = 5) extends MovableEntity {
+  private var bulletRange: Int = 0
 
   def advances(): Unit = {
     position.dir.get match {
@@ -18,9 +19,6 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
       case Right => move(Right)
     }
   }
-
-  var bulletRange: Int = 0
-  def checkInRange: Boolean = if (bulletRange < range){ bulletRange = bulletRange + 1; true} else {bulletRange = 0; false}
 
   override def move(dir: Direction): Boolean = {
     if (canMoveIn(nearPoint(position.point, dir)) && checkInRange) {
@@ -38,6 +36,16 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
     unexploded = false
     arena.get.bullets = arena.get.bullets - copy()
     if (!arena.get.bullets.contains(copy())) true else false
+  }
+
+  private def checkInRange: Boolean = {
+    if (bulletRange < range) {
+      bulletRange += 1
+      true
+    } else {
+      bulletRange = 0
+      false
+    }
   }
 }
 

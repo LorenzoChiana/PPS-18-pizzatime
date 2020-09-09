@@ -37,10 +37,6 @@ class ArenaTest extends AnyFlatSpec with Matchers {
     floor.forall(tile => checkBounds(tile.position.point)) shouldBe true
   }
 
-  /*it should "have the player inside the walls" in {
-    checkBounds(player.position.point) shouldBe true
-  }*/
-
   it should "have enemies inside the walls" in {
     enemies.forall(enemy => checkBounds(enemy.position.point)) shouldBe true
   }
@@ -83,6 +79,6 @@ class ArenaTest extends AnyFlatSpec with Matchers {
   }
 
   "Obstacles" should "be in their range" in {
-    obstacles.size shouldBe mapGen.difficulty.obstaclesRange.min +- mapGen.difficulty.obstaclesRange.max
+    obstacles.size shouldBe mapGen.difficulty.obstaclesRange.min +- (mapGen.difficulty.obstaclesRange.max * mapGen.difficulty.obstacleDimension.max)
   }
 }
