@@ -211,7 +211,7 @@ object Arena {
    */
   def isClearFloor(p: Point): Boolean = {
     val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles
-    allEntities.forall(!_.position.point.equals(p))
+    allEntities.forall(!_.position.point.equals(p) && checkBounds(p))
   }
 
   /** Clears a specified [[Point]] inside the [[Arena]]'s inner bounds.
@@ -259,6 +259,13 @@ object Arena {
    *  @return true if the [[Point]] contains a [[Bullet]]
    */
   def containsBullet(p: Point): Set[Bullet] = arena.get.bullets.filter(_.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains a [[Wall]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Wall]]
+   */
+  def containsWall(p: Point): Boolean = arena.get.walls.exists(_.position.point.equals(p))
 
   /** Checks whether a [[Point]] contains the [[Door]] or not.
    *

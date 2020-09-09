@@ -11,16 +11,19 @@ import GameState.arena
  *  @param lives its starting lives
  */
 case class Enemy(var position: Position,  var lives: Int = 5, pointsKilling: Int = 20) extends EnemyCharacter {
+  private var disableBehavior = false
 
-  def movementBehaviour: Boolean = {
-    nextInt(40) match {
-      case 0 => move(Up)
-      case 1 => move(Down)
-      case 2 => move(Left)
-      case 3 => move(Right)
-      case _ => false
-    }
-  }
+  def movementBehaviour: Boolean =
+    if (disableBehavior)
+      false
+    else
+      nextInt(40) match {
+        case 0 => move(Up)
+        case 1 => move(Down)
+        case 2 => move(Left)
+        case 3 => move(Right)
+        case _ => false
+      }
 
   override def canMoveIn(p: Point): Boolean = super.canMoveIn(p) && !containsCollectible(p) && containsEnemy(p).isEmpty
 
@@ -29,6 +32,8 @@ case class Enemy(var position: Position,  var lives: Int = 5, pointsKilling: Int
   def isLive: Boolean = lives > 0
 
   def isDead: Boolean = !isLive
+
+  def onTestingMode(): Unit = disableBehavior = true
 
   override def remove(): Boolean = {
     arena.get.enemies = arena.get.enemies - copy()

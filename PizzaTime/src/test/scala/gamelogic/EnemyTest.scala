@@ -17,15 +17,15 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   val arena: GameMap = GameState.arena.get
   val walkableWidth: (Int, Int) = (1, difficulty.arenaWidth-2)
   val walkableHeight: (Int, Int) = (1, difficulty.arenaHeight-2)
-  val centerPoint: Point = Point(difficulty.arenaWidth/2, difficulty.arenaHeight/2)
 
   import arena._
   obstacles = Set()
   enemies = Set()
   collectibles = Set()
-  player.moveTo(Position(Point(0,0), Some(Down)))
+  player moveTo Position(Point(0, 0), Some(Down))
 
-  val enemy: Enemy = Enemy(Position(centerPoint, Some(Down)))
+  val enemy: Enemy = Enemy(Position(Arena.center, Some(Down)))
+  enemy.onTestingMode()
 
   "An enemy" should "have initialized life and points killing" in {
     enemy.lives should be > 0
@@ -33,39 +33,40 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   }
 
   it should "collide with bonuses" in {
-    val bonusLifePoint = nearPoint(centerPoint, Right)
-    val bonusScorePoint = nearPoint(centerPoint, Left)
+    val bonusLifePoint = nearPoint(Arena.center, Right)
+    val bonusScorePoint = nearPoint(Arena.center, Left)
     collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) + BonusScore(Position(bonusScorePoint, None), 1)
 
-    enemy moveTo Position(centerPoint, Some(Right))
+    enemy moveTo Position(Arena.center, Some(Right))
     enemy move Right
     enemy.position.point should not equal bonusLifePoint
-    enemy.position.point shouldBe centerPoint
+    enemy.position.point shouldBe Arena.center
 
-    enemy moveTo Position(centerPoint, Some(Left))
+    enemy moveTo Position(Arena.center, Some(Left))
     enemy move Left
     enemy.position.point should not equal bonusScorePoint
-    enemy.position.point shouldBe centerPoint
+    enemy.position.point shouldBe Arena.center
 
     collectibles = Set()
   }
 
   it should "collide with other enemies" in {
-    enemy moveTo Position(centerPoint, Some(Right))
-    val otherEnemyPoint: Point = nearPoint(centerPoint, Right)
+    enemy moveTo Position(Arena.center, Some(Right))
+    val otherEnemyPoint: Point = nearPoint(Arena.center, Right)
     val enemy2 = Enemy(Position(otherEnemyPoint, Some(Right)))
+    enemy2.onTestingMode()
     enemies = enemies + enemy + enemy2
 
     enemy move Right
     enemy.position.point should not equal otherEnemyPoint
-    enemy.position.point shouldBe centerPoint
+    enemy.position.point shouldBe Arena.center
 
     enemies = Set()
   }
 
   it should "lose his life when he collides with a bullet" in {
-    player moveTo Position(centerPoint, Some(Right))
-    enemy moveTo Position(nearPoint(centerPoint, Right), Some(Right))
+    player moveTo Position(Arena.center, Some(Right))
+    enemy moveTo Position(nearPoint(Arena.center, Right), Some(Right))
     enemies = enemies + enemy
 
     enemy.lives = 5
@@ -77,8 +78,8 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   }
 
   it should "take the player's life away when he collides with him" in {
-    player moveTo Position(centerPoint, Some(Right))
-    enemy moveTo Position(nearPoint(centerPoint, Right), Some(Left))
+    player moveTo Position(Arena.center, Some(Right))
+    enemy moveTo Position(nearPoint(Arena.center, Right), Some(Left))
     enemies = enemies + enemy
 
     player.lives = 5
