@@ -3,17 +3,16 @@ package gamelogic
 import gamelogic.Entity.nearPoint
 import gamelogic.GameState.{nextStep, startGame}
 import gamelogic.MapGenerator.gameType
-import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
+import gamemanager.handlers.PreferencesHandler.difficulty_
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import utilities.Difficulty.Easy
-import utilities.{Down, Left, Point, Position, Right, Up}
+import utilities.{Down, Left, Position, Right, Up}
 
 class BulletTest extends AnyFlatSpec with Matchers {
   difficulty_(Easy)
   startGame("Player1", gameType(Easy))
-  val centerPoint: Point = Point(difficulty.arenaWidth/2, difficulty.arenaHeight/2)
   val arena: GameMap = GameState.arena.get
   import arena._
   obstacles = Set()
@@ -38,7 +37,7 @@ class BulletTest extends AnyFlatSpec with Matchers {
     bullets.foreach(_.unexploded shouldBe false)
   }
 
-  val entityOfCollisionPosition: Position = Position(nearPoint(nearPoint(centerPoint, Right), Right), Option(Right))
+  val entityOfCollisionPosition: Position = Position(nearPoint(nearPoint(Arena.center, Right), Right), Option(Right))
 
   it should "explode if it collides with an obstacle" in checkExplosionWhenCollides(Obstacle(entityOfCollisionPosition), mustExplode = true)
 
@@ -52,7 +51,7 @@ class BulletTest extends AnyFlatSpec with Matchers {
   }
 
   private def checkExplosionWhenCollides(entity: Entity, mustExplode: Boolean): Unit = {
-    player moveTo Position(centerPoint, Some(Right))
+    player moveTo Position(Arena.center, Some(Right))
     nextStep(None, Some(Right))
     while(bullets.exists(_.unexploded)) nextStep(None, None)
     bullets.filter(!_.unexploded).foreach(bullet =>

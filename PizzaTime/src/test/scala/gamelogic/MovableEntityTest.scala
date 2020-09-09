@@ -1,11 +1,9 @@
 package gamelogic
 
-import gamelogic.GameState.startGame
-import gamelogic.MapGenerator.gameType
-import gamelogic.Entity.stepPoint
 import GameState.startGame
 import MapGenerator.gameType
 import Entity._
+import gamelogic.Arena.containsWall
 import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
@@ -19,7 +17,6 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   val arena: GameMap = GameState.arena.get
   val walkableWidth: (Int, Int) = (1, difficulty.arenaWidth-2)
   val walkableHeight: (Int, Int) = (1, difficulty.arenaHeight-2)
-  val centerPoint: Point = Point(difficulty.arenaWidth/2, difficulty.arenaHeight/2)
 
   import arena._
   obstacles = Set()
@@ -30,14 +27,14 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   val bullet: Bullet = Bullet(Position(Point(0,0), Some(Down)))
 
   List(player, enemy, bullet).foreach(entity => {
-    entity moveTo Position(centerPoint, Some(Down))
+    entity moveTo Position(Arena.center, Some(Down))
     movableEntityTests(entity)
     entity moveTo Position(Point(0,0), Some(Down))
   })
 
   private def movableEntityTests(entity: MovableEntity): Unit = entity match {
     case _: Bullet => basicMovableTests("A Bullet", entity)
-    case _: Player => //advancedMovableTests("The player", entity)
+    case _: Player => advancedMovableTests("The player", entity)
     case _: Enemy => advancedMovableTests("An enemy", entity)
   }
 
@@ -47,18 +44,18 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
     it should "move left" in moveDirectionTest(entity, Left)
     it should "move right" in moveDirectionTest(entity, Right)
     it should "collide with obstacles" in obstaclesCollisionsTest(entity)
+    it should "collide with walls" in wallsCollisionTest(entity)
   }
 
   private def advancedMovableTests(entityName: String, entity: MovableEntity): Unit = {
     basicMovableTests(entityName, entity)
     entityName should "move around the map" in walkAroundMapTest(entity)
-    it should "collide with walls" in wallsCollisionTest(entity)
   }
 
   private def moveDirectionTest(entity: MovableEntity, direction: Direction): Unit = {
-    entity moveTo Position(centerPoint, Some(direction))
+    entity moveTo Position(Arena.center, Some(direction))
     entity move direction
-    entity.position.point shouldEqual nearPoint(centerPoint, direction)
+    entity.position.point shouldEqual nearPoint(Arena.center, direction)
   }
 
   private def walkAroundMapTest(entity: MovableEntity): Unit = {
@@ -86,42 +83,23 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   }
 
   private def wallsCollisionTest(entity: MovableEntity): Unit = {
-    entity moveTo Position(Point(1, 1), Some(Down))
-    for (y <- walkableHeight._1 to walkableHeight._2;
-         x <- walkableWidth._1 to walkableWidth._2)
-      (x, y) match {
-        case (walkableWidth._1, y) =>
-          //Muri più a sinistra
-          entity changeDirectionAndMove Left
-          entity.position.point shouldEqual Point(x,y)
-          entity changeDirectionAndMove Right
-        case (walkableWidth._2, y) =>
-          //Muri più a destra
-          entity changeDirectionAndMove Right
-          entity.position.point shouldEqual Point(x,y)
-          entity moveTo Position(Point(walkableWidth._1,y+1), Some(Down))
-        case (x, walkableHeight._1) =>
-          //Muri in alto
-          entity changeDirectionAndMove Up
-          entity.position.point shouldEqual Point(x,y)
-          entity changeDirectionAndMove Right
-        case (x, walkableHeight._2) =>
-          //Muri in basso
-          entity changeDirectionAndMove Down
-          entity.position.point shouldEqual Point(x,y)
-          entity changeDirectionAndMove Right
-        case _ =>
-          entity changeDirectionAndMove Right
-      }
+    List(Up, Down, Left, Right).foreach(direction => {
+      entity moveTo Position(Arena.center, Some(direction))
+      while(entity canMoveIn nearPoint(entity.position.point, direction))
+        entity move direction
+
+      containsWall(nearPoint(entity.position.point, direction)) shouldBe true
+    })
+
   }
 
   private def obstaclesCollisionsTest(entity: MovableEntity): Unit = {
-    val obstaclePoint = nearPoint(centerPoint, Down)
+    val obstaclePoint = nearPoint(Arena.center, Down)
     obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
 
-    entity moveTo Position(centerPoint, Some(Down))
+    entity moveTo Position(Arena.center, Some(Down))
     entity move Down
-    entity.position.point shouldEqual centerPoint
+    entity.position.point shouldEqual Arena.center
 
     obstacles = Set()
   }
