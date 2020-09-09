@@ -27,8 +27,9 @@ class ArenaRoom extends GameElements {
         door.relocate(positionDoor._1, positionDoor._2)
       } else if(arena.get.door.isEmpty){
         dungeon.getChildren.remove(door)
-        for (w <- arena.get.walls) :+ (w, ImageLoader.wallImage)
-
+        val wall: ImageView = createTile(ImageLoader.wallImage)
+        wall.relocate(positionDoor._1, positionDoor._2)
+        dungeon.getChildren.add(wall)
       }
     })
   }
