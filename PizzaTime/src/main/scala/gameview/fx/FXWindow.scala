@@ -27,7 +27,6 @@ case class FXWindow(stage: Stage, title: String) extends Window {
   private var currentScene: Option[SceneType.Value] = None
 
   Platform.runLater(() => {
-    import javafx.stage.Stage
     import javafx.stage.StageStyle
     stage.initStyle(StageStyle.UNDECORATED)
     stage.setResizable(false)
@@ -68,8 +67,8 @@ case class FXWindow(stage: Stage, title: String) extends Window {
 
     if (currentScene.isDefined) {
       Platform.runLater(() => {
-        stage.setMinHeight(WindowSize.Menu.height)
-        stage.setMinWidth(WindowSize.Menu.width)
+        stage.setHeight(WindowSize.Menu.height)
+        stage.setWidth(WindowSize.Menu.width)
         windowContent.setId("mainDecoratedContainer")
       })
     }
