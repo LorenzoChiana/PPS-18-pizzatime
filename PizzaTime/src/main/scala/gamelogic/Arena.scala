@@ -26,7 +26,9 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   /** Generates a new level. */
   def generateMap(): Unit = {
-    if (door.isEmpty) door = Some(Door(randomClearWallPosition))
+    if (door.isEmpty) {
+      door = Some(Door(randomClearWallPosition))
+    }
     walls = walls.filter(!_.position.point.equals(door.get.position.point))
 
     mapGen.generateLevel()
@@ -60,7 +62,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           }
           collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
 
-        case p if containsEnemy(p).nonEmpty => playerInjury(containsEnemy(p).get)
+        case p if containsEnemy(p).isDefined => playerInjury(containsEnemy(p).get)
 
         case p if isDoor(p) && enemies.isEmpty =>
           endedLevel = true
@@ -78,16 +80,15 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       }
     }
 
-    /**Advance the bullets*/
-    bullets foreach(bullet => bullet.advances())
-
+    bullets.foreach(bullet => bullet.advances())
+    
     /**Check if any bullets are explode*/
     bullets = bullets -- bullets.filter(!_.unexploded)
 
     enemies.foreach(en => {
       val enemyHaveMove = en.movementBehaviour
 
-      if (lastInjury.nonEmpty) {
+      if (lastInjury.isDefined) {
         if (en.equals(lastInjury.get) && enemyHaveMove) {
           lastInjury = None
         }
@@ -134,7 +135,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   }
 
   def playerInjury(enemy: EnemyCharacter): Unit =
-    if (containsEnemy(player.position.point).nonEmpty && lastInjury.isEmpty) {
+    if (containsEnemy(player.position.point).isDefined && lastInjury.isEmpty) {
       lastInjury = Some(enemy)
       player.decreaseLife()
       play(InjurySound)
