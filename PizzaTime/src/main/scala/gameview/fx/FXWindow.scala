@@ -27,8 +27,11 @@ case class FXWindow(stage: Stage, title: String) extends Window {
   private var currentScene: Option[SceneType.Value] = None
 
   Platform.runLater(() => {
+    import javafx.stage.Stage
+    import javafx.stage.StageStyle
+    stage.initStyle(StageStyle.UNDECORATED)
     stage.setResizable(false)
-    stage.setTitle(title)
+
     windowContent.getStylesheets.add(getClass.getResource("/styles/MainStyle.css").toExternalForm)
     stage.getIcons.addAll(
       new Image(getClass.getResource("/images/icon/icon16x16.png").toExternalForm),
