@@ -2,9 +2,10 @@ package gameview.fx.gamesceneelements
 
 import gamelogic.Bullet
 import gamelogic.GameState.arena
-import gamemanager.ImageLoader.bulletImage
+import gamemanager.ImageLoader.images
+import utilities.BulletImage
 import gameview.fx.FXGameScene
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.{createTile, pointToPixel, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 
@@ -39,7 +40,7 @@ class Bullets extends GameElements{
    */
   private def addBullet(b: Bullet): Unit = {
     if (!bullets.contains(b)) {
-      val bullet = createTile(bulletImage)
+      val bullet = createTile(images(BulletImage))
       bullets = bullets + (b -> bullet)
       bullet.setFitHeight(tileHeight / 2)
       bullet.setFitWidth(tileWidth / 2)
@@ -53,7 +54,6 @@ class Bullets extends GameElements{
   }
 }
 
-/** Factory for [[Bullets]] instances. */
 object Bullets{
   /** Creates a [[Bullets]].
    *

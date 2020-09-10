@@ -1,7 +1,11 @@
 package gamemanager
 
 import javafx.scene.image.Image
-import utilities.ImageType.{BonusLife, BonusScore, Bullet, Enemy, Floor, Hero, Obstacle1, Obstacle2, Obstacle3, Wall}
+import utilities.{BonusLifeImage, BonusScoreImage, BulletImage, EnemyImage, FloorImage, HeroImage, ImageType, Obstacle1Image, Obstacle2Image, Obstacle3Image, WallImage}
+
+import scala.collection.immutable
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 /** Allows to load the various sprites of the game.
  *  The sprites are for:
@@ -14,17 +18,23 @@ import utilities.ImageType.{BonusLife, BonusScore, Bullet, Enemy, Floor, Hero, O
  *    Bullets
  */
 object ImageLoader {
-  val floorImage: Image = generateImage(Floor.path)
-  val wallImage: Image = generateImage(Wall.path)
-  val obstacles = Seq(generateImage(Obstacle1.path),
-                      generateImage(Obstacle2.path),
-                      generateImage(Obstacle3.path))
-  val bonusLifeImage: Image = generateImage(BonusLife.path)
-  val heroImage: Image = generateImage(Hero.path)
-  val enemyImage: Image = generateImage(Enemy.path)
-  val bulletImage: Image = generateImage(Bullet.path)
-  val bonusScoreImage: Image = generateImage(BonusScore.path)
+  var images: immutable.Map[ImageType, Image] = _
+
+  def loadImage(): Future[Unit] = Future {
+   images = Map[ImageType, Image]((FloorImage, generateImage(FloorImage.path)),
+      (WallImage, generateImage(WallImage.path)),
+      (Obstacle1Image, generateImage(Obstacle1Image.path)),
+      (Obstacle2Image, generateImage(Obstacle2Image.path)),
+      (Obstacle3Image , generateImage(Obstacle3Image.path)),
+      (BonusLifeImage , generateImage(BonusLifeImage.path)),
+      (BonusScoreImage , generateImage(BonusScoreImage.path)),
+      (HeroImage , generateImage(HeroImage.path)),
+      (EnemyImage , generateImage(EnemyImage.path)),
+      (BulletImage , generateImage(BulletImage.path))
+    )
+  }
+
+  private def generateImage(path: String): Image = new Image(getClass.getResourceAsStream(path))
 
 
-  private def generateImage(path: String) = new Image(getClass.getResourceAsStream(path))
 }

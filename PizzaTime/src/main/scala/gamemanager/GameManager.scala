@@ -14,11 +14,15 @@ import Runtime.getRuntime
 import java.io.PrintWriter
 import java.util.concurrent.Executors.newFixedThreadPool
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.fromExecutorService
 import gamelogic.GameState
 import gamelogic.GameState.{playerRankings, worldRecord}
+import gamemanager.ImageLoader.{loadImage}
 import gamemanager.SoundLoader.{play, stopSound}
+import gameview.fx.FXWindow
+import gameview.fx.FXWindow.addObserver
+import javafx.stage.Stage
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
@@ -29,23 +33,33 @@ import scala.util.{Failure, Success, Using}
 object GameManager extends ViewObserver with GameLogicObserver{
 
   val NumThreads: Int = getRuntime.availableProcessors() + 1
-  val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
+  implicit val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
   val TimeSliceMillis: Int = 50
   var view: Option[Scene] = None
   def view_(view: Scene): Unit = this.view = Some(view)
 
   var numCycle: Int = 0
   lazy val windowManager: Window = view.get.windowManager
-  /****/
-  var endGame: Boolean = false
 
+  var endGame: Boolean = false
   /** [[Queue]] for movements notified but not yet processed. */
   var playerMoves: Queue[Option[Direction]] = Queue[Option[Direction]]()
-
   /** [[Queue]] for shoots notified but not yet processed. */
   var playerShoots: Queue[Option[Direction]] = Queue[Option[Direction]]()
 
   loadPlayerRankings()
+
+  /** Call by main for initialize game */
+  def initializeGame(primaryStage: Stage) : Future[Unit] = Future{
+    val view: Window = FXWindow(primaryStage)
+
+    addObserver(this)
+
+    loadImage().onComplete({
+      case Success(_) =>  view.scene_(new Intent(MainScene)); view.showView()
+      case Failure(t) => println(t)
+    })
+  }
 
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {

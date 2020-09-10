@@ -3,10 +3,13 @@ package gameview.fx.gamesceneelements
 import gamelogic.Entity
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader
+import gamemanager.ImageLoader.images
 import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.GridPane
+import utilities.{FloorImage, Obstacle1Image, WallImage}
+
 import scala.util.Random.between
 
 
@@ -17,7 +20,7 @@ class ArenaRoom extends GameElements {
    */
   override def update(): Unit = createDoor()
 
-  val door: ImageView = createTile(ImageLoader.floorImage)
+  val door: ImageView = createTile(images(FloorImage))
   var positionDoor: (Double, Double) = _
   private def createDoor(): Unit = {
     Platform.runLater(() => {
@@ -27,7 +30,7 @@ class ArenaRoom extends GameElements {
         door.relocate(positionDoor._1, positionDoor._2)
       } else if(arena.get.door.isEmpty){
         dungeon.getChildren.remove(door)
-        val wall: ImageView = createTile(ImageLoader.wallImage)
+        val wall: ImageView = createTile(images(WallImage))
         wall.relocate(positionDoor._1, positionDoor._2)
         dungeon.getChildren.add(wall)
       }
@@ -40,9 +43,9 @@ class ArenaRoom extends GameElements {
    * @return a new [[GridPane]] with all the game entities initialized to be displayed in the view
    */
   private def createArena(): Unit = {
-    for (f <- arena.get.floor) :+ (f, ImageLoader.floorImage)
-    for (w <- arena.get.walls) :+ (w, ImageLoader.wallImage)
-    for (o <- arena.get.obstacles) :+ (o, ImageLoader.obstacles(between(0, 3)))
+    for (f <- arena.get.floor) :+ (f, images(FloorImage))
+    for (w <- arena.get.walls) :+ (w, images(WallImage))
+    for (o <- arena.get.obstacles) :+ (o, images(Obstacle1Image))
 
     createDoor()
   }

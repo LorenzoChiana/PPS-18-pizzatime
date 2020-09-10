@@ -1,17 +1,17 @@
 package gameview.fx.gamesceneelements
 
 import gamelogic.GameState.arena
-import gamemanager.ImageLoader.heroImage
+import gamemanager.ImageLoader.images
 import gameview.SpriteAnimation
 import gameview.fx.FXGameScene.{dungeon, pointToPixel, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.util.Duration
-import utilities.{Direction, Down, Left, Position, Right, Up}
+import utilities.{Direction, Down, HeroImage, Left, Position, Right, Up}
 
 /** [[ImageView]] representing [[Player]]*/
 class Player extends GameElements{
-  private val player: ImageView = new ImageView(heroImage)
+  private val player: ImageView = new ImageView(images(HeroImage))
   private var currentPosition: Position = arena.get.player.position
 
   val heroAnimation = new SpriteAnimation(player, Duration.millis(100), 4, 4, 0, 0, 100, 130)
@@ -36,9 +36,8 @@ class Player extends GameElements{
   }
 
 }
-/** Factory for [[Player]] instances. */
-object Player{
 
+object Player{
   /** Creates a [[Player]].
    *
    *  @return the new [[Player]] instance

@@ -1,18 +1,16 @@
 package utilities
 
-object ImageType {
-  val Floor: ImageVal = ImageVal("/images/textures/tile.png")
-  val Wall: ImageVal = ImageVal("/images/textures/wallKitchen.png")
-  val Obstacle1: ImageVal = ImageVal("/images/sprites/obstacle1.png")
-  val Obstacle2: ImageVal = ImageVal("/images/sprites/obstacle2.png")
-  val Obstacle3: ImageVal = ImageVal("/images/sprites/obstacle3.png")
-  val BonusLife: ImageVal = ImageVal( "/images/sprites/pizza.png")
-  val Hero: ImageVal = ImageVal("/images/sprites/hero.png")
-  val Enemy: ImageVal = ImageVal("/images/sprites/enemy.png")
-  val Bullet: ImageVal = ImageVal("/images/sprites/tomato.png")
-  val BonusScore: ImageVal = ImageVal("/images/sprites/flour.png")
+import java.lang.System.getProperty
 
-  val allImage = Seq(Floor, Wall, Obstacle1, Obstacle2, Obstacle3 , BonusLife, Hero, Enemy, Bullet, BonusScore)
-}
 
-case class ImageVal(path: String)
+sealed trait ImageType
+case object FloorImage extends ImageType { val path: String = "/images/textures/tile.png" }
+case object WallImage extends ImageType { val path: String = "/images/textures/wallKitchen.png" }
+case object Obstacle1Image extends ImageType { val path: String = "/images/sprites/obstacle1.png" }
+case object Obstacle2Image extends ImageType { val path: String = "/images/sprites/obstacle2.png" }
+case object Obstacle3Image extends ImageType { val path: String = "/images/sprites/obstacle3.png" }
+case object BonusLifeImage extends ImageType { val path: String = "/images/sprites/pizza.png" }
+case object HeroImage extends ImageType { val path: String = "/images/sprites/hero.png" }
+case object EnemyImage extends ImageType { val path: String = "/images/sprites/enemy.png" }
+case object BulletImage extends ImageType { val path: String = "/images/sprites/tomato.png" }
+case object BonusScoreImage extends ImageType { val path: String = "/images/sprites/flour.png" }
