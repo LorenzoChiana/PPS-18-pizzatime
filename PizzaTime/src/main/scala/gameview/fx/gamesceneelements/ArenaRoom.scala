@@ -8,7 +8,7 @@ import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.GridPane
-import utilities.{FloorImage, Obstacle1Image, WallImage}
+import utilities.{FloorImage, Obstacle1Image, Obstacle2Image, Obstacle3Image, WallImage}
 
 import scala.util.Random.between
 
@@ -45,7 +45,13 @@ class ArenaRoom extends GameElements {
   private def createArena(): Unit = {
     for (f <- arena.get.floor) :+ (f, images(FloorImage))
     for (w <- arena.get.walls) :+ (w, images(WallImage))
-    for (o <- arena.get.obstacles) :+ (o, images(Obstacle1Image))
+
+    for (o <- arena.get.obstacles) :+ (o,
+      between(1, 4) match {
+      case 1 => images(Obstacle1Image)
+      case 2 => images(Obstacle2Image)
+      case 3 => images(Obstacle3Image)
+    })
 
     createDoor()
   }

@@ -18,8 +18,14 @@ import scala.concurrent.Future
  *    Bullets
  */
 object ImageLoader {
+  /**Map the imageType to its image*/
   var images: immutable.Map[ImageType, Image] = _
 
+  /**
+   * Allows to to load all images from files
+   *
+   * @return [[Future]]
+   * */
   def loadImage(): Future[Unit] = Future {
    images = Map[ImageType, Image]((FloorImage, generateImage(FloorImage.path)),
       (WallImage, generateImage(WallImage.path)),
@@ -35,6 +41,5 @@ object ImageLoader {
   }
 
   private def generateImage(path: String): Image = new Image(getClass.getResourceAsStream(path))
-
 
 }
