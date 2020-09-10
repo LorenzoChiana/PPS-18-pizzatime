@@ -1,18 +1,17 @@
 package gamelogic
 
 import GameState.{nextStep, startGame}
-import MapGenerator.gameType
 import Entity._
-import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
+import gamemanager.handlers.PreferencesHandler.difficulty_
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.Difficulty.Easy
-import utilities.{Down, Left, Point, Position, Right, Up}
+import utilities.Difficulty._
+import utilities.{Down, Left, Position, Right, Up}
 
 class PlayerTest extends AnyFlatSpec with Matchers {
   difficulty_(Easy)
-  startGame("Player1", gameType(Easy))
+  startGame("Player1", MapGenerator(Easy))
   val arena: GameMap = GameState.arena.get
 
   import arena._

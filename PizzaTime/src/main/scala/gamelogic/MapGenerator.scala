@@ -6,7 +6,6 @@ import utilities.{Difficulty, Down, Point, Position}
 import utilities.Difficulty._
 import GameState._
 import utilities.ImplicitConversions._
-import scala.annotation.tailrec
 import scala.util.Random.{between, nextInt}
 
 /** Encapsulates the logic for generating a new level.
@@ -95,20 +94,12 @@ case class MapGenerator(difficulty: Difficulty.Value) {
       (x, arenaHeight - 2),
       (arenaWidth - 2, y)
     )
-
     arena.get.obstacles.filter(obstacle => floorBorders.contains(obstacle.position.point)).map(_.remove())
   }
 }
 
 /** Utility methods for [[MapGenerator]]. */
 object MapGenerator {
-  /** Creates a [[MapGenerator]].
-   *
-   *  @param difficulty the [[Difficulty]] chosen by the user
-   *  @return the new [[MapGenerator]] instance
-   */
-  def gameType(difficulty: DifficultyVal): MapGenerator = new MapGenerator(difficulty)
-
   /** Returns a random [[Position]] on the [[Wall]]s. */
   def randomWallPosition: Position = {
     var wall: Wall = arena.get.walls.toVector(nextInt(arena.get.walls.size))
@@ -130,5 +121,4 @@ object MapGenerator {
     }
     Position(clearPoint, Some(Down))
   }
-
 }
