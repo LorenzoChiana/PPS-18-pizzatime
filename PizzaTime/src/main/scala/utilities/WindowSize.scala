@@ -7,7 +7,7 @@ object WindowSize extends Enumeration {
   /** Implicit conversion from [[Value]] to [[Val]] */
   implicit def valueToWindowSizeTypeVal(value: Value): Val = value.asInstanceOf[Val]
 
-  val Menu: Val = Val(1280, 720)
-  val Game: Val = Val(1080, 720)
+  val Menu: Val = Val(1005, 720)
+  val Game: Val = Val(1005, 670)
 
 }

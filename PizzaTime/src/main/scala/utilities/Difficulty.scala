@@ -2,9 +2,6 @@ package utilities
 
 import scala.language.implicitConversions
 import gamelogic.Collectible
-import gamelogic.Arena
-import gamelogic.Enemy
-import gamelogic.Obstacle
 
 /** Represents the various difficulties that the game can have.
  *  The options are: easy, medium, hard or extreme.
@@ -16,7 +13,7 @@ object Difficulty extends Enumeration {
     enemiesRange = Range(1, 3),
     collectiblesRange = Range(3, 5),
     obstaclesRange = Range(8, 10),
-    maxLife = 8,
+    maxLife = 5,
     bonusScore = 40,
     obstacleDimension = Range(1, 2),
     levelThreshold = 8
@@ -38,7 +35,7 @@ object Difficulty extends Enumeration {
     enemiesRange = Range(10, 20),
     collectiblesRange = Range(3, 5),
     obstaclesRange = Range(8, 12),
-    maxLife = 3,
+    maxLife = 5,
     bonusScore = 20,
     obstacleDimension = Range(1, 4),
     levelThreshold = 3
@@ -49,7 +46,7 @@ object Difficulty extends Enumeration {
     enemiesRange = Range(20, 30),
     collectiblesRange = Range(1, 3),
     obstaclesRange = Range(12, 16),
-    maxLife = 1,
+    maxLife = 5,
     bonusScore = 10,
     obstacleDimension = Range(1, 5),
     levelThreshold = 1
