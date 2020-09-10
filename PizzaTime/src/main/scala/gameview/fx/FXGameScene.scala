@@ -39,9 +39,11 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   @FXML protected var endButton: Button = _
   @FXML protected var lifeBar: ImageView = _
 
-  lifeBar.setImage(images(LifeBarImage5))
-  lifeBar setFitHeight 40
-  lifeBar setFitWidth  208
+  Platform.runLater(()=> {
+    lifeBar.setImage(images(LifeBarImage5))
+    lifeBar setFitHeight 40
+    lifeBar setFitWidth 208
+  })
 
   root.add(dungeon, 0, 1)
 
@@ -74,7 +76,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
     case _ => None
   })
 
-  val timeline = new Timeline(new KeyFrame(Duration.millis(150), (_: ActionEvent) => {
+  val timeline = new Timeline(new KeyFrame(Duration.millis(100), (_: ActionEvent) => {
     actions.foreach(d => if (d._2) FXWindow.observers.foreach(_.notifyAction(d._1)))
   }))
   timeline.setCycleCount(Animation.INDEFINITE)
@@ -96,14 +98,17 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
     })
 
     if (!lastLives.equals(arena.get.player.lives)) {
-      arena.get.player.lives match {
-        case 5 => lifeBar.setImage(images(LifeBarImage5))
-        case 4 => lifeBar.setImage(images(LifeBarImage4))
-        case 3 => lifeBar.setImage(images(LifeBarImage3))
-        case 2 => lifeBar.setImage(images(LifeBarImage2))
-        case 1 => lifeBar.setImage(images(LifeBarImage1))
-        case _ =>
-      }
+      Platform.runLater(()=>{
+        arena.get.player.lives match {
+          case 5 => lifeBar.setImage(images(LifeBarImage5))
+          case 4 => lifeBar.setImage(images(LifeBarImage4))
+          case 3 => lifeBar.setImage(images(LifeBarImage3))
+          case 2 => lifeBar.setImage(images(LifeBarImage2))
+          case 1 => lifeBar.setImage(images(LifeBarImage1))
+          case _ =>
+        }
+      })
+
       lastLives = arena.get.player.lives
     }
     if (arena.get.player.isDead) FXWindow.observers.foreach(_.notifyEndGame())
