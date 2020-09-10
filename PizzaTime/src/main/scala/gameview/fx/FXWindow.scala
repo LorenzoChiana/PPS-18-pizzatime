@@ -22,7 +22,7 @@ import scala.collection.immutable
  * Implementation for the [[Window]] in JavaFx.
  * @param stage the top level JavaFX container.
  */
-case class FXWindow(stage: Stage, title: String) extends Window {
+case class FXWindow(stage: Stage) extends Window {
   private val windowContent = new BorderPane()
   private var currentScene: Option[SceneType.Value] = None
 
@@ -186,7 +186,7 @@ case class FXWindow(stage: Stage, title: String) extends Window {
  *
  */
 object FXWindow {
-  var observers: immutable.Set[ViewObserver] = _
+  var observers: immutable.Set[ViewObserver] = Set[ViewObserver]()
 
-  def addObserver(obs: immutable.Set[ViewObserver]): Unit = observers = obs
+  def addObserver(obs: ViewObserver): Unit = observers = observers + obs
 }

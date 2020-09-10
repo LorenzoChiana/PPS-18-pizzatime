@@ -2,10 +2,11 @@ package gameview.fx.gamesceneelements
 
 import gamelogic.{BonusLife, BonusScore, Collectible}
 import gamelogic.GameState.arena
-import gamemanager.ImageLoader.{bonusLifeImage, bonusScoreImage}
+import gamemanager.ImageLoader.images
 import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
+import utilities.{BonusLifeImage, BonusScoreImage}
 
 import scala.collection.immutable
 
@@ -25,7 +26,6 @@ class Collectibles extends GameElements{
   }
 }
 
-/** Factory for [[Collectibles]] instances. */
 object Collectibles{
 
   /** Creates a [[Collectibles]].
@@ -37,8 +37,8 @@ object Collectibles{
     arena.get.collectibles.foreach ( collectible => {
       var collectibleImage: ImageView = null
       collectible match {
-        case _: BonusLife => collectibleImage = createTile(bonusLifeImage)
-        case _: BonusScore => collectibleImage = createTile(bonusScoreImage)
+        case _: BonusLife => collectibleImage = createTile(images(BonusLifeImage))
+        case _: BonusScore => collectibleImage = createTile(images(BonusScoreImage))
       }
       coll.collectibles += (collectible -> collectibleImage)
       Platform.runLater(() => {
