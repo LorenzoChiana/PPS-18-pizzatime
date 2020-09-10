@@ -6,9 +6,7 @@ import gamelogic.Arena
 import gamelogic.Enemy
 import gamelogic.Obstacle
 
-/** Represents the various difficulties that the game can have.
- *  The options are: easy, medium, hard or extreme.
- */
+/** Represents the various difficulties that the game can have (Easy, Medium, Hard or Extreme). */
 object Difficulty extends Enumeration {
   val Easy: DifficultyVal = DifficultyVal(
     arenaWidth = 12,
@@ -54,7 +52,7 @@ object Difficulty extends Enumeration {
     obstacleDimension = Range(1, 5),
     levelThreshold = 1
   )
-  val allDifficulty = Seq(Easy, Medium, Hard, Extreme)
+  val allDifficulty: Seq[DifficultyVal] = Seq(Easy, Medium, Hard, Extreme)
 
   /** Each difficulty will have a set of values that will affect the game.
    *

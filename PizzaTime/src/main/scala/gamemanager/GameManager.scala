@@ -6,27 +6,23 @@ import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes._
 import SceneType._
 import gameview.Window
-
 import scala.collection.immutable.Queue
-import gamelogic.MapGenerator._
 import utilities.Difficulty._
 import Runtime.getRuntime
 import java.io.PrintWriter
 import java.util.concurrent.Executors.newFixedThreadPool
-
 import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
-import gamelogic.GameState
+import gamelogic.{GameState, MapGenerator}
 import gamelogic.GameState.{playerRankings, worldRecord}
-import gamemanager.SoundLoader.{play, stopSound}
+import SoundLoader.{play, stopSound}
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
-
 import scala.io.Source
 import scala.util.{Failure, Success, Using}
 
-object GameManager extends ViewObserver with GameLogicObserver{
+object GameManager extends ViewObserver with GameLogicObserver {
 
   val NumThreads: Int = getRuntime.availableProcessors() + 1
   val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
@@ -51,7 +47,7 @@ object GameManager extends ViewObserver with GameLogicObserver{
   def notifyStartGame(): Unit = {
     endGame = false
     GameState.addObserver(this)
-    GameState.startGame(playerName, gameType(difficulty))
+    GameState.startGame(playerName, MapGenerator(difficulty))
     ThreadPool.execute(new GameLoop())
     loadWorldRecord()
   }

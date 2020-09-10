@@ -4,14 +4,13 @@ import Arena._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import utilities.Difficulty._
-import MapGenerator._
 import GameState._
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import org.scalatest.enablers.Emptiness.emptinessOfGenTraversable
 
 /** Test class for the behavior of [[Arena]]. */
 class ArenaTest extends AnyFlatSpec with Matchers {
-  startGame("Player1", gameType(Medium))
+  startGame("Player1", MapGenerator(Medium))
 
   val arena: GameMap = GameState.arena.get
   import arena._
