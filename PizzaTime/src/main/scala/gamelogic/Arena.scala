@@ -3,8 +3,8 @@ package gamelogic
 import GameState._
 import Arena._
 import MapGenerator._
-import gamemanager.SoundController._
-import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, Left, LevelUp, Point, Position, Right, ShootSound, Up}
+import gamemanager.SoundLoader._
+import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, Left, LevelUpSound, Point, Position, Right, ShootSound, Up}
 import utilities.ImplicitConversions._
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -38,7 +38,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
       case Point(x, _) if x.equals(arenaWidth - 1) => player.moveTo(Position(door.get.position.point, Some(Left)))
       case Point(_, y) if y.equals(arenaHeight - 1) => player.moveTo(Position(door.get.position.point, Some(Up)))
     }
-    /*play(LevelMusic)*/
   }
 
   /** Updates the [[Arena]] for the new logical step. */
@@ -46,7 +45,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     if (shoot.isDefined) {
       player.changeDirection(shoot.get)
       bullets = bullets + Bullet(Position(player.position.point, shoot))
-      play(ShootSound)
+      observers.foreach(_.shoot())
     }
 
     if (movement.isDefined) {
@@ -55,18 +54,17 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
       player.position.point match {
         case p if Arena.containsCollectible(p) =>
-          play(BonusSound)
+          observers.foreach(_.takesCollectible())
           collectibles.find(_.position.point.equals(p)).get match {
             case _: BonusLife => player.increaseLife()
             case c: BonusScore => player.addScore(c.value)
           }
           collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
 
-        case p if containsEnemy(p).isDefined => playerInjury(containsEnemy(p).get)
+        case p if containsEnemy(p).isDefined => playerInjury(containsEnemy(p).get); observers.foreach(_.playerInjury())
 
         case p if isDoor(p) && enemies.isEmpty =>
           endedLevel = true
-          stopSound()
           emptyMap()
           door.get.position.point match {
             case Point(0, y) => door = Some(Door(Position(Point(arenaWidth - 1, y), None)))
@@ -86,13 +84,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     bullets = bullets -- bullets.filter(!_.unexploded)
 
     enemies.foreach(en => {
-      val enemyHaveMove = en.movementBehaviour
-
-      if (lastInjury.isDefined) {
-        if (en.equals(lastInjury.get) && enemyHaveMove) {
-          lastInjury = None
-        }
-      }
+      if (en.movementBehaviour && lastInjury.isDefined && en.equals(lastInjury.get)) lastInjury = None
 
       playerInjury(en)
 
@@ -103,21 +95,20 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
         bullets = bullets -- bulletOnEnemy
       }
 
-      if (player.isDead) {
-        play(FailureSound)
-        stopSound()
-      }
+      if (player.isDead) observers.foreach(_.playerDead())
+
     })
 
     /**Check if any enemies are dead*/
     enemies.filter(_.isDead).foreach(en => player.addScore(en.pointsKilling))
-    enemies = enemies -- enemies.filter(_.isDead)
+    enemies = enemies.filter(!_.isDead)
 
     /**Check if door is open*/
     if (door.isEmpty) {
       if (enemies.isEmpty) {
         door = Some(Door(randomWallPosition))
-        play(LevelUp)
+        observers.foreach(_.openDoor())
+        observers.foreach(_.openDoor())
       }
     } else if (enemies.nonEmpty && !player.position.point.equals(door.get.position.point)) {
       walls = walls + Wall(Position(door.get.position.point, None))
@@ -138,7 +129,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     if (containsEnemy(player.position.point).isDefined && lastInjury.isEmpty) {
       lastInjury = Some(enemy)
       player.decreaseLife()
-      play(InjurySound)
+      observers.foreach(_.playerInjury())
     }
 }
 

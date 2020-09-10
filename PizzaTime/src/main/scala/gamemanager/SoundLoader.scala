@@ -7,7 +7,7 @@ import javax.sound.sampled.{AudioSystem, Clip}
 import scala.language.postfixOps
 import AudioSystem._
 import Clip._
-import utilities.{BonusSound, FailureSound, InjurySound, LevelMusic, LevelUp, MenuMusic, ShootSound, SoundType}
+import utilities.{BonusSound, EnemyInjurySound, FailureSound, InjurySound, LevelMusic, LevelUpSound, MenuMusic, ShootSound, SoundType}
 
 import scala.concurrent._
 import ExecutionContext.Implicits.global
@@ -20,7 +20,7 @@ import ExecutionContext.Implicits.global
  *    Injury
  *    Bonus
  */
-object SoundController {
+object SoundLoader {
   var gameClip: Clip = _
 
   /** Plays a sound.
@@ -34,7 +34,8 @@ object SoundController {
     case BonusSound => playSound(BonusSound path)
     case LevelMusic => playMusic(LevelMusic path)
     case MenuMusic => playMusic(MenuMusic path)
-    case LevelUp => playSound(LevelUp path)
+    case LevelUpSound => playSound(LevelUpSound path)
+    case EnemyInjurySound => playSound(EnemyInjurySound path)
     case _ =>
   }
 

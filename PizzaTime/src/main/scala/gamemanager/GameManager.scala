@@ -1,6 +1,6 @@
 package gamemanager
 
-import utilities.{Action, Direction, Intent, Movement, SettingPreferences, Shoot}
+import utilities.{Action, BonusSound, Direction, FailureSound, InjurySound, Intent, LevelMusic, LevelUpSound, Movement, SettingPreferences, Shoot, ShootSound}
 import handlers.PreferencesHandler._
 import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes._
@@ -18,6 +18,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.ExecutionContext.fromExecutorService
 import gamelogic.GameState
 import gamelogic.GameState.{playerRankings, worldRecord}
+import gamemanager.SoundLoader.{play, stopSound}
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
@@ -25,7 +26,8 @@ import net.liftweb.json._
 import scala.io.Source
 import scala.util.{Failure, Success, Using}
 
-object GameManager extends ViewObserver {
+object GameManager extends ViewObserver with GameLogicObserver{
+
   val NumThreads: Int = getRuntime.availableProcessors() + 1
   val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
   val TimeSliceMillis: Int = 50
@@ -48,6 +50,7 @@ object GameManager extends ViewObserver {
   /** Notifies that the game has started. */
   def notifyStartGame(): Unit = {
     endGame = false
+    GameState.addObserver(this)
     GameState.startGame(playerName, gameType(difficulty))
     ThreadPool.execute(new GameLoop())
     loadWorldRecord()
@@ -172,4 +175,25 @@ object GameManager extends ViewObserver {
         direction
     }
   }
+
+  /** Notifies player shoot */
+  override def shoot(): Unit = play(ShootSound)
+
+  /** Notifies when the player takes a collectible */
+  override def takesCollectible(): Unit = play(BonusSound)
+
+  /** Notifies when the player gets hurt */
+  override def playerInjury(): Unit = play(InjurySound)
+
+  /** Notifies when the door opens */
+  override def openDoor(): Unit = play(LevelUpSound)
+
+  /** Notifies when the player dies */
+  override def playerDead(): Unit = play(FailureSound);  stopSound()
+
+  /** Notifies when start new level */
+  override def startGame(): Unit = play(LevelMusic)
+
+  /** Notifies end game */
+  override def finishGame(): Unit = stopSound()
 }
