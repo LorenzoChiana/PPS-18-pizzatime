@@ -15,7 +15,7 @@ object Difficulty extends Enumeration {
     arenaHeight = 8,
     enemiesRange = Range(1, 3),
     collectiblesRange = Range(3, 5),
-    obstaclesRange = Range(8, 10),
+    obstaclesRange = Range(1, 3),
     maxLife = 8,
     bonusScore = 40,
     obstacleDimension = Range(1, 2),

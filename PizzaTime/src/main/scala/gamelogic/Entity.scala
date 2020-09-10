@@ -20,7 +20,7 @@ trait Entity {
       nearPoint(position.point, Right)
     ).filter(checkBounds(_))
 
-    surroundings -- bounds
+    surroundings
   }
 
   /** Removes the [[Entity]] from the [[Arena]].
