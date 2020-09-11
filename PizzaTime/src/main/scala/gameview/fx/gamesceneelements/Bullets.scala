@@ -5,28 +5,29 @@ import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
 import utilities.BulletImage
 import gameview.fx.FXGameScene
-import gameview.fx.FXGameScene.{createTile, pointToPixel, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 
-import scala.collection.immutable
+import scala.collection.{immutable, mutable}
 
 /**Set of [[ImageView]] representing [[Bullets]]*/
 class Bullets extends GameElements{
-  private var bullets: immutable.Map[Bullet, ImageView] = new immutable.HashMap[Bullet, ImageView]()
+  private var bullets: immutable.Map[Bullet, ImageView] = Map[Bullet, ImageView]()
 
   /**
    * Updating bullets
    */
   override def update(): Unit ={
+    println("bullet " + bullets.size)
     arena.get.bullets.foreach(b => addBullet(b))
 
     bullets.foreach(b => {
       val unexplodedBullet = arena.get.bullets.find(_ == b._1)
 
       if (unexplodedBullet.isEmpty) {
-        Platform.runLater(() => b._2.setVisible(false))
-        bullets = bullets - b._1
+        bullets = bullets -  b._1
+        Platform.runLater(() => dungeon.getChildren.remove(b._2))
       } else{
         val pos = pointToPixel(unexplodedBullet.get.position.point)
         Platform.runLater(() => b._2 relocate(pos._1, pos._2))

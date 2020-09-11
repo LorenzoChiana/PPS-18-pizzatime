@@ -87,6 +87,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
    * method called by the controller cyclically to update the view
    */
   def updateView(): Unit = {
+    println("Dungeon" + dungeon.getChildren.size())
     elements.foreach(e => e.update())
 
     /** Updating player's label */

@@ -22,8 +22,9 @@ class Enemies extends GameElements{
     enemies.foreach(e => {
       val enemyAlive = arena.get.enemies.find(_ == e._1)
       if (enemyAlive.isEmpty) {
-        Platform.runLater(() => e._2.setVisible(false))
-        enemies = enemies - e._1}
+        enemies = enemies - e._1
+        Platform.runLater(() => dungeon.getChildren.remove(e._2))
+      }
       else{
         val pos = pointToPixel(enemyAlive.get.position.point)
         Platform.runLater(() => e._2 relocate(pos._1, pos._2))

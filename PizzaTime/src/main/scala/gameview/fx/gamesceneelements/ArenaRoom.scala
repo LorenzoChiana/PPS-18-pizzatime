@@ -22,13 +22,14 @@ class ArenaRoom extends GameElements {
 
   val door: ImageView = createTile(images(FloorImage))
   var positionDoor: (Double, Double) = _
+
   private def createDoor(): Unit = {
     Platform.runLater(() => {
       if(arena.get.door.isDefined && !dungeon.getChildren.contains(door)) {
         dungeon.getChildren.add(door)
         positionDoor = (pointToPixel(arena.get.door.get.position.point)._1, pointToPixel(arena.get.door.get.position.point)._2)
         door.relocate(positionDoor._1, positionDoor._2)
-      } else if(arena.get.door.isEmpty){
+      } else if(arena.get.door.isEmpty && dungeon.getChildren.contains(door)){
         dungeon.getChildren.remove(door)
         val wall: ImageView = createTile(images(WallImage))
         wall.relocate(positionDoor._1, positionDoor._2)

@@ -77,9 +77,13 @@ object GameManager extends ViewObserver with GameLogicObserver {
    *
    *  @param action the [[Action]] notified by the view
    */
-  def notifyAction(action: Action): Unit = action.actionType match {
-    case Movement => playerMoves = playerMoves :+ action.direction
-    case Shoot => playerShoots = playerShoots :+ action.direction
+  def notifyAction(action: Action): Unit = {
+    action.actionType match {
+      case Movement => playerMoves = playerMoves :+ action.direction
+      case Shoot => playerShoots = playerShoots :+ action.direction
+    }
+    println("playerMoves "+playerMoves)
+    println("playerShoots "+playerShoots)
   }
 
   /** Notifies the transition to the game scene. */
