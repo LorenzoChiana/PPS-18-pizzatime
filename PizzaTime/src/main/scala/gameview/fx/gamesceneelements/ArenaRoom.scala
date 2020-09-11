@@ -47,12 +47,7 @@ class ArenaRoom extends GameElements {
     for (f <- arena.get.floor) :+ (f, images(FloorImage))
     for (w <- arena.get.walls) :+ (w, images(WallImage))
 
-    for (o <- arena.get.obstacles) :+ (o,
-      between(1, 4) match {
-      case 1 => images(Obstacle1Image)
-      case 2 => images(Obstacle2Image)
-      case 3 => images(Obstacle3Image)
-    })
+    for (o <- arena.get.obstacles) :+ (o, images(o.`type`))
 
     createDoor()
   }
