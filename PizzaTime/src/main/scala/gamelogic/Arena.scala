@@ -237,6 +237,16 @@ object Arena {
    */
   def containsCollectible(p: Point): Boolean = arena.get.collectibles.exists(_.position.point.equals(p))
 
+  def isBonusLife(collectible: Collectible): Boolean = collectible match {
+    case _: BonusLife => true
+    case _ => false
+  }
+
+  def isBonusScore(collectible: Collectible): Boolean = collectible match {
+    case _: BonusScore => true
+    case _ => false
+  }
+
   /** Checks whether a [[Point]] contains a [[Enemy]] or not.
    *
    *  @param p the [[Point]] to check
