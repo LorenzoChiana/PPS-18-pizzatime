@@ -19,18 +19,14 @@ class Bullets extends GameElements{
    * Updating bullets
    */
   override def update(): Unit ={
-    println("bullet " + bullets.size)
     arena.get.bullets.foreach(b => addBullet(b))
 
     bullets.foreach(b => {
-      val unexplodedBullet = arena.get.bullets.find(_ == b._1)
-
-      if (unexplodedBullet.isEmpty) {
-        bullets = bullets -  b._1
-        Platform.runLater(() => dungeon.getChildren.remove(b._2))
-      } else{
-        val pos = pointToPixel(unexplodedBullet.get.position.point)
-        Platform.runLater(() => b._2 relocate(pos._1, pos._2))
+      arena.get.bullets.find(_ == b._1) match {
+        case Some(unexplodeBullet) => val pos = pointToPixel(unexplodeBullet.position.point)
+          Platform.runLater(() => b._2 relocate(pos._1, pos._2))
+        case None => bullets = bullets -  b._1
+          Platform.runLater(() => dungeon.getChildren.remove(b._2))
       }
     })
   }
@@ -46,6 +42,7 @@ class Bullets extends GameElements{
       bullet.setFitHeight(tileHeight / 2)
       bullet.setFitWidth(tileWidth / 2)
 
+      
       Platform.runLater(() => {
         val pos = pointToPixel(b.position.point)
         bullet.relocate(pos._1, pos._2)

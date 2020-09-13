@@ -82,8 +82,6 @@ object GameManager extends ViewObserver with GameLogicObserver {
       case Movement => playerMoves = playerMoves :+ action.direction
       case Shoot => playerShoots = playerShoots :+ action.direction
     }
-    println("playerMoves "+playerMoves)
-    println("playerShoots "+playerShoots)
   }
 
   /** Notifies the transition to the game scene. */
@@ -92,6 +90,7 @@ object GameManager extends ViewObserver with GameLogicObserver {
     windowManager.scene_(new Intent(GameScene))
   }
 
+  /** Notifies the transition to the classification scene. */
   override def onClassification(): Unit = {
     require(view.isDefined)
     view.get.windowManager.scene_(new Intent(PlayerRankingsScene))

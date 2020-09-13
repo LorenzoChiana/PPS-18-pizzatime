@@ -57,11 +57,7 @@ class ArenaRoom extends GameElements {
     createDoor()
   }
 
-  private def :+ (e: Entity, image: Image): Unit = {
-    val tile = createTile(image)
-    tile.relocate(pointToPixel(e.position.point)._1, pointToPixel(e.position.point)._2)
-    Platform.runLater(() => dungeon.getChildren.add(tile))
-  }
+
 }
 
 object ArenaRoom{
