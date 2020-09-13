@@ -44,7 +44,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   @FXML protected var lifeBar: ImageView = _
 
   Platform.runLater(()=> {
- //   lifeBar.setImage(images(LifeBarImage5))
+    lifeBar.setImage(images(LifeBarImage5))
     lifeBar setFitHeight lifeBarHeight
     lifeBar setFitWidth lifeBarWight
   })
