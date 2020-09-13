@@ -25,6 +25,9 @@ import scala.collection.immutable.HashSet
 import scala.collection.mutable
 
 case class FXGameScene(override val windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
+  private val lifeBarHeight = 40
+  private val lifeBarWight = 208
+
   private val actions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false,
     Action(Movement, Some(Down)) -> false,
     Action(Movement, Some(Left)) -> false,
@@ -41,9 +44,9 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   @FXML protected var lifeBar: ImageView = _
 
   Platform.runLater(()=> {
-    lifeBar.setImage(images(LifeBarImage5))
-    lifeBar setFitHeight 40
-    lifeBar setFitWidth 208
+ //   lifeBar.setImage(images(LifeBarImage5))
+    lifeBar setFitHeight lifeBarHeight
+    lifeBar setFitWidth lifeBarWight
   })
 
   root.add(dungeon, 0, 1)

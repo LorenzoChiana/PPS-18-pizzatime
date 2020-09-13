@@ -18,19 +18,14 @@ class Enemies extends GameElements{
   /**
    * Updating position enemy
    */
-  def update(): Unit ={
-    enemies.foreach(e => {
-      val enemyAlive = arena.get.enemies.find(_ == e._1)
-      if (enemyAlive.isEmpty) {
-        enemies = enemies - e._1
-        Platform.runLater(() => dungeon.getChildren.remove(e._2))
-      }
-      else{
-        val pos = pointToPixel(enemyAlive.get.position.point)
-        Platform.runLater(() => e._2 relocate(pos._1, pos._2))
-      }
-    })
-  }
+  def update(): Unit =
+    enemies.foreach(e =>
+      arena.get.enemies.find(_ == e._1) match{
+        case None =>  enemies = enemies - e._1
+          Platform.runLater(() => dungeon.getChildren.remove(e._2))
+        case Some(enemyAlive) =>  val pos = pointToPixel(enemyAlive.position.point)
+          Platform.runLater(() => e._2 relocate(pos._1, pos._2))
+      })
 }
 
 object Enemies{

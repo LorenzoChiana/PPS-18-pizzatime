@@ -20,7 +20,7 @@ class Collectibles extends GameElements{
   def update(): Unit ={
     Platform.runLater(() => {
       val collectiblesTaken = collectibles.keySet.diff(arena.get.collectibles)
-      collectiblesTaken.foreach(c => collectibles(c).setVisible(false))
+      collectiblesTaken.foreach(c => dungeon.getChildren.remove(collectibles(c)))
       collectibles = collectibles -- collectiblesTaken
     })
   }
@@ -34,18 +34,10 @@ object Collectibles{
    */
   def apply(): Collectibles = {
     val coll: Collectibles = new Collectibles()
-    arena.get.collectibles.foreach ( collectible => {
-      var collectibleImage: ImageView = null
-      collectible match {
-        case _: BonusLife => collectibleImage = createTile(images(BonusLifeImage))
-        case _: BonusScore => collectibleImage = createTile(images(BonusScoreImage))
-      }
-      coll.collectibles += (collectible -> collectibleImage)
-      Platform.runLater(() => {
-        dungeon.getChildren.add(collectibleImage)
-        collectibleImage.relocate(pointToPixel(collectible.position.point)._1, pointToPixel(collectible.position.point)._2)
-      })
-    })
+    arena.get.collectibles.foreach {
+      case collectible@(_: BonusLife) => coll.collectibles += (collectible -> coll.addToDungeon(collectible, images(BonusLifeImage)))
+      case collectible@(_: BonusScore) => coll.collectibles += (collectible -> coll.addToDungeon(collectible, images(BonusScoreImage)))
+    }
     coll
   }
 }

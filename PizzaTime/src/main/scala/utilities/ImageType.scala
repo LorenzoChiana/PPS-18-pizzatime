@@ -2,6 +2,8 @@ package utilities
 
 import java.lang.System.getProperty
 
+import scala.collection.immutable
+
 
 sealed trait ImageType
 case object FloorImage extends ImageType { val path: String = "/images/textures/tile.png" }

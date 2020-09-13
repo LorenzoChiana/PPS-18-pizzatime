@@ -4,12 +4,10 @@ import gamelogic.Bullet
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
 import utilities.BulletImage
-import gameview.fx.FXGameScene
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.{dungeon, pointToPixel, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
-
-import scala.collection.{immutable, mutable}
+import scala.collection.immutable
 
 /**Set of [[ImageView]] representing [[Bullets]]*/
 class Bullets extends GameElements{
@@ -36,19 +34,8 @@ class Bullets extends GameElements{
    *  @param b bullet
    */
   private def addBullet(b: Bullet): Unit = {
-    if (!bullets.contains(b)) {
-      val bullet = createTile(images(BulletImage))
-      bullets = bullets + (b -> bullet)
-      bullet.setFitHeight(tileHeight / 2)
-      bullet.setFitWidth(tileWidth / 2)
-
-      
-      Platform.runLater(() => {
-        val pos = pointToPixel(b.position.point)
-        bullet.relocate(pos._1, pos._2)
-        FXGameScene.dungeon.getChildren.add(bullet)
-      })
-    }
+    if (!bullets.contains(b))
+      bullets = bullets + (b -> setDimension(addToDungeon(b, images(BulletImage)),tileHeight / 2, tileWidth / 2))
   }
 }
 

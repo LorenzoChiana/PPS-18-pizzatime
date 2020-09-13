@@ -44,10 +44,10 @@ class ArenaRoom extends GameElements {
    * @return a new [[GridPane]] with all the game entities initialized to be displayed in the view
    */
   private def createArena(): Unit = {
-    for (f <- arena.get.floor) :+ (f, images(FloorImage))
-    for (w <- arena.get.walls) :+ (w, images(WallImage))
+    for (f <- arena.get.floor) addToDungeon (f, images(FloorImage))
+    for (w <- arena.get.walls) addToDungeon (w, images(WallImage))
 
-    for (o <- arena.get.obstacles) :+ (o,
+    for (o <- arena.get.obstacles) addToDungeon (o,
       between(1, 4) match {
       case 1 => images(Obstacle1Image)
       case 2 => images(Obstacle2Image)
