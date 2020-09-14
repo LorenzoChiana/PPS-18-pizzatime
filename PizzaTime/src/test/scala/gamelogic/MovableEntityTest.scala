@@ -11,24 +11,17 @@ import utilities.Difficulty._
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 
 class MovableEntityTest extends AnyFlatSpec with Matchers {
-  difficulty_(Easy)
-  startGame("Player1", MapGenerator(Easy))
-  val arena: GameMap = GameState.arena.get
-  val walkableWidth: (Int, Int) = (1, difficulty.arenaWidth-2)
-  val walkableHeight: (Int, Int) = (1, difficulty.arenaHeight-2)
-
-  import arena._
-  obstacles = Set()
-  enemies = Set()
-  collectibles = Set()
-
-  val enemy: Enemy = Enemy(Position(Point(0,0), Some(Down)))
-  val bullet: Bullet = Bullet(Position(Point(0,0), Some(Down)))
+  val staticArena: StaticArena = StaticArena(
+    walkableWidth = (1, difficulty.arenaWidth - 2),
+    walkableHeight = (1, difficulty.arenaHeight - 2)
+  )
+  import staticArena.arena._
+  import staticArena._
 
   List(player, enemy, bullet).foreach(entity => {
-    entity moveTo Position(Arena.center, Some(Down))
+    entity moveTo insideArena
     movableEntityTests(entity)
-    entity moveTo Position(Point(0,0), Some(Down))
+    entity moveTo outsideArena
   })
 
   private def movableEntityTests(entity: MovableEntity): Unit = entity match {
@@ -52,9 +45,9 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   }
 
   private def moveDirectionTest(entity: MovableEntity, direction: Direction): Unit = {
-    entity moveTo Position(Arena.center, Some(direction))
+    entity moveTo insideArena
     entity move direction
-    entity.position.point shouldEqual nearPoint(Arena.center, direction)
+    entity.position.point shouldEqual nearPoint(insideArena.point, direction)
   }
 
   private def walkAroundMapTest(entity: MovableEntity): Unit = {
@@ -62,7 +55,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
     val right = walkableWidth._2
     val up = walkableHeight._1
     val down = walkableHeight._2
-    entity moveTo Position(Point(1, 1), Some(Down))
+    entity moveTo upperLeftPosition
 
     for (y <- up to down) {
       y match {

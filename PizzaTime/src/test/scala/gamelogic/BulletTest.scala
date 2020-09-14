@@ -1,22 +1,17 @@
 package gamelogic
 
 import Entity._
-import GameState.{nextStep, startGame}
-import gamemanager.handlers.PreferencesHandler.difficulty_
+import GameState.nextStep
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.Difficulty._
 import utilities.{Down, Left, Position, Right, Up}
 
 class BulletTest extends AnyFlatSpec with Matchers {
-  difficulty_(Easy)
-  startGame("Player1", MapGenerator(Easy))
-  val arena: GameMap = GameState.arena.get
-  import arena._
-  obstacles = Set()
-  enemies = Set()
-  collectibles = Set()
+  val staticArena: StaticArena = StaticArena(
+    initialPlayerPosition = Position(Arena.center, Some(Right))
+  )
+  import staticArena.arena._
 
   "A bullet" should "always move in the same direction it was shot" in {
     List(Up, Down, Left, Right).foreach(direction => {
@@ -38,11 +33,17 @@ class BulletTest extends AnyFlatSpec with Matchers {
 
   val entityOfCollisionPosition: Position = Position(nearPoint(nearPoint(Arena.center, Right), Right), Option(Right))
 
-  it should "explode if it collides with an obstacle" in checkExplosionWhenCollides(Obstacle(entityOfCollisionPosition), mustExplode = true)
+  it should "explode if it collides with an obstacle" in {
+    checkExplosionWhenCollides(Obstacle(entityOfCollisionPosition), mustExplode = true)
+  }
 
-  it should "explode if it collides with an enemy" in checkExplosionWhenCollides(Enemy(entityOfCollisionPosition), mustExplode = true)
+  it should "explode if it collides with an enemy" in {
+    checkExplosionWhenCollides(Enemy(entityOfCollisionPosition), mustExplode = true)
+  }
 
-  it should "explode if it collides with a wall" in checkExplosionWhenCollides(Wall(entityOfCollisionPosition), mustExplode = true)
+  it should "explode if it collides with a wall" in {
+    checkExplosionWhenCollides(Wall(entityOfCollisionPosition), mustExplode = true)
+  }
 
   it should "not explode is it collides with a collectible" in {
     checkExplosionWhenCollides(BonusScore(entityOfCollisionPosition, 5), mustExplode = false)
@@ -50,7 +51,6 @@ class BulletTest extends AnyFlatSpec with Matchers {
   }
 
   private def checkExplosionWhenCollides(entity: Entity, mustExplode: Boolean): Unit = {
-    player moveTo Position(Arena.center, Some(Right))
     nextStep(None, Some(Right))
     while(bullets.exists(_.unexploded)) nextStep(None, None)
     bullets.filter(!_.unexploded).foreach(bullet =>

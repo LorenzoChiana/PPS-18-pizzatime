@@ -24,7 +24,7 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   }
 
   it should "collide with bonuses" in {
-    createScenario1()
+    staticArena.createScenario1()
 
     enemy move Right
     enemy.position.point should not equal bonusLifePoint
@@ -36,7 +36,7 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   }
 
   it should "collide with other enemies" in {
-    createScenario5()
+    staticArena.createScenario5()
 
     enemy move Right
     enemy.position.point should not equal otherEnemyPoint
@@ -44,7 +44,7 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   }
 
   it should "lose his life when he collides with a bullet" in {
-    createScenario6()
+    staticArena.createScenario6()
 
     enemy.lives shouldBe initialEnemyLife
     nextStep(None, Some(Right))
@@ -52,7 +52,7 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   }
 
   it should "take the player's life away when he collides with him" in {
-    createScenario6()
+    staticArena.createScenario6()
 
     player.lives shouldBe initialPlayerLife
     enemy move Left

@@ -8,7 +8,7 @@ import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 
 case class StaticArena (
   playerName: String = "PlayerName",
-  initialPlayerPosition: Position,
+  initialPlayerPosition: Position = Position(Point(0, 0), Some(Down)),
   initialPlayerLife: Int = 5,
   initialPlayerScore: Int = 0,
   scoreToIncrease: Int = 5,
@@ -16,7 +16,9 @@ case class StaticArena (
   bonusScorePoint: Point = Point(0, 0),
   initialEnemyPosition: Position = Position(Point(0, 0), Some(Down)),
   otherEnemyPoint: Point = Point(0, 0),
-  initialEnemyLife: Int = 5
+  initialEnemyLife: Int = 5,
+  walkableWidth: (Int, Int) = (0 ,0),
+  walkableHeight: (Int, Int) = (0, 0)
 ) {
   difficulty_(Easy)
   startGame(playerName, MapGenerator(Easy))
@@ -24,8 +26,16 @@ case class StaticArena (
 
   import arena._
 
+  val outsideArena: Position = Position(Point(0,0), Some(Down))
+  val insideArena: Position = Position(Arena.center, Some(Down))
+  val upperLeftPosition: Position = Position(Point(1, 1), Some(Down))
+
+  initAll()
+  
   val enemy: Enemy = Enemy(initialEnemyPosition)
   enemy.onTestingMode()
+
+  val bullet: Bullet = Bullet(outsideArena)
 
   def createEmptyScenario(): Unit = {
     initAll()

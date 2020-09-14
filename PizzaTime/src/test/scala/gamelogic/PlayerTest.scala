@@ -12,8 +12,6 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     playerName = "Player1",
     initialPlayerPosition = Position(Arena.center, Some(Right)),
     initialPlayerLife = 3,
-    initialPlayerScore = 0,
-    scoreToIncrease = 5,
     bonusLifePoint = nearPoint(Arena.center, Right),
     bonusScorePoint = nearPoint(nearPoint(Arena.center, Right), Right)
   )
