@@ -1,20 +1,14 @@
 package gamelogic
 
-import GameState.startGame
 import Entity._
 import Arena.containsWall
-import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.Difficulty._
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 
 class MovableEntityTest extends AnyFlatSpec with Matchers {
-  val staticArena: StaticArena = StaticArena(
-    walkableWidth = (1, difficulty.arenaWidth - 2),
-    walkableHeight = (1, difficulty.arenaHeight - 2)
-  )
+  val staticArena: StaticArena = StaticArena()
   import staticArena.arena._
   import staticArena._
 

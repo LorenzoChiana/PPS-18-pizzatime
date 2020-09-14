@@ -1,11 +1,23 @@
 package gamelogic
 
-import gamelogic.Entity.nearPoint
 import gamelogic.GameState.startGame
-import gamemanager.handlers.PreferencesHandler.difficulty_
+import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import utilities.Difficulty.Easy
-import utilities.{Direction, Down, Left, Point, Position, Right, Up}
+import utilities.{Down, Point, Position, Up}
 
+/**
+ * Builder class used in tests to create a custom arena
+ * @param playerName the name of player
+ * @param initialPlayerPosition the position in the arena where the player starts
+ * @param initialPlayerLife the player's initial life
+ * @param initialPlayerScore the player's initial score
+ * @param scoreToIncrease the increase of the score when collecting the score bonuses
+ * @param bonusLifePoint the position in the arena of the life bonus
+ * @param bonusScorePoint the position in the arena of the score bonus
+ * @param initialEnemyPosition the position in the arena where the enemy starts
+ * @param otherEnemyPoint the position in the arena where the second enemy starts
+ * @param initialEnemyLife the enemy's initial life
+ */
 case class StaticArena (
   playerName: String = "PlayerName",
   initialPlayerPosition: Position = Position(Point(0, 0), Some(Down)),
@@ -16,15 +28,16 @@ case class StaticArena (
   bonusScorePoint: Point = Point(0, 0),
   initialEnemyPosition: Position = Position(Point(0, 0), Some(Down)),
   otherEnemyPoint: Point = Point(0, 0),
-  initialEnemyLife: Int = 5,
-  walkableWidth: (Int, Int) = (0 ,0),
-  walkableHeight: (Int, Int) = (0, 0)
+  initialEnemyLife: Int = 5
 ) {
   difficulty_(Easy)
   startGame(playerName, MapGenerator(Easy))
   val arena: GameMap = GameState.arena.get
 
   import arena._
+
+  val walkableWidth: (Int, Int) = (1, difficulty.arenaWidth - 2)
+  val walkableHeight: (Int, Int) = (1, difficulty.arenaHeight - 2)
 
   val outsideArena: Position = Position(Point(0,0), Some(Down))
   val insideArena: Position = Position(Arena.center, Some(Down))
@@ -35,53 +48,9 @@ case class StaticArena (
 
   val bullet: Bullet = Bullet(outsideArena)
 
-  initAll()
+  initMap()
 
-  def createScenario1(): Unit = {
-    initAll()
-    collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) + BonusScore(Position(bonusScorePoint, None), 1)
-  }
-
-  def createScenario2(): Unit = {
-    initAll()
-    collectibles = collectibles + BonusLife(Position(nearPoint(player.position.point, Right), None))
-    player.lives = initialPlayerLife
-  }
-
-  def createScenario3(): Unit = {
-    initAll()
-    player moveTo Position(Arena.center, Some(Right))
-    collectibles = collectibles + BonusScore(Position(nearPoint(Arena.center, Right), None), scoreToIncrease)
-  }
-
-  def createScenario4(): Unit = {
-    initAll()
-    player moveTo Position(Arena.center, Some(Right))
-    enemies = enemies + Enemy(Position(nearPoint(Arena.center, Right), Some(Left)))
-    player.lives = initialPlayerLife
-  }
-
-  def createScenario5(): Unit = {
-    initAll()
-    player moveTo initialEnemyPosition
-    enemy moveTo initialEnemyPosition
-    enemy.onTestingMode()
-
-    val enemy2 = Enemy(Position(otherEnemyPoint, Some(Right)))
-    enemy2.onTestingMode()
-    enemies = enemies + enemy + enemy2
-  }
-
-  def createScenario6(): Unit = {
-    initAll()
-    player moveTo Position(Arena.center, Some(Right))
-    enemy moveTo Position(nearPoint(Arena.center, Right), Some(Right))
-    enemies = enemies + enemy
-    enemy.lives = initialEnemyLife
-    player.lives = initialPlayerLife
-  }
-
-  private def initAll(): Unit = {
+  private def initMap(): Unit = {
     createEmptyScenario()
     player.lives = initialPlayerLife
     if(bonusScorePoint != (0,0)) { collectibles = collectibles + BonusScore(Position(bonusScorePoint, None), scoreToIncrease) }

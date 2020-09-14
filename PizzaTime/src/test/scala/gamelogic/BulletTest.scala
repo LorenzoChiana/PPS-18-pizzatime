@@ -9,13 +9,12 @@ import utilities.{Down, Left, Position, Right, Up}
 
 class BulletTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
-    initialPlayerPosition = Position(Arena.center, Some(Right))
+    initialPlayerPosition = Position(Arena.center, Some(Up))
   )
   import staticArena.arena._
 
   "A bullet" should "always move in the same direction it was shot" in {
     List(Up, Down, Left, Right).foreach(direction => {
-      player.changeDirection(direction)
       nextStep(None, Some(direction))
       while (bullets.exists(_.canMove)) {
         bullets.foreach(bullet => bullet.position.dir shouldBe Some(direction))
@@ -34,20 +33,35 @@ class BulletTest extends AnyFlatSpec with Matchers {
   val entityOfCollisionPosition: Position = Position(nearPoint(nearPoint(Arena.center, Right), Right), Option(Right))
 
   it should "explode if it collides with an obstacle" in {
-    checkExplosionWhenCollides(Obstacle(entityOfCollisionPosition), mustExplode = true)
+    checkExplosionWhenCollides(
+      Obstacle(entityOfCollisionPosition),
+      mustExplode = true
+    )
   }
 
   it should "explode if it collides with an enemy" in {
-    checkExplosionWhenCollides(Enemy(entityOfCollisionPosition), mustExplode = true)
+    checkExplosionWhenCollides(
+      Enemy(entityOfCollisionPosition),
+      mustExplode = true
+    )
   }
 
   it should "explode if it collides with a wall" in {
-    checkExplosionWhenCollides(Wall(entityOfCollisionPosition), mustExplode = true)
+    checkExplosionWhenCollides(
+      Wall(entityOfCollisionPosition),
+      mustExplode = true
+    )
   }
 
   it should "not explode is it collides with a collectible" in {
-    checkExplosionWhenCollides(BonusScore(entityOfCollisionPosition, 5), mustExplode = false)
-    checkExplosionWhenCollides(BonusLife(entityOfCollisionPosition), mustExplode = false)
+    checkExplosionWhenCollides(
+      BonusScore(entityOfCollisionPosition, 5),
+      mustExplode = false
+    )
+    checkExplosionWhenCollides(
+      BonusLife(entityOfCollisionPosition),
+      mustExplode = false
+    )
   }
 
   private def checkExplosionWhenCollides(entity: Entity, mustExplode: Boolean): Unit = {
