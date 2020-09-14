@@ -10,6 +10,6 @@ import GameState.arena
 case class Obstacle(var position: Position) extends Entity {
   override def remove(): Boolean = {
     arena.get.obstacles = arena.get.obstacles - copy()
-    if (!arena.get.obstacles.contains(copy())) true else false
+    !arena.get.obstacles.contains(copy())
   }
 }

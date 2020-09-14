@@ -3,8 +3,7 @@ package gamelogic
 import GameState._
 import Arena._
 import MapGenerator._
-import gamemanager.SoundLoader._
-import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, Left, LevelUpSound, Point, Position, Right, ShootSound, Up}
+import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 import utilities.ImplicitConversions._
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -125,7 +124,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     obstacles = Set()
   }
 
-  def playerInjury(enemy: EnemyCharacter): Unit =
+  private def playerInjury(enemy: EnemyCharacter): Unit =
     if (containsEnemy(player.position.point).isDefined && lastInjury.isEmpty) {
       lastInjury = Some(enemy)
       player.decreaseLife()

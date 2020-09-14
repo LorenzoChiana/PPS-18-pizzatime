@@ -35,7 +35,7 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
   override def remove(): Boolean = {
     unexploded = false
     arena.get.bullets = arena.get.bullets - copy()
-    if (!arena.get.bullets.contains(copy())) true else false
+    !arena.get.bullets.contains(copy())
   }
 
   private def checkInRange: Boolean = {
