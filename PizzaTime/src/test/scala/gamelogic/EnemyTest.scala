@@ -1,29 +1,22 @@
 package gamelogic
 
-import GameState.{nextStep, startGame}
+import GameState.nextStep
 import Entity._
-import gamemanager.handlers.PreferencesHandler.{difficulty, difficulty_}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.Difficulty._
 import utilities.{Down, Left, Point, Position, Right}
 
 class EnemyTest extends AnyFlatSpec with Matchers {
-  difficulty_(Easy)
-  startGame("Player1", MapGenerator(Easy))
-  val arena: GameMap = GameState.arena.get
-  val walkableWidth: (Int, Int) = (1, difficulty.arenaWidth-2)
-  val walkableHeight: (Int, Int) = (1, difficulty.arenaHeight-2)
-
-  import arena._
-  obstacles = Set()
-  enemies = Set()
-  collectibles = Set()
-  player moveTo Position(Point(0, 0), Some(Down))
-
-  val enemy: Enemy = Enemy(Position(Arena.center, Some(Down)))
-  enemy.onTestingMode()
+  val staticArena: StaticArena = StaticArena(
+    initialPlayerPosition = Position(Point(0, 0), Some(Down)),
+    initialEnemyPosition = Position(Arena.center, Some(Down)),
+    otherEnemyPoint = nearPoint(Arena.center, Right),
+    bonusLifePoint = nearPoint(Arena.center, Right),
+    bonusScorePoint = nearPoint(Arena.center, Left)
+  )
+  import staticArena.arena._
+  import staticArena._
 
   "An enemy" should "have initialized life and points killing" in {
     enemy.lives should be > 0
@@ -31,61 +24,39 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   }
 
   it should "collide with bonuses" in {
-    val bonusLifePoint = nearPoint(Arena.center, Right)
-    val bonusScorePoint = nearPoint(Arena.center, Left)
-    collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) + BonusScore(Position(bonusScorePoint, None), 1)
+    createScenario1()
 
-    enemy moveTo Position(Arena.center, Some(Right))
     enemy move Right
     enemy.position.point should not equal bonusLifePoint
-    enemy.position.point shouldBe Arena.center
+    enemy.position.point shouldBe initialEnemyPosition.point
 
-    enemy moveTo Position(Arena.center, Some(Left))
     enemy move Left
     enemy.position.point should not equal bonusScorePoint
-    enemy.position.point shouldBe Arena.center
-
-    collectibles = Set()
+    enemy.position.point shouldBe initialEnemyPosition.point
   }
 
   it should "collide with other enemies" in {
-    enemy moveTo Position(Arena.center, Some(Right))
-    val otherEnemyPoint: Point = nearPoint(Arena.center, Right)
-    val enemy2 = Enemy(Position(otherEnemyPoint, Some(Right)))
-    enemy2.onTestingMode()
-    enemies = enemies + enemy + enemy2
+    createScenario5()
 
     enemy move Right
     enemy.position.point should not equal otherEnemyPoint
-    enemy.position.point shouldBe Arena.center
-
-    enemies = Set()
+    enemy.position.point shouldBe initialEnemyPosition.point
   }
 
   it should "lose his life when he collides with a bullet" in {
-    player moveTo Position(Arena.center, Some(Right))
-    enemy moveTo Position(nearPoint(Arena.center, Right), Some(Right))
-    enemies = enemies + enemy
+    createScenario6()
 
-    enemy.lives = 5
-    enemy.lives shouldBe 5
+    enemy.lives shouldBe initialEnemyLife
     nextStep(None, Some(Right))
-    enemy.lives should be < 5
-
-    enemies = Set()
+    enemy.lives should be < initialEnemyLife
   }
 
   it should "take the player's life away when he collides with him" in {
-    player moveTo Position(Arena.center, Some(Right))
-    enemy moveTo Position(nearPoint(Arena.center, Right), Some(Left))
-    enemies = enemies + enemy
+    createScenario6()
 
-    player.lives = 5
-    player.lives shouldBe 5
+    player.lives shouldBe initialPlayerLife
     enemy move Left
     nextStep(None, None)
-    player.lives should be < 5
-
-    enemies = Set()
+    player.lives should be < initialPlayerLife
   }
 }

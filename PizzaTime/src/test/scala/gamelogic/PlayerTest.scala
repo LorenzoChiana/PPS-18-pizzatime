@@ -15,7 +15,7 @@ class PlayerTest extends AnyFlatSpec with Matchers {
     initialPlayerScore = 0,
     scoreToIncrease = 5,
     bonusLifePoint = nearPoint(Arena.center, Right),
-    bonusScorePoint = nearPoint(nearPoint(Arena.center, Right), Right),
+    bonusScorePoint = nearPoint(nearPoint(Arena.center, Right), Right)
   )
   import staticArena.arena._
   import staticArena._
