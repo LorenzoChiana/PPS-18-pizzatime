@@ -5,15 +5,16 @@ import Entity.nearPoint
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.{Down, Left, Position, Right, Up}
+import utilities.{Direction, Down, Left, Position, Right, Up}
 
 class PlayerTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
     playerName = "Player1",
     initialPlayerPosition = Position(Arena.center, Some(Right)),
     initialPlayerLife = 3,
+    initialEnemyPosition = Position(nearPoint(Arena.center, Up), Some(Down)),
     bonusLifePoint = nearPoint(Arena.center, Right),
-    bonusScorePoint = nearPoint(nearPoint(Arena.center, Right), Right)
+    bonusScorePoint = nearPoint(Arena.center, Left)
   )
   import staticArena.arena._
   import staticArena._
@@ -23,47 +24,48 @@ class PlayerTest extends AnyFlatSpec with Matchers {
   }
 
   it should "walk over bonuses" in {
-    staticArena.createScenario1()
-
     player move Right
     player.position.point shouldEqual staticArena.bonusLifePoint
 
-    player move Right
+    player moveTo initialPlayerPosition
+    player move Left
     player.position.point shouldEqual staticArena.bonusScorePoint
   }
 
   it should "increase his life if he steps on BonusLife" in {
-    staticArena.createScenario2()
-
+    player moveTo initialPlayerPosition
     player.lives shouldEqual initialPlayerLife
     nextStep(Some(Right), None)
-    player.lives should be > initialPlayerLife
+    player.lives should be (initialPlayerLife + 1)
   }
 
   it should "increase his score of he steps on BonusPoint" in {
-    staticArena.createScenario3()
-
+    player moveTo initialPlayerPosition
     player.score shouldBe initialPlayerScore
-    nextStep(Some(Right), None)
+    nextStep(Some(Left), None)
     player.score shouldBe initialPlayerScore + scoreToIncrease
   }
 
   it should "decrease his life if he collides with an enemy" in {
-    staticArena.createScenario4()
+    player moveTo initialPlayerPosition
+    player.lives = initialPlayerLife
 
     player.lives shouldBe initialPlayerLife
-    nextStep(Some(Right), None)
+    nextStep(Some(Up), None)
     player.lives should be < initialPlayerLife
   }
 
   it should "shoot in all directions" in {
     staticArena.createEmptyScenario()
-
     List(Right, Left, Up, Down).foreach(direction => {
-      player changeDirection direction
-      nextStep(None, Some(direction))
+      shootOn(direction)
       val bulletNearPlayerAndSameDirection = Bullet(Position(nearPoint(player.position.point, direction), Some(direction)))
       bullets should contain (bulletNearPlayerAndSameDirection)
     })
+  }
+
+  private def shootOn(direction: Direction): Unit = {
+    player changeDirection direction
+    nextStep(None, Some(direction))
   }
 }

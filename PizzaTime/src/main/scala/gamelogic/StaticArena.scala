@@ -29,18 +29,13 @@ case class StaticArena (
   val outsideArena: Position = Position(Point(0,0), Some(Down))
   val insideArena: Position = Position(Arena.center, Some(Down))
   val upperLeftPosition: Position = Position(Point(1, 1), Some(Down))
-
-  initAll()
   
   val enemy: Enemy = Enemy(initialEnemyPosition)
   enemy.onTestingMode()
 
   val bullet: Bullet = Bullet(outsideArena)
 
-  def createEmptyScenario(): Unit = {
-    initAll()
-    player moveTo Position(Arena.center, Some(Right))
-  }
+  initAll()
 
   def createScenario1(): Unit = {
     initAll()
@@ -87,6 +82,19 @@ case class StaticArena (
   }
 
   private def initAll(): Unit = {
+    createEmptyScenario()
+    player.lives = initialPlayerLife
+    if(bonusScorePoint != (0,0)) { collectibles = collectibles + BonusScore(Position(bonusScorePoint, None), scoreToIncrease) }
+    if(bonusLifePoint != (0,0)) { collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) }
+    enemies = enemies + enemy
+    if(otherEnemyPoint != (0,0)) {
+      val otherEnemy = Enemy(Position(otherEnemyPoint, Some(Up)))
+      otherEnemy.onTestingMode()
+      enemies = enemies + otherEnemy
+    }
+  }
+
+  def createEmptyScenario(): Unit = {
     obstacles = Set()
     enemies = Set()
     collectibles = Set()
