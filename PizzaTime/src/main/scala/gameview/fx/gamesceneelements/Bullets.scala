@@ -4,9 +4,11 @@ import gamelogic.Bullet
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
 import utilities.BulletImage
-import gameview.fx.FXGameScene.{dungeon, pointToPixel, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.dungeon
+import gameview.fx.gamesceneelements.GameElements.{addToDungeon, pointToPixel, setDimension, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
+
 import scala.collection.immutable
 
 /**Set of [[ImageView]] representing [[Bullets]]*/

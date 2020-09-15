@@ -4,7 +4,8 @@ package gameview.fx.gamesceneelements
 import gamelogic.EnemyCharacter
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
+import gameview.fx.FXGameScene.dungeon
+import gameview.fx.gamesceneelements.GameElements.{createElement, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import utilities.EnemyImage
@@ -13,7 +14,7 @@ import scala.collection.immutable
 
 /**Set of [[ImageView]] representing [[Enemies]]*/
 class Enemies extends GameElements{
-  var enemies: immutable.Map[EnemyCharacter, ImageView] = arena.get.enemies.map(a => a -> createTile(images(EnemyImage))).toMap
+  var enemies: immutable.Map[EnemyCharacter, ImageView] = arena.get.enemies.map(a => a -> createElement(images(EnemyImage))).toMap
 
   /**
    * Updating position enemy

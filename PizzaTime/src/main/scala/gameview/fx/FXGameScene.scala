@@ -1,6 +1,6 @@
 package gameview.fx
 
-import gamelogic.GameState.{arena, arenaHeight, arenaWidth, worldRecord}
+import gamelogic.GameState.{arena, worldRecord}
 import gamemanager.ImageLoader.images
 import gameview.Window
 import gameview.fx.FXGameScene.dungeon
@@ -13,13 +13,12 @@ import javafx.fxml.FXML
 import javafx.scene.Group
 import javafx.scene.input.KeyCode.{A, D, DOWN, LEFT, RIGHT, S, UP, W}
 import javafx.scene.control.{Button, Label}
-import javafx.scene.image.{Image, ImageView}
+import javafx.scene.image.ImageView
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.{BorderPane, GridPane}
 import javafx.stage.Stage
 import javafx.util.Duration
-import utilities.WindowSize.Game
-import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, Movement, Point, Right, Shoot, Up}
+import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, Movement, Right, Shoot, Up}
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable
@@ -30,10 +29,11 @@ import scala.collection.mutable
  * @param stage the top level JavaFX container
  */
 case class FXGameScene(override val windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
-  private val lifeBarHeight = 40
-  private val lifeBarWight = 208
+  private val LifeBarHeight = 40
+  private val LifeBarWight = 208
 
-  private val actions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false,
+  private val actions: mutable.Map[Action, Boolean] = mutable.Map(
+    Action(Movement, Some(Up)) -> false,
     Action(Movement, Some(Down)) -> false,
     Action(Movement, Some(Left)) -> false,
     Action(Movement, Some(Right)) -> false,
@@ -50,8 +50,8 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
 
   Platform.runLater(()=> {
     lifeBar.setImage(images(LifeBarImage5))
-    lifeBar setFitHeight lifeBarHeight
-    lifeBar setFitWidth lifeBarWight
+    lifeBar setFitHeight LifeBarHeight
+    lifeBar setFitWidth LifeBarWight
   })
 
   root.add(dungeon, 0, 1)
@@ -130,39 +130,6 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   }
 }
 
-/** Utility methods for [[FXGameScene]]. */
 object FXGameScene {
   @FXML val dungeon: Group = new Group()
-  /**
-   * Defines the width of each tile that will make up the arena
-   *
-   * @return the width of the tile
-   */
-  def tileWidth: Double = Game.width / arenaWidth
-
-  /**
-   * Defines the height of each tile that will make up the arena
-   *
-   * @return the height of the tile
-   */
-  def tileHeight: Double = Game.height / arenaHeight
-
-  /** Converts a logic [[Point]] to a pixel for visualization purposes.
-   *
-   *  @param p the [[Point]] to convert
-   *  @return a tuple of coordinates in pixels
-   */
-  def pointToPixel(p: Point): (Double, Double) = (p.x * tileWidth, p.y * tileHeight)
-
-  /**
-   * Creates a tile sprite
-   * @param image the sprite image
-   * @return an [[ImageView]] that represents the sprite of the tile
-   */
-  def createTile(image: Image): ImageView = {
-    val tile: ImageView = new ImageView(image)
-    tile.setFitWidth(tileWidth)
-    tile.setFitHeight(tileHeight)
-    tile
-  }
 }
