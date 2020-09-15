@@ -29,14 +29,7 @@ trait Window {
    * Sets the scene inside of the window
    * @param intent the intent to change current scene into another
    */
-  def scene_(intent: Intent)
-
-  /**
-   * Shows a message to the user without a title
-   * @param message the message to be displayed
-   * @param messageType the [[MessageType]] of the message
-   */
-  def showMessage(message: String, messageType: MessageType): Unit
+  def scene_(intent: Intent): Unit
 
   /**
    * Shows a message to the user with a title

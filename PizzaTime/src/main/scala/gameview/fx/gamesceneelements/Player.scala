@@ -11,7 +11,7 @@ import utilities.{Direction, Down, HeroImage, Left, Position, Right, Up}
 
 /** [[ImageView]] representing [[Player]]*/
 class Player extends GameElements{
-  private var player: ImageView = createTile(images(HeroImage))
+  private val player: ImageView = createTile(images(HeroImage))
   private var currentPosition: Position = arena.get.player.position
 
   val heroAnimation = new SpriteAnimation(player, Duration.millis(100), 4, 4, 0, 0, 100, 130)

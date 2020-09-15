@@ -11,6 +11,7 @@ import utilities.{BonusSound, EnemyInjurySound, FailureSound, InjurySound, Level
 
 import scala.concurrent._
 import ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 
 /** Allows to load and play the various sounds of the game.
  *  The sounds are for:
@@ -46,12 +47,14 @@ object SoundLoader {
    *
    *  @param path the path of the sound to be played
    */
-  private def playSound(path: String): Future[Unit] = Future {
-    val audioIn = getAudioInputStream(new File(path))
-    val clip = getClip
-    clip.open(audioIn)
-    clip.start()
-  }
+  private def playSound(path: String): Future[Unit] = Future({
+      val audioIn = getAudioInputStream(new File(path))
+      val clip = getClip
+      clip.open(audioIn)
+      audioIn.close()
+      clip.start()
+      clip
+    })
 
   /** Plays a looping sound.
    *
@@ -61,6 +64,7 @@ object SoundLoader {
     val audioIn = getAudioInputStream(new File(path))
     gameClip = getClip
     gameClip.open(audioIn)
+    audioIn.close()
     gameClip.loop(LOOP_CONTINUOUSLY)
   }
 }

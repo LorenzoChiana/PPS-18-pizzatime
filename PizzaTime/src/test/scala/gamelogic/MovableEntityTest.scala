@@ -7,6 +7,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 
+/** Test class for [[MovableEntity]] */
 class MovableEntityTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena()
   import staticArena.arena._

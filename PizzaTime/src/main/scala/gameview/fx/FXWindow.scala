@@ -12,7 +12,9 @@ import javafx.scene.control.{Alert, DialogPane}
 import javafx.scene.effect.BoxBlur
 import javafx.scene.image.Image
 import javafx.scene.layout.BorderPane
-import javafx.stage.{Screen, Stage, StageStyle}
+import javafx.stage.Stage
+import javafx.stage.StageStyle._
+import AlertType._
 import utilities._
 import utilities.MessageTypes._
 
@@ -136,14 +138,16 @@ case class FXWindow(stage: Stage) extends Window {
     }
   }
 
-  override def showMessage(message: String, messageType: MessageTypes.MessageType): Unit = {
-    showMessageHelper(None, message, messageType)
-  }
-
-  override def showMessage(headerText: String, message: String, messageType: MessageTypes.MessageType): Unit = {
+  override def showMessage(headerText: String, message: String, messageType: MessageType): Unit = {
     showMessageHelper(Some(headerText), message, messageType)
   }
 
+  /**
+   * Implements the dialog to display.
+   * @param title the title of dialog
+   * @param message the message to be displayed
+   * @param messageType the [[MessageType]] of the message
+   */
   private def showMessageHelper(title: Option[String], message: String, messageType: MessageType): Unit = {
     Platform.runLater(() => {
       val alert = generateAlert(messageType)
@@ -157,22 +161,31 @@ case class FXWindow(stage: Stage) extends Window {
     })
   }
 
+  /**
+   * Generates the alert depending on the type of message.
+   * @param messageType the [[MessageType]] of the message
+   * @return the alert
+   */
   private def generateAlert(messageType: MessageType): Alert = {
     val alertPair: (String, AlertType) = messageType match {
-      case Info => ("Information", AlertType.INFORMATION)
-      case Error => ("Error", AlertType.ERROR)
-      case Warning => ("Warning", AlertType.WARNING)
+      case Info => ("Information", INFORMATION)
+      case Error => ("Error", ERROR)
+      case Warning => ("Warning", WARNING)
     }
 
     new Alert(alertPair._2) {
       initOwner(stage)
-      initStyle(StageStyle.TRANSPARENT)
+      initStyle(TRANSPARENT)
       setTitle(alertPair._1)
       getDialogPane.getStylesheets.add(getClass.getResource("/styles/DialogStyle.css").toExternalForm)
       getDialogPane.getStyleClass.add("dialog")
     }
   }
 
+  /**
+   * Shows the alert.
+   * @param alert the alert to display
+   */
   private def showAlert(alert: Alert): Unit = {
     windowContent.setEffect(new BoxBlur(5, 10, 10))
 
@@ -182,9 +195,6 @@ case class FXWindow(stage: Stage) extends Window {
   }
 }
 
-/**
- *
- */
 object FXWindow {
   var observers: immutable.Set[ViewObserver] = Set[ViewObserver]()
 

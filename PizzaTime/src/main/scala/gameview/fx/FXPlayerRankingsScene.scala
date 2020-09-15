@@ -9,8 +9,7 @@ import javafx.geometry.Pos._
 import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{HBox, VBox}
 
-/**
- * Represents the scene with the record classification
+/** Represents the scene with the record classification made with JavaFX.
  *
  * @param windowManager the window on which the scene is applied
  */

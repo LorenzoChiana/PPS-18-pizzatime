@@ -3,7 +3,7 @@ package gameview.fx.gamesceneelements
 import gamelogic.{BonusLife, BonusScore, Collectible}
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
+import gameview.fx.FXGameScene.dungeon
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import utilities.{BonusLifeImage, BonusScoreImage}

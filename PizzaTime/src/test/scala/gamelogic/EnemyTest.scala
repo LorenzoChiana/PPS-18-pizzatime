@@ -7,6 +7,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import utilities.{Up, Down, Left, Position, Right}
 
+/** Test class for [[Enemy]] */
 class EnemyTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
     initialEnemyPosition = Position(Arena.center, Some(Down)),
