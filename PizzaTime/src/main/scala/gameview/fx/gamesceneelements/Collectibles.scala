@@ -4,6 +4,7 @@ import gamelogic.{BonusLife, BonusScore, Collectible}
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
 import gameview.fx.FXGameScene.dungeon
+import gameview.fx.gamesceneelements.GameElements.addToDungeon
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import utilities.{BonusLifeImage, BonusScoreImage}
@@ -35,8 +36,8 @@ object Collectibles{
   def apply(): Collectibles = {
     val coll: Collectibles = new Collectibles()
     arena.get.collectibles.foreach {
-      case collectible@(_: BonusLife) => coll.collectibles += (collectible -> coll.addToDungeon(collectible, images(BonusLifeImage)))
-      case collectible@(_: BonusScore) => coll.collectibles += (collectible -> coll.addToDungeon(collectible, images(BonusScoreImage)))
+      case collectible@(_: BonusLife) => coll.collectibles += (collectible -> addToDungeon(collectible, images(BonusLifeImage)))
+      case collectible@(_: BonusScore) => coll.collectibles += (collectible -> addToDungeon(collectible, images(BonusScoreImage)))
     }
     coll
   }

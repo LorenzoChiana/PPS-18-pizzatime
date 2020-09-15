@@ -3,7 +3,8 @@ package gameview.fx.gamesceneelements
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
 import gameview.SpriteAnimation
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel, tileHeight, tileWidth}
+import gameview.fx.FXGameScene.dungeon
+import gameview.fx.gamesceneelements.GameElements.{createElement, pointToPixel, setDimension, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.util.Duration
@@ -11,7 +12,7 @@ import utilities.{Direction, Down, HeroImage, Left, Position, Right, Up}
 
 /** [[ImageView]] representing [[Player]]*/
 class Player extends GameElements{
-  private val player: ImageView = createTile(images(HeroImage))
+  private val player: ImageView = createElement(images(HeroImage))
   private var currentPosition: Position = arena.get.player.position
 
   val heroAnimation = new SpriteAnimation(player, Duration.millis(100), 4, 4, 0, 0, 100, 130)
@@ -29,16 +30,16 @@ class Player extends GameElements{
     }
   }
 
-  private val offsetUp = 260
-  private val offsetDown = 0
-  private val offsetLeft = 130
-  private val offsetRight = 390
+  private val OffsetUp = 260
+  private val OffsetDown = 0
+  private val OffsetLeft = 130
+  private val OffsetRight = 390
 
   protected def animation(playerDirection: Option[Direction]): Unit = playerDirection match {
-    case Some(Up) => heroAnimation.offsetY = offsetUp; heroAnimation.play()
-    case Some(Down) => heroAnimation.offsetY = offsetDown; heroAnimation.play()
-    case Some(Left) => heroAnimation.offsetY = offsetLeft; heroAnimation.play()
-    case Some(Right) => heroAnimation.offsetY = offsetRight; heroAnimation.play()
+    case Some(Up) => heroAnimation.offsetY = OffsetUp; heroAnimation.play()
+    case Some(Down) => heroAnimation.offsetY = OffsetDown; heroAnimation.play()
+    case Some(Left) => heroAnimation.offsetY = OffsetLeft; heroAnimation.play()
+    case Some(Right) => heroAnimation.offsetY = OffsetRight; heroAnimation.play()
     case _ => None
   }
 }
@@ -51,7 +52,7 @@ object Player{
   def apply(): Player = {
     val p: Player = new Player()
 
-    p.setDimension(p.player, tileHeight,tileWidth)
+    setDimension(p.player, tileHeight, tileWidth)
     p.animation(arena.get.player.position.dir)
 
     Platform.runLater(() => {

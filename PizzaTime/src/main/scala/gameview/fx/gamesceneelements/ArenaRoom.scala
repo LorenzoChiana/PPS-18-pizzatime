@@ -2,7 +2,8 @@ package gameview.fx.gamesceneelements
 
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
-import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
+import gameview.fx.FXGameScene.dungeon
+import gameview.fx.gamesceneelements.GameElements.{addToDungeon, createElement, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
@@ -15,7 +16,7 @@ class ArenaRoom extends GameElements {
    */
   override def update(): Unit = createDoor()
 
-  val door: ImageView = createTile(images(FloorImage))
+  val door: ImageView = createElement(images(FloorImage))
   var positionDoor: (Double, Double) = _
 
   private def createDoor(): Unit = {
@@ -26,7 +27,7 @@ class ArenaRoom extends GameElements {
         door.relocate(positionDoor._1, positionDoor._2)
       } else if(arena.get.door.isEmpty && dungeon.getChildren.contains(door)){
         dungeon.getChildren.remove(door)
-        val wall: ImageView = createTile(images(WallImage))
+        val wall: ImageView = createElement(images(WallImage))
         wall.relocate(positionDoor._1, positionDoor._2)
         dungeon.getChildren.add(wall)
       }
