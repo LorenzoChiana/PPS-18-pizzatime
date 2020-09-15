@@ -2,6 +2,7 @@ package gamelogic
 
 import GameState._
 import Arena._
+import Door._
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 import utilities.ImplicitConversions._
 
@@ -24,18 +25,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   /** Generates a new level. */
   def generateMap(): Unit = {
-    if (door.isEmpty) {
-      door = Some(Door.exitDoor(walls))
-    }
-    walls = walls.filter(!_.position.point.equals(door.get.position.point))
-
     mapGen.generateLevel()
-    door.get.position.point match {
-      case Point(0, _) => player.moveTo(Position(door.get.position.point, Some(Right)))
-      case Point(_, 0) => player.moveTo(Position(door.get.position.point, Some(Down)))
-      case Point(x, _) if x.equals(arenaWidth - 1) => player.moveTo(Position(door.get.position.point, Some(Left)))
-      case Point(_, y) if y.equals(arenaHeight - 1) => player.moveTo(Position(door.get.position.point, Some(Up)))
-    }
+    movePlayerOnDoor()
   }
 
   /** Updates the [[Arena]] for the new logical step. */
@@ -122,6 +113,15 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     bullets = Set()
     collectibles = Set()
     obstacles = Set()
+  }
+
+  private def movePlayerOnDoor(): Unit = {
+    door.get.position.point match {
+      case Point(0, _) => player.moveTo(Position(door.get.position.point, Some(Right)))
+      case Point(_, 0) => player.moveTo(Position(door.get.position.point, Some(Down)))
+      case Point(x, _) if x.equals(arenaWidth - 1) => player.moveTo(Position(door.get.position.point, Some(Left)))
+      case Point(_, y) if y.equals(arenaHeight - 1) => player.moveTo(Position(door.get.position.point, Some(Up)))
+    }
   }
 
   private def playerInjury(enemy: EnemyCharacter): Unit =

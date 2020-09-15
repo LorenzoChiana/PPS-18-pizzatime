@@ -4,7 +4,9 @@ import Arena._
 import utilities.{Difficulty, Down, Point, Position}
 import utilities.Difficulty._
 import GameState._
+import Door._
 import utilities.ImplicitConversions._
+
 import scala.util.Random.{between, nextInt}
 
 /** Encapsulates the logic for generating a new level.
@@ -18,15 +20,23 @@ case class MapGenerator(difficulty: Difficulty.Value) {
   /** Generates a new level, populating the [[Arena]] with the resulting [[Entity]]s. */
   def generateLevel(): Unit = {
     incLevel()
+    initializeDoor()
     generateEnemies()
     generateCollectibles()
     generateObstacles()
   }
 
-  def levelMultiplier: Int = (arena.get.mapGen.currentLevel / difficulty.levelThreshold) + 1
+  def levelMultiplier: Int = (currentLevel / difficulty.levelThreshold) + 1
 
   private def incLevel(): Unit = {
-    currentLevel = currentLevel + 1
+    currentLevel += 1
+  }
+
+  private def initializeDoor(): Unit = {
+    if (arena.get.door.isEmpty) {
+      arena.get.door = Some(exitDoor(arena.get.walls))
+    }
+    arena.get.walls = arena.get.walls.filter(!_.position.point.equals(arena.get.door.get.position.point))
   }
 
   private def generateEnemies(): Unit = {
@@ -101,7 +111,6 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     arena.get.obstacles.filter(obstacle => obstacle.surroundings(horizontal = false).exists(containsObstacle)).map(_.remove())
   }
 
-  /** Returns a random and clear [[Position]] on the [[Arena]] (meaning that it's not occupied by any [[Entity]] and it's not on the entrance). */
   private def randomClearPosition: Position = {
     val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles
     val clearPoints: Set[Point] = arena.get.floor.map(_.position.point).diff(allEntities.map(_.position.point))

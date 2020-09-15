@@ -6,20 +6,25 @@ import utilities.Direction
  *  Implemented by [[Arena]].
  */
 trait GameMap {
-  def player: Player
-
   def mapGen: MapGenerator
 
-  var enemies: Set[EnemyCharacter]
-  var bullets: Set[Bullet]
-  var collectibles: Set[Collectible]
-  var obstacles: Set[Obstacle]
-  var door: Option[Door]
-  var endedLevel: Boolean
+  def player: Player
 
-  def walls: Set[Wall]
+  var enemies: Set[EnemyCharacter]
+
+  var bullets: Set[Bullet]
+
+  var collectibles: Set[Collectible]
+
+  var obstacles: Set[Obstacle]
+
+  var walls: Set[Wall]
 
   def floor: Set[Floor]
+
+  var door: Option[Door]
+
+  var endedLevel: Boolean
 
   def generateMap(): Unit
 
