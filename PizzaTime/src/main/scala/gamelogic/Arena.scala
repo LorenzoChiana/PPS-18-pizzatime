@@ -2,7 +2,6 @@ package gamelogic
 
 import GameState._
 import Arena._
-import MapGenerator._
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 import utilities.ImplicitConversions._
 
@@ -235,6 +234,16 @@ object Arena {
    *  @return true if the [[Point]] contains a [[Collectible]]
    */
   def containsCollectible(p: Point): Boolean = arena.get.collectibles.exists(_.position.point.equals(p))
+
+  def isBonusLife(collectible: Collectible): Boolean = collectible match {
+    case _: BonusLife => true
+    case _ => false
+  }
+
+  def isBonusScore(collectible: Collectible): Boolean = collectible match {
+    case _: BonusScore => true
+    case _ => false
+  }
 
   /** Checks whether a [[Point]] contains a [[Enemy]] or not.
    *

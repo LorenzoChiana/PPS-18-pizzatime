@@ -1,7 +1,7 @@
 package gamelogic
 
 import Entity._
-import utilities.{Direction, Down, Left, Position, Right, Up}
+import utilities.{Down, Left, Position, Right, Up}
 import GameState.arena
 
 /** A bullet fired by the [[Player]].
