@@ -1,7 +1,7 @@
 package gamelogic
 
 import Entity._
-import utilities.{Direction, Down, Left, Position, Right, Up}
+import utilities.{Down, Left, Position, Right, Up}
 import GameState.arena
 
 /** A bullet fired by the [[Player]].
@@ -12,22 +12,14 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
   private var bulletRange: Int = 0
 
   def advances(): Unit = {
-    position.dir.get match {
-      case Up => move(Up)
-      case Down => move(Down)
-      case Left => move(Left)
-      case Right => move(Right)
-    }
-  }
-
-  override def move(dir: Direction): Boolean = {
-    if (canMoveIn(nearPoint(position.point, dir)) && checkInRange) {
-      position = Position(nearPoint(position.point, dir), Some(dir))
-      true
-    } else {
-      unexploded = false
-      false
-    }
+    if (checkInRange)
+      position.dir.get match {
+        case Up => move(Up)
+        case Down => move(Down)
+        case Left => move(Left)
+        case Right => move(Right)
+      }
+    else unexploded = false
   }
 
   override def canMove: Boolean = canMoveIn(nearPoint(position.point, position.dir.get))
@@ -35,7 +27,7 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
   override def remove(): Boolean = {
     unexploded = false
     arena.get.bullets = arena.get.bullets - copy()
-    if (!arena.get.bullets.contains(copy())) true else false
+    !arena.get.bullets.contains(copy())
   }
 
   private def checkInRange: Boolean = {

@@ -11,12 +11,12 @@ import scala.util.Random
  *  @param position its [[Position]]
  */
 case class Obstacle(var position: Position) extends Entity {
-  val `type`: ObstacleImage = randomType
+    val `type`: ObstacleImage = randomType
 
-  override def remove(): Boolean = {
-    arena.get.obstacles = arena.get.obstacles - copy()
-    if (!arena.get.obstacles.contains(copy())) true else false
-  }
+    override def remove(): Boolean = {
+      arena.get.obstacles = arena.get.obstacles - copy()
+      !arena.get.obstacles.contains(copy())
+    }
 
-  private def randomType: ObstacleImage = allObstacleImages(Random.nextInt(allObstacleImages.length))
+    private def randomType: ObstacleImage = allObstacleImages(Random.nextInt(allObstacleImages.length))
 }

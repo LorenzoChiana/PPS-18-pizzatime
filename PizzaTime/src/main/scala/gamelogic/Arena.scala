@@ -2,9 +2,7 @@ package gamelogic
 
 import GameState._
 import Arena._
-import MapGenerator._
-import gamemanager.SoundLoader._
-import utilities.{BonusSound, Direction, Down, FailureSound, InjurySound, Left, LevelUpSound, Point, Position, Right, ShootSound, Up}
+import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 import utilities.ImplicitConversions._
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -27,7 +25,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Generates a new level. */
   def generateMap(): Unit = {
     if (door.isEmpty) {
-      door = Some(Door(randomWallPosition))
+      door = Some(Door.exitDoor)
     }
     walls = walls.filter(!_.position.point.equals(door.get.position.point))
 
@@ -67,10 +65,10 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
           endedLevel = true
           emptyMap()
           door.get.position.point match {
-            case Point(0, y) => door = Some(Door(Position(Point(arenaWidth - 1, y), None)))
-            case Point(x, 0) => door = Some(Door(Position(Point(x, arenaHeight - 1), None)))
-            case Point(x, y) if x.equals(arenaWidth - 1) => door = Some(Door(Position(Point(0, y), None)))
-            case Point(x, y) if y.equals(arenaHeight - 1) => door = Some(Door(Position(Point(x, 0), None)))
+            case Point(0, y) => door = Some(Door.entranceDoor(Position(Point(arenaWidth - 1, y), None)))
+            case Point(x, 0) => door = Some(Door.entranceDoor(Position(Point(x, arenaHeight - 1), None)))
+            case Point(x, y) if x.equals(arenaWidth - 1) => door = Some(Door.entranceDoor(Position(Point(0, y), None)))
+            case Point(x, y) if y.equals(arenaHeight - 1) => door = Some(Door.entranceDoor(Position(Point(x, 0), None)))
           }
           generateMap()
 
@@ -106,7 +104,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     /**Check if door is open*/
     if (door.isEmpty) {
       if (enemies.isEmpty) {
-        door = Some(Door(randomWallPosition))
+        door = Some(Door.exitDoor)
         observers.foreach(_.openDoor())
         observers.foreach(_.openDoor())
       }
@@ -125,7 +123,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     obstacles = Set()
   }
 
-  def playerInjury(enemy: EnemyCharacter): Unit =
+  private def playerInjury(enemy: EnemyCharacter): Unit =
     if (containsEnemy(player.position.point).isDefined && lastInjury.isEmpty) {
       lastInjury = Some(enemy)
       player.decreaseLife()
@@ -236,6 +234,16 @@ object Arena {
    *  @return true if the [[Point]] contains a [[Collectible]]
    */
   def containsCollectible(p: Point): Boolean = arena.get.collectibles.exists(_.position.point.equals(p))
+
+  def isBonusLife(collectible: Collectible): Boolean = collectible match {
+    case _: BonusLife => true
+    case _ => false
+  }
+
+  def isBonusScore(collectible: Collectible): Boolean = collectible match {
+    case _: BonusScore => true
+    case _ => false
+  }
 
   /** Checks whether a [[Point]] contains a [[Enemy]] or not.
    *

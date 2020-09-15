@@ -1,17 +1,12 @@
 package gameview.fx.gamesceneelements
 
-import gamelogic.Entity
 import gamelogic.GameState.arena
-import gamemanager.ImageLoader
 import gamemanager.ImageLoader.images
 import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
 import javafx.application.Platform
-import javafx.scene.image.{Image, ImageView}
+import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
-import utilities.{FloorImage, Obstacle1Image, Obstacle2Image, Obstacle3Image, WallImage}
-
-import scala.util.Random.between
-
+import utilities.{FloorImage, WallImage}
 
 /** [[GridPane]] representing [[ArenaRoom]]*/
 class ArenaRoom extends GameElements {
@@ -44,19 +39,13 @@ class ArenaRoom extends GameElements {
    * @return a new [[GridPane]] with all the game entities initialized to be displayed in the view
    */
   private def createArena(): Unit = {
-    for (f <- arena.get.floor) :+ (f, images(FloorImage))
-    for (w <- arena.get.walls) :+ (w, images(WallImage))
-
-    for (o <- arena.get.obstacles) :+ (o, images(o.`type`))
+    for (f <- arena.get.floor) addToDungeon (f, images(FloorImage))
+    for (w <- arena.get.walls) addToDungeon (w, images(WallImage))
+    for (o <- arena.get.obstacles) addToDungeon (o, images(o.`type`))
 
     createDoor()
   }
 
-  private def :+ (e: Entity, image: Image): Unit = {
-    val tile = createTile(image)
-    tile.relocate(pointToPixel(e.position.point)._1, pointToPixel(e.position.point)._2)
-    Platform.runLater(() => dungeon.getChildren.add(tile))
-  }
 }
 
 object ArenaRoom{

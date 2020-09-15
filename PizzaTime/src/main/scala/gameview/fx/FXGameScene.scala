@@ -19,11 +19,15 @@ import javafx.scene.layout.{BorderPane, GridPane}
 import javafx.stage.Stage
 import javafx.util.Duration
 import utilities.WindowSize.Game
-import utilities.{Action, Down, Left, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, Movement, Point, Right, Shoot, Up}
+import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, Movement, Point, Right, Shoot, Up}
+
 import scala.collection.immutable.HashSet
 import scala.collection.mutable
 
 case class FXGameScene(override val windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
+  private val lifeBarHeight = 40
+  private val lifeBarWight = 208
+
   private val actions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false,
     Action(Movement, Some(Down)) -> false,
     Action(Movement, Some(Left)) -> false,
@@ -41,8 +45,8 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
 
   Platform.runLater(()=> {
     lifeBar.setImage(images(LifeBarImage5))
-    lifeBar setFitHeight 40
-    lifeBar setFitWidth 208
+    lifeBar setFitHeight lifeBarHeight
+    lifeBar setFitWidth lifeBarWight
   })
 
   root.add(dungeon, 0, 1)
@@ -87,7 +91,6 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
    * method called by the controller cyclically to update the view
    */
   def updateView(): Unit = {
-    println("Dungeon" + dungeon.getChildren.size())
     elements.foreach(e => e.update())
 
     /** Updating player's label */
@@ -106,6 +109,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
           case 3 => lifeBar.setImage(images(LifeBarImage3))
           case 2 => lifeBar.setImage(images(LifeBarImage2))
           case 1 => lifeBar.setImage(images(LifeBarImage1))
+          case 0 => lifeBar.setImage(images(LifeBarImage0))
           case _ =>
         }
       })

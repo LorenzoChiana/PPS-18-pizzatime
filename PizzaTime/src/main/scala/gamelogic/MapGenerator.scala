@@ -1,6 +1,5 @@
 package gamelogic
 
-import MapGenerator._
 import Arena._
 import utilities.{Difficulty, Down, Point, Position}
 import utilities.Difficulty._
@@ -23,6 +22,8 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     generateCollectibles()
     generateObstacles()
   }
+
+  def levelMultiplier: Int = (arena.get.mapGen.currentLevel / difficulty.levelThreshold) + 1
 
   private def incLevel(): Unit = {
     currentLevel = currentLevel + 1
@@ -62,8 +63,6 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     removeFloorBorderObstacles()
   }
 
-  def levelMultiplier: Int = (arena.get.mapGen.currentLevel / difficulty.levelThreshold) + 1
-
   private def randomAdjacentObstacles(dim: Int): Set[Obstacle] = {
     var startingObstacle: Obstacle = Obstacle(randomClearPosition)
     var obstacles: Set[Obstacle] = Set(startingObstacle)
@@ -96,22 +95,9 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     )
     arena.get.obstacles.filter(obstacle => floorBorders.contains(obstacle.position.point)).map(_.remove())
   }
-}
-
-/** Utility methods for [[MapGenerator]]. */
-object MapGenerator {
-  /** Returns a random [[Position]] on the [[Wall]]s. */
-  def randomWallPosition: Position = {
-    var wall: Wall = arena.get.walls.toVector(nextInt(arena.get.walls.size))
-
-    while (wall.surroundings.isEmpty) {
-      wall = arena.get.walls.toVector(nextInt(arena.get.walls.size))
-    }
-    wall.position
-  }
 
   /** Returns a random and clear [[Position]] on the [[Arena]] (meaning that it's not occupied by any [[Entity]] and it's not on the entrance). */
-  def randomClearPosition: Position = {
+  private def randomClearPosition: Position = {
     val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles
     val clearPoints: Set[Point] = arena.get.floor.map(_.position.point).diff(allEntities.map(_.position.point))
     var clearPoint: Point = clearPoints.toVector(nextInt(clearPoints.size))
