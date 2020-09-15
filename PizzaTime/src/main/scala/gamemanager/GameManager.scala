@@ -30,7 +30,7 @@ object GameManager extends ViewObserver with GameLogicObserver {
 
   val NumThreads: Int = getRuntime.availableProcessors() + 1
   implicit val ThreadPool: ExecutionContext = fromExecutorService(newFixedThreadPool(NumThreads))
-  val TimeSliceMillis: Int = 50
+  val TimeSliceMillis: Int = 100
   var view: Option[Scene] = None
   def view_(view: Scene): Unit = this.view = Some(view)
 

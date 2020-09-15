@@ -1,6 +1,6 @@
 package gameview.fx
 
-import gamelogic.GameState.{arena, arenaHeight, arenaWidth, worldRecord}
+import gamelogic.GameState.{arena, worldRecord}
 import gamemanager.ImageLoader.images
 import gameview.Window
 import gameview.fx.FXGameScene.dungeon
@@ -13,13 +13,12 @@ import javafx.fxml.FXML
 import javafx.scene.Group
 import javafx.scene.input.KeyCode.{A, D, DOWN, LEFT, RIGHT, S, UP, W}
 import javafx.scene.control.{Button, Label}
-import javafx.scene.image.{Image, ImageView}
+import javafx.scene.image.ImageView
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.{BorderPane, GridPane}
 import javafx.stage.Stage
 import javafx.util.Duration
-import utilities.WindowSize.Game
-import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, Movement, Point, Right, Shoot, Up}
+import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, Movement, Right, Shoot, Up}
 
 import scala.collection.immutable.HashSet
 import scala.collection.mutable
@@ -33,7 +32,8 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   private val LifeBarHeight = 40
   private val LifeBarWight = 208
 
-  private val actions: mutable.Map[Action, Boolean] = mutable.Map(Action(Movement, Some(Up)) -> false,
+  private val actions: mutable.Map[Action, Boolean] = mutable.Map(
+    Action(Movement, Some(Up)) -> false,
     Action(Movement, Some(Down)) -> false,
     Action(Movement, Some(Left)) -> false,
     Action(Movement, Some(Right)) -> false,
