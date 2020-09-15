@@ -1,8 +1,6 @@
 package gamelogic
 
-import gamelogic.GameState.arena
 import utilities.Position
-
 import scala.util.Random.nextInt
 
 /** The [[GameMap]]'s door, used to move the [[Player]] between the levels.
@@ -12,15 +10,15 @@ import scala.util.Random.nextInt
 case class Door(var position: Position) extends Entity
 
 object Door {
-  def exitDoor: Door = Door(randomDoorPosition)
+  def exitDoor(w: Set[Wall]): Door = Door(randomDoorPosition(w))
 
   def entranceDoor(p: Position): Door = Door(p)
 
-  private def randomDoorPosition: Position = {
-    var wall: Wall = arena.get.walls.toVector(nextInt(arena.get.walls.size))
+  private def randomDoorPosition(walls: Set[Wall]): Position = {
+    var wall: Wall = walls.toVector(nextInt(walls.size))
 
     while (wall.surroundings.isEmpty) {
-      wall = arena.get.walls.toVector(nextInt(arena.get.walls.size))
+      wall = walls.toVector(nextInt(walls.size))
     }
     wall.position
   }

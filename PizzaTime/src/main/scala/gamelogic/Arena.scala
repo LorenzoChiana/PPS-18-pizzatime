@@ -25,7 +25,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
   /** Generates a new level. */
   def generateMap(): Unit = {
     if (door.isEmpty) {
-      door = Some(Door.exitDoor)
+      door = Some(Door.exitDoor(walls))
     }
     walls = walls.filter(!_.position.point.equals(door.get.position.point))
 
@@ -104,7 +104,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     /**Check if door is open*/
     if (door.isEmpty) {
       if (enemies.isEmpty) {
-        door = Some(Door.exitDoor)
+        door = Some(Door.exitDoor(walls))
         observers.foreach(_.openDoor())
         observers.foreach(_.openDoor())
       }
