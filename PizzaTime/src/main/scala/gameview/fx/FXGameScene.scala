@@ -24,6 +24,11 @@ import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage
 import scala.collection.immutable.HashSet
 import scala.collection.mutable
 
+/** Represents the game scene made with JavaFX.
+ *
+ * @param windowManager the window on which the scene is applied
+ * @param stage the top level JavaFX container
+ */
 case class FXGameScene(override val windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
   private val lifeBarHeight = 40
   private val lifeBarWight = 208
@@ -87,9 +92,8 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   timeline.play()
 
   var lastLives: Int = arena.get.player.lives
-  /**
-   * method called by the controller cyclically to update the view
-   */
+
+  /** Method called by the controller cyclically to update the view */
   def updateView(): Unit = {
     elements.foreach(e => e.update())
 
@@ -119,6 +123,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
     if (arena.get.player.isDead) FXWindow.observers.foreach(_.notifyEndGame())
   }
 
+  /** Method called by game loop when the level ended. */
   def endLevel(): Unit = {
     Platform.runLater(() => dungeon.getChildren.clear())
     elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())

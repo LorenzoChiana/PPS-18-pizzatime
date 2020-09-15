@@ -7,23 +7,14 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import utilities.{Down, Left, Position, Right, Up}
 
+/** Test class for [[Bullet]] */
 class BulletTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
     initialPlayerPosition = Position(Arena.center, Some(Up))
   )
   import staticArena.arena._
 
-  "A bullet" should "always move in the same direction it was shot" in {
-    List(Up, Down, Left, Right).foreach(direction => {
-      nextStep(None, Some(direction))
-      while (bullets.exists(_.canMove)) {
-        bullets.foreach(bullet => bullet.position.dir shouldBe Some(direction))
-        nextStep(None, None)
-      }
-    })
-  }
-
-  it should "explode after a while" in {
+  "A Bullet" should "explode after a while" in {
     List(Up, Down, Left, Right).foreach(direction => nextStep(None, Some(direction)))
     bullets.foreach(_.unexploded shouldBe true)
     while(bullets.exists(_.unexploded) || bullets.exists(_.canMove)) nextStep(None, None)
@@ -62,6 +53,16 @@ class BulletTest extends AnyFlatSpec with Matchers {
       BonusLife(entityOfCollisionPosition),
       mustExplode = false
     )
+  }
+
+  it should "always move in the same direction it was shot" in {
+    List(Up, Down, Left, Right).foreach(direction => {
+      nextStep(None, Some(direction))
+      while (bullets.exists(_.unexploded)) {
+        bullets.foreach(bullet => bullet.position.dir shouldBe Some(direction))
+        nextStep(None, None)
+      }
+    })
   }
 
   private def checkExplosionWhenCollides(entity: Entity, mustExplode: Boolean): Unit = {

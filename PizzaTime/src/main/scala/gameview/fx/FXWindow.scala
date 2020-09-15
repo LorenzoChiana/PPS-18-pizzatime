@@ -182,9 +182,6 @@ case class FXWindow(stage: Stage) extends Window {
   }
 }
 
-/**
- *
- */
 object FXWindow {
   var observers: immutable.Set[ViewObserver] = Set[ViewObserver]()
 

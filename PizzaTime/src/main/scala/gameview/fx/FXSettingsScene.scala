@@ -10,6 +10,10 @@ import utilities.{Difficulty, SettingPreferences}
 
 import scala.jdk.CollectionConverters
 
+/** Represents the scene with the settings made with JavaFX.
+ *
+ * @param windowManager the window on which the scene is applied
+ */
 case class FXSettingsScene(override val windowManager: Window) extends FXView(Some("SettingsScene.fxml")) with Scene {
   @FXML protected var playerNameField: TextField = _
   @FXML protected var difficultyComboBox: ComboBox[Difficulty.Value] = _

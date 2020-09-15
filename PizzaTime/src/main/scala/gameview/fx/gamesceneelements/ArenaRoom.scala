@@ -1,12 +1,10 @@
 package gameview.fx.gamesceneelements
 
-import gamelogic.Entity
 import gamelogic.GameState.arena
-import gamemanager.ImageLoader
 import gamemanager.ImageLoader.images
 import gameview.fx.FXGameScene.{createTile, dungeon, pointToPixel}
 import javafx.application.Platform
-import javafx.scene.image.{Image, ImageView}
+import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 import utilities.{FloorImage, Obstacle1Image, Obstacle2Image, Obstacle3Image, WallImage}
 
