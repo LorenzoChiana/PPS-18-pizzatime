@@ -2,7 +2,7 @@ package gamelogic
 
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 import Entity._
-import Arena.{bounds, checkBounds}
+import Arena.checkBounds
 import utilities.ImplicitConversions._
 
 /** Represents a basic entity, defined by a [[Position]].

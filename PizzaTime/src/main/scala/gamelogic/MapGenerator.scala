@@ -61,6 +61,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
       }
     }
     removeFloorBorderObstacles()
+    removeVerticalObstacles()
   }
 
   private def randomAdjacentObstacles(dim: Int): Set[Obstacle] = {
@@ -94,6 +95,10 @@ case class MapGenerator(difficulty: Difficulty.Value) {
       (arenaWidth - 2, y)
     )
     arena.get.obstacles.filter(obstacle => floorBorders.contains(obstacle.position.point)).map(_.remove())
+  }
+
+  private def removeVerticalObstacles(): Unit = {
+    arena.get.obstacles.filter(obstacle => obstacle.surroundings(horizontal = false).exists(containsObstacle)).map(_.remove())
   }
 
   /** Returns a random and clear [[Position]] on the [[Arena]] (meaning that it's not occupied by any [[Entity]] and it's not on the entrance). */
