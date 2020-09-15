@@ -220,7 +220,7 @@ object Arena {
    *  @param p the [[Point]] to check
    *  @return true if the [[Point]] is in the [[Door]]'s surroundings
    */
-  def isEntrance(p: Point): Boolean = checkBounds(p) && arena.get.door.isDefined && arena.get.door.get.surroundings.contains(p)
+  def isEntrance(p: Point): Boolean = checkBounds(p) && arena.get.door.isDefined && arena.get.door.get.surroundings().contains(p)
 
   /** Checks whether a [[Point]] contains an [[Obstacle]] or not.
    *

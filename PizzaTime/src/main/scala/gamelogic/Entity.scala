@@ -12,15 +12,16 @@ trait Entity {
   var position: Position
 
   /** Returns the set of [[Point]]s that represent an [[Entity]]'s surroundings. */
-  def surroundings: Set[Point] = {
-    val surroundings: Set[Point] = Set(
-      nearPoint(position.point, Up),
-      nearPoint(position.point, Down),
-      nearPoint(position.point, Left),
-      nearPoint(position.point, Right)
-    ).filter(checkBounds(_))
+  def surroundings(horizontal: Boolean = true, vertical: Boolean = true): Set[Point] = {
+    var surroundings: Set[Point] = Set()
 
-    surroundings
+    if (horizontal) {
+      surroundings = surroundings ++ Set(nearPoint(position.point, Left), nearPoint(position.point, Right))
+    }
+    if (vertical) {
+      surroundings = surroundings ++ Set(nearPoint(position.point, Up), nearPoint(position.point, Down))
+    }
+    surroundings.filter(checkBounds(_))
   }
 
   /** Removes the [[Entity]] from the [[Arena]].

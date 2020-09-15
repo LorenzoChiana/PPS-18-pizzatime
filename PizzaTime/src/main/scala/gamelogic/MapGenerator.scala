@@ -68,7 +68,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     var obstacles: Set[Obstacle] = Set(startingObstacle)
 
     while (obstacles.size < dim) {
-      startingObstacle.surroundings.foreach(p => {
+      startingObstacle.surroundings().foreach(p => {
         if (isClearFloor(p) && (obstacles.size < dim)) {
           obstacles = obstacles + Obstacle(Position(p, Some(Down)))
         }

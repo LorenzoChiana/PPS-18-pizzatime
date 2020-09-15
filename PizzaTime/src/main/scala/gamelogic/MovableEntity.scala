@@ -13,7 +13,7 @@ trait MovableEntity extends Entity {
    *
    *  @param p the [[Point]] to check
    */
-  def canMoveIn(p: Point): Boolean = surroundings.contains(p) && !containsObstacle(p)
+  def canMoveIn(p: Point): Boolean = surroundings().contains(p) && !containsObstacle(p)
 
   /** Check if an entity can move
    *

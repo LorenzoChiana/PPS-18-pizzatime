@@ -17,7 +17,7 @@ object Door {
   private def randomDoorPosition(walls: Set[Wall]): Position = {
     var wall: Wall = walls.toVector(nextInt(walls.size))
 
-    while (wall.surroundings.isEmpty) {
+    while (wall.surroundings().isEmpty) {
       wall = walls.toVector(nextInt(walls.size))
     }
     wall.position
