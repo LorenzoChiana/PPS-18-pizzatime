@@ -20,7 +20,8 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
     }
   }
 
-  override def move(dir: Direction): Boolean =
+  override def move(dir: Direction): Boolean = {
+    incRange()
     if (canMoveIn(nearPoint(position.point, dir)) && checkInRange) {
       position = Position(nearPoint(position.point, dir), Some(dir))
       true
@@ -28,6 +29,7 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
       unexploded = false
       false
     }
+  }
 
   override def canMove: Boolean = canMoveIn(nearPoint(position.point, position.dir.get))
 
@@ -37,15 +39,9 @@ case class Bullet(var position: Position, var unexploded: Boolean = true, range:
     !arena.get.bullets.contains(copy())
   }
 
-  private def checkInRange: Boolean = {
-    if (bulletRange < range) {
-      bulletRange += 1
-      true
-    } else {
-      bulletRange = 0
-      false
-    }
-  }
+  private def incRange(): Unit = bulletRange += 1
+
+  private def checkInRange: Boolean = bulletRange < range
 }
 
 /** Factory for [[Bullet]] instances. */
