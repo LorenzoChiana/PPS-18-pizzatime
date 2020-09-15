@@ -15,18 +15,21 @@ class Player extends GameElements{
   private val player: ImageView = createElement(images(HeroImage))
   private var currentPosition: Position = arena.get.player.position
 
-  val heroAnimation = new SpriteAnimation(player, Duration.millis(100), 4, 4, 0, 0, 100, 130)
+  val heroAnimation = new SpriteAnimation(player, Duration.millis(25), 4, 4, 0, 0, 100, 130)
 
   /**
    * Updating position and animate player
    */
   override def update(): Unit = {
     val playerPosition: Position = arena.get.player.position
-    val playerDirection: Option[Direction] = arena.get.player.position.dir
+
     if (!playerPosition.equals(currentPosition)){
-      animation(playerDirection)
-      Platform.runLater(() => player.relocate(pointToPixel(playerPosition.point)._1, pointToPixel(playerPosition.point)._2))
       currentPosition = playerPosition
+
+      Platform.runLater(() => {
+        animation(playerPosition.dir)
+        player.relocate(pointToPixel(playerPosition.point)._1, pointToPixel(playerPosition.point)._2)
+      })
     }
   }
 
@@ -36,10 +39,21 @@ class Player extends GameElements{
   private val OffsetRight = 390
 
   protected def animation(playerDirection: Option[Direction]): Unit = playerDirection match {
-    case Some(Up) => heroAnimation.offsetY = OffsetUp; heroAnimation.play()
-    case Some(Down) => heroAnimation.offsetY = OffsetDown; heroAnimation.play()
-    case Some(Left) => heroAnimation.offsetY = OffsetLeft; heroAnimation.play()
-    case Some(Right) => heroAnimation.offsetY = OffsetRight; heroAnimation.play()
+    case Some(Up) =>
+      heroAnimation.offsetY = OffsetUp
+      heroAnimation.play()
+
+    case Some(Down) =>
+      heroAnimation.offsetY = OffsetDown
+      heroAnimation.play()
+
+    case Some(Left) =>
+      heroAnimation.offsetY = OffsetLeft
+      heroAnimation.play()
+
+    case Some(Right) =>
+      heroAnimation.offsetY = OffsetRight
+      heroAnimation.play()
     case _ => None
   }
 }

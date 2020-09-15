@@ -130,7 +130,6 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   }
 }
 
-/** Utility methods for [[FXGameScene]]. */
 object FXGameScene {
   @FXML val dungeon: Group = new Group()
 }

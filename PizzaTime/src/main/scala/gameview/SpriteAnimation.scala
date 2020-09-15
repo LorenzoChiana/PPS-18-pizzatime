@@ -20,6 +20,7 @@ import javafx.util.Duration
 
 class SpriteAnimation(imageView: ImageView, duration: Duration, count: Int, col: Int, var offsetX: Int, var offsetY: Int, width: Int, height: Int) extends Transition{
   var lastIndex: Int = 0
+
   Platform.runLater(() => {
     setCycleDuration(duration)
     setInterpolator(Interpolator.LINEAR)

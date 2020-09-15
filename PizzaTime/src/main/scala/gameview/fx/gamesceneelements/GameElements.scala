@@ -18,6 +18,7 @@ trait GameElements {
   def update(): Unit
 }
 
+/** Utility methods for [[GameElements]]. */
 object GameElements {
   /**
    * Add an element to the dungeon
