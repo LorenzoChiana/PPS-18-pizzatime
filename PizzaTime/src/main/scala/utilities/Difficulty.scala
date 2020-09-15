@@ -39,8 +39,8 @@ object Difficulty extends Enumeration {
     levelThreshold = 3
   )
   val Extreme: DifficultyVal = DifficultyVal(
-    arenaWidth = 36,
-    arenaHeight = 24,
+    arenaWidth = 27,
+    arenaHeight = 18,
     enemiesRange = Range(20, 30),
     collectiblesRange = Range(1, 3),
     obstaclesRange = Range(12, 16),
