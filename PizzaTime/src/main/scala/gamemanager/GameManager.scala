@@ -53,7 +53,7 @@ object GameManager extends ViewObserver with GameLogicObserver {
 
     loadImage().onComplete({
       case Success(_) =>  view.scene_(new Intent(MainScene)); view.showView()
-      case Failure(t) => println(t)
+      case Failure(t) => println(t.printStackTrace())
     })
   }
 
