@@ -4,23 +4,23 @@ package gamemanager
 trait GameLogicObserver {
 
   /** Notifies player shoot */
-  def shoot()
+  def shoot(): Unit
 
   /** Notifies when the player takes a collectible */
-  def takesCollectible()
+  def takesCollectible(): Unit
 
   /** Notifies when the player gets hurt*/
-  def playerInjury()
+  def playerInjury(): Unit
 
   /** Notifies when the door opens*/
-  def openDoor()
+  def openDoor(): Unit
 
   /** Notifies when the player dies*/
-  def playerDead()
+  def playerDead(): Unit
 
   /** Notifies start game*/
-  def startGame()
+  def startGame(): Unit
 
   /** Notifies end game*/
-  def finishGame()
+  def finishGame(): Unit
 }

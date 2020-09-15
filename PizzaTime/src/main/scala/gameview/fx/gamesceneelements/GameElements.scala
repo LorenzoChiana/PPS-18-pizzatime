@@ -9,7 +9,7 @@ import javafx.scene.image.{Image, ImageView}
  *  Implemented by [[ArenaRoom]], [[Bullets]], [[Collectibles]], [[Enemies]] and [[Player]].
  */
 trait GameElements {
-  def update()
+  def update(): Unit
 
   def addToDungeon(e: Entity, image: Image): ImageView = {
     val tile = createTile(image)

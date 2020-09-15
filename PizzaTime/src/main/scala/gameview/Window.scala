@@ -29,7 +29,7 @@ trait Window {
    * Sets the scene inside of the window
    * @param intent the intent to change current scene into another
    */
-  def scene_(intent: Intent)
+  def scene_(intent: Intent): Unit
 
   /**
    * Shows a message to the user without a title
