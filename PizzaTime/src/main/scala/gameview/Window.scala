@@ -32,13 +32,6 @@ trait Window {
   def scene_(intent: Intent): Unit
 
   /**
-   * Shows a message to the user without a title
-   * @param message the message to be displayed
-   * @param messageType the [[MessageType]] of the message
-   */
-  def showMessage(message: String, messageType: MessageType): Unit
-
-  /**
    * Shows a message to the user with a title
    * @param headerText the title of dialog
    * @param message the message to be displayed
