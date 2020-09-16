@@ -1,6 +1,6 @@
 package gamelogic
 
-import gamemanager.{GameLogicObserver, ViewObserver}
+import gamemanager.GameLogicObserver
 import gamemanager.handlers.PreferencesHandler.difficulty
 import utilities.Direction
 
@@ -35,8 +35,9 @@ object GameState {
     arena.get.generateMap()
   }
 
-  def addRecord(): Unit =
+  def addRecord(): Unit = {
     playerRankings = playerRankings ++ Map(difficulty.toString -> (
       playerRankings(difficulty.toString) ++ Map(arena.get.player.playerName -> arena.get.player.record)))
+  }
 }
 

@@ -5,7 +5,7 @@ import Entity.nearPoint
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.{Direction, Down, Left, Position, Right, Up}
+import utilities.{Direction, Down, Left, Position, Right, StaticArena, Up}
 
 /** Test class for [[Player]] */
 class PlayerTest extends AnyFlatSpec with Matchers {

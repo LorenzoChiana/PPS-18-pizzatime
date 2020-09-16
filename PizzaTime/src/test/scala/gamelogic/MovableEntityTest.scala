@@ -4,7 +4,7 @@ import Entity._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.{Direction, Down, Left, Point, Position, Right, Up}
+import utilities.{Direction, Down, Left, Point, Position, Right, StaticArena, Up}
 
 /** Test class for [[MovableEntity]] */
 class MovableEntityTest extends AnyFlatSpec with Matchers {

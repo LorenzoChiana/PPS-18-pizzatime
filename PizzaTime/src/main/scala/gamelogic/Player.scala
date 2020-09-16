@@ -16,8 +16,7 @@ case class Player(playerName: String, var position: Position) extends MovableEnt
   var lives: Int = difficulty.maxLife
   var record: Int = if (playerRankings.nonEmpty && playerRankings(difficulty).isDefinedAt(playerName))
                       playerRankings(difficulty)(playerName)
-                    else
-                      0
+                    else 0
 
   def addScore(s: Int): Unit = {
     score += s

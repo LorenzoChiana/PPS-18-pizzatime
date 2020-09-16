@@ -3,6 +3,7 @@ package gamelogic
 import utilities.Position
 import GameState.arena
 import gamelogic.Sink.allObstacleTypes
+import scala.util.Random.nextInt
 
 import scala.util.Random
 
@@ -18,5 +19,5 @@ case class Obstacle(var position: Position) extends Entity {
       !arena.get.obstacles.contains(copy())
     }
 
-    private def randomType: ObstacleType = allObstacleTypes(Random.nextInt(allObstacleTypes.length))
+    private def randomType: ObstacleType = allObstacleTypes(nextInt(allObstacleTypes.length))
 }

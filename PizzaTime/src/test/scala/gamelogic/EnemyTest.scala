@@ -5,7 +5,7 @@ import Entity._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.{Up, Down, Left, Position, Right}
+import utilities.{Down, Left, Position, Right, StaticArena, Up}
 
 /** Test class for [[Enemy]] */
 class EnemyTest extends AnyFlatSpec with Matchers {

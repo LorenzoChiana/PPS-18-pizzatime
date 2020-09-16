@@ -5,9 +5,14 @@ package gamelogic
  */
 trait EnemyCharacter extends MovableEntity {
   def lives: Int
+
   def pointsKilling: Int
+
   def movementBehaviour: Boolean
+
   def isLive: Boolean
+
   def isDead: Boolean
+
   def decreaseLife(): Unit
 }
