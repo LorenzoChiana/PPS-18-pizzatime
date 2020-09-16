@@ -27,7 +27,6 @@ object GameState {
   def endGame(): Unit = {
     arena.get.player.checkNewOwnRecord()
     addRecord()
-    observers.foreach(_.finishGame())
   }
 
   def nextStep(movement: Option[Direction], shoot: Option[Direction]): Unit = arena.get.updateMap(movement, shoot)
