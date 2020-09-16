@@ -13,7 +13,7 @@ import utilities.{Direction, Down, HeroImage, Left, Position, Right, Up}
 /** [[ImageView]] representing [[Player]]*/
 class Player extends GameElements{
   private val player: ImageView = createElement(images(HeroImage))
-  private var currentPosition: Position = arena.get.player.position
+  private var currentPosition: Position = arena.get.hero.position
 
   val heroAnimation = new SpriteAnimation(player, Duration.millis(25), 4, 4, 0, 0, 100, 130)
 
@@ -21,7 +21,7 @@ class Player extends GameElements{
    * Updating position and animate player
    */
   override def update(): Unit = {
-    val playerPosition: Position = arena.get.player.position
+    val playerPosition: Position = arena.get.hero.position
 
     if (!playerPosition.equals(currentPosition)){
       currentPosition = playerPosition
@@ -67,10 +67,10 @@ object Player{
     val p: Player = new Player()
 
     setDimension(p.player, tileHeight, tileWidth)
-    p.animation(arena.get.player.position.dir)
+    p.animation(arena.get.hero.position.dir)
 
     Platform.runLater(() => {
-      p.player relocate(pointToPixel(arena.get.player.position.point)._1, pointToPixel(arena.get.player.position.point)._2)
+      p.player relocate(pointToPixel(arena.get.hero.position.point)._1, pointToPixel(arena.get.hero.position.point)._2)
       dungeon.getChildren.add(p.player)
     })
 

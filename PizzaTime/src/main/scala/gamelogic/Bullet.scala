@@ -1,55 +1,43 @@
 package gamelogic
 
-import Entity._
-import utilities.{Direction, Down, Left, Position, Right, Up}
-import GameState.arena
+import utilities.Position.changePosition
+import utilities.{Down, Left, Position, Right, Up}
 
-/** A bullet fired by the [[Player]].
+/** A bullet fired by the [[Hero]].
  *
  *  @param position its initial [[Position]]
  */
-case class Bullet(var position: Position, var unexploded: Boolean = true, range: Int = 5) extends MovableEntity {
-  private var bulletRange: Int = 0
+case class Bullet(position: Position, unexploded: Boolean, bulletRange: Int ) extends MovableEntity {
 
-  def advances(): Unit = {
-    position.dir.get match {
-      case Up => move(Up)
-      case Down => move(Down)
-      case Left => move(Left)
-      case Right => move(Right)
-    }
-  }
+  /*canMoveIn(nearPoint(position.point, dir)) && checkInRange)
+  override def canMove: Boolean = canMoveIn(position.changePosition(position.dir.get).point)
+*/
 
-  override def move(dir: Direction): Boolean = {
-    incRange()
-    if (canMoveIn(nearPoint(position.point, dir)) && checkInRange) {
-      position = Position(nearPoint(position.point, dir), Some(dir))
-      true
-    } else {
-      unexploded = false
-      false
-    }
-  }
-
-  override def canMove: Boolean = canMoveIn(nearPoint(position.point, position.dir.get))
-
-  override def remove(): Boolean = {
-    unexploded = false
-    arena.get.bullets = arena.get.bullets - copy()
-    !arena.get.bullets.contains(copy())
-  }
-
-  private def incRange(): Unit = bulletRange += 1
-
-  private def checkInRange: Boolean = bulletRange < range
 }
 
-/** Factory for [[Bullet]] instances. */
 object Bullet {
+  val range: Int = 5
+
   /** Creates a [[Bullet]] with a given [[Position]].
    *
    *  @param position its initial [[Position]]
    *  @return the new [[Bullet]] instance
    */
-  def apply(position: Position): Bullet = new Bullet(position)
+  def apply(position: Position): Bullet = Bullet(position, unexploded = true, 0)
+
+  def move(b: Bullet): Bullet = {
+    b.position.dir.get match {
+      case Up => Bullet(changePosition(b.position ,Up), checkInRange(b.bulletRange), incRange(b.bulletRange))
+      case Down => Bullet(changePosition(b.position, Down), checkInRange(b.bulletRange), incRange(b.bulletRange))
+      case Left => Bullet(changePosition(b.position, Left), checkInRange(b.bulletRange), incRange(b.bulletRange))
+      case Right => Bullet(changePosition(b.position, Right), checkInRange(b.bulletRange), incRange(b.bulletRange))
+    }
+  }
+
+  private def incRange(range: Int): Int = range + 1
+
+  private def checkInRange(range: Int): Boolean = range < Bullet.range
+
 }
+
+

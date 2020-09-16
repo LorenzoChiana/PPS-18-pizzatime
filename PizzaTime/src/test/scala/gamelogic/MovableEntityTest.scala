@@ -9,11 +9,11 @@ import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 
 /** Test class for [[MovableEntity]] */
 class MovableEntityTest extends AnyFlatSpec with Matchers {
-  val staticArena: StaticArena = StaticArena()
+  /* val staticArena: StaticArena = StaticArena()
   import staticArena.arena._
   import staticArena._
 
-  List(player, enemy, bullet).foreach(entity => {
+  List(hero, enemy, bullet).foreach(entity => {
     entity moveTo insideArena
     movableEntityTests(entity)
     entity moveTo outsideArena
@@ -21,7 +21,7 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
 
   private def movableEntityTests(entity: MovableEntity): Unit = entity match {
     case _: Bullet => basicMovableTests("A Bullet", entity)
-    case _: Player => advancedMovableTests("The player", entity)
+    case _: Hero => advancedMovableTests("The player", entity)
     case _: Enemy => advancedMovableTests("An enemy", entity)
   }
 
@@ -98,4 +98,6 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   object Odd {
     def unapply(x: Int): Option[Int] = if (x % 2 == 1) Some(x) else None
   }
+
+   */
 }

@@ -8,6 +8,8 @@ import utilities.Direction
 trait GameMap {
   def mapGen: MapGenerator
 
+  def hero: LivingEntity
+
   def player: Player
 
   var enemies: Set[EnemyCharacter]
@@ -31,4 +33,6 @@ trait GameMap {
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit
 
   def emptyMap(): Unit
+
+  def removeEntity(e: Entity): Unit
 }

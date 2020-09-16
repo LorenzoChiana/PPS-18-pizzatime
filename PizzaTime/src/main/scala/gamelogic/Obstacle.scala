@@ -1,7 +1,6 @@
 package gamelogic
 
 import utilities.{ObstacleImage, Position}
-import GameState.arena
 import utilities.Obstacle1Image.allObstacleImages
 
 import scala.util.Random
@@ -10,13 +9,10 @@ import scala.util.Random
  *
  *  @param position its [[Position]]
  */
-case class Obstacle(var position: Position) extends Entity {
-    val `type`: ObstacleImage = randomType
+case class Obstacle(position: Position, `type`: ObstacleImage) extends Entity
 
-    override def remove(): Boolean = {
-      arena.get.obstacles = arena.get.obstacles - copy()
-      !arena.get.obstacles.contains(copy())
-    }
+object Obstacle{
+  private def randomType: ObstacleImage = allObstacleImages(Random.nextInt(allObstacleImages.length))
 
-    private def randomType: ObstacleImage = allObstacleImages(Random.nextInt(allObstacleImages.length))
+  def apply(pos: Position): Obstacle = Obstacle(pos, randomType)
 }

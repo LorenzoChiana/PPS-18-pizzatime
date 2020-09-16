@@ -104,11 +104,11 @@ case class MapGenerator(difficulty: Difficulty.Value) {
       (x, arenaHeight - 2),
       (arenaWidth - 2, y)
     )
-    arena.get.obstacles.filter(obstacle => floorBorders.contains(obstacle.position.point)).map(_.remove())
+    arena.get.obstacles.filter(obstacle => floorBorders.contains(obstacle.position.point)).foreach(e => arena.get.removeEntity(e))
   }
 
   private def removeVerticalObstacles(): Unit = {
-    arena.get.obstacles.filter(obstacle => obstacle.surroundings(horizontal = false).exists(containsObstacle)).map(_.remove())
+    arena.get.obstacles.filter(obstacle => obstacle.surroundings(horizontal = false).exists(containsObstacle)).foreach(e => arena.get.removeEntity(e))
   }
 
   private def randomClearPosition: Position = {

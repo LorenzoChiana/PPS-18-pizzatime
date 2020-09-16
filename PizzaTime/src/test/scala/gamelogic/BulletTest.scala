@@ -9,7 +9,7 @@ import utilities.{Down, Left, Position, Right, Up}
 
 /** Test class for [[Bullet]] */
 class BulletTest extends AnyFlatSpec with Matchers {
-  val staticArena: StaticArena = StaticArena(
+ /* val staticArena: StaticArena = StaticArena(
     initialPlayerPosition = Position(Arena.center, Some(Up))
   )
   import staticArena.arena._
@@ -76,4 +76,6 @@ class BulletTest extends AnyFlatSpec with Matchers {
     )
     entity.remove()
   }
+
+  */
 }

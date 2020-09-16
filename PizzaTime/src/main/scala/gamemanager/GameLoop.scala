@@ -5,6 +5,7 @@ import Thread.sleep
 
 import GameManager._
 import gamelogic.GameState.{arena, nextStep}
+import gamelogic.Hero
 import gameview.fx.FXGameScene
 
 class GameLoop() extends Runnable  {
@@ -33,7 +34,8 @@ class GameLoop() extends Runnable  {
         case _ =>
       }
 
-    if (arena.get.player.isDead) notifyEndGame()
+    if(arena.get.hero.isDead) notifyEndGame()
+
   }
 
   def finishGame(): Unit = println("Finish!")

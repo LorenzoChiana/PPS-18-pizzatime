@@ -1,42 +1,38 @@
 package gamelogic
 
-import utilities.{Down, Left, Point, Position, Right, Up}
+import utilities.{Down, Left, Position, Right, Up}
+
 import scala.util.Random.nextInt
-import Arena._
-import GameState.arena
+import utilities.Position.changePosition
 
 /** An enemy character.
  *
  *  @param position its starting position
  *  @param lives its starting lives
  */
-case class Enemy(var position: Position,  var lives: Int = 5, pointsKilling: Int = 20) extends EnemyCharacter {
+case class Enemy(position: Position, lives: Int) extends EnemyCharacter {
+  val pointsKilling = 20
+
   private var disableBehavior = false
 
-  def movementBehaviour: Boolean =
-    if (disableBehavior)
-      false
-    else
+  override def movementBehaviour: Option[EnemyCharacter] =
+    if (!disableBehavior)
       nextInt(40) match {
-        case 0 => move(Up)
-        case 1 => move(Down)
-        case 2 => move(Left)
-        case 3 => move(Right)
-        case _ => false
+        case 0 => Some(Enemy(changePosition(position, Up), lives))
+        case 1 => Some(Enemy(changePosition(position, Down), lives))
+        case 2 => Some(Enemy(changePosition(position, Left), lives))
+        case 3 => Some(Enemy(changePosition(position, Right), lives))
+        case _ => None
       }
-
-  override def canMoveIn(p: Point): Boolean = super.canMoveIn(p) && !containsCollectible(p) && containsEnemy(p).isEmpty
-
-  def decreaseLife(): Unit = if (lives > 0) lives -= 1
-
-  def isLive: Boolean = lives > 0
-
-  def isDead: Boolean = !isLive
+    else None
 
   def onTestingMode(): Unit = disableBehavior = true
 
-  override def remove(): Boolean = {
-    arena.get.enemies = arena.get.enemies - copy()
-    !arena.get.enemies.contains(copy())
-  }
+}
+
+object Enemy {
+  val maxLife = 5
+
+  def apply(p: Position): Enemy = Enemy(p, maxLife)
+
 }

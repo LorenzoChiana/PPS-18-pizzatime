@@ -91,7 +91,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   timeline.setCycleCount(Animation.INDEFINITE)
   timeline.play()
 
-  var lastLives: Int = arena.get.player.lives
+  var lastLives: Int = 5 //arena.get.hero.lives
 
   /** Method called by the controller cyclically to update the view */
   def updateView(): Unit = {
@@ -105,9 +105,9 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
         "   Your record: " + arena.get.player.record)
     })
 
-    if (!lastLives.equals(arena.get.player.lives)) {
+    if (!lastLives.equals(5/*arena.get.hero.lives*/)) {
       Platform.runLater(()=>{
-        arena.get.player.lives match {
+        /*arena.get.hero.lives */ 5 match {
           case 5 => lifeBar.setImage(images(LifeBarImage5))
           case 4 => lifeBar.setImage(images(LifeBarImage4))
           case 3 => lifeBar.setImage(images(LifeBarImage3))
@@ -118,9 +118,9 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
         }
       })
 
-      lastLives = arena.get.player.lives
+      lastLives = 5 //arena.get.hero.lives
     }
-    if (arena.get.player.isDead) FXWindow.observers.foreach(_.notifyEndGame())
+   // if (arena.get.hero.isDead) FXWindow.observers.foreach(_.notifyEndGame())
   }
 
   /** Method called by game loop when the level ended. */

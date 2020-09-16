@@ -6,4 +6,4 @@ import utilities.Position
  *
  *  @param position its [[Position]]
  */
-case class Floor(var position: Position) extends Entity
+case class Floor(position: Position) extends Entity

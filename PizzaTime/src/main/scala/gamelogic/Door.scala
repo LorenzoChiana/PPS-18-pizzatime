@@ -3,11 +3,11 @@ package gamelogic
 import utilities.Position
 import scala.util.Random.nextInt
 
-/** The [[GameMap]]'s door, used to move the [[Player]] between the levels.
+/** The [[GameMap]]'s door, used to move the [[Hero]] between the levels.
  *
  *  @param position its [[Position]]
  */
-case class Door(var position: Position) extends Entity
+case class Door(position: Position) extends Entity
 
 object Door {
   def exitDoor(w: Set[Wall]): Door = Door(randomDoorPosition(w))

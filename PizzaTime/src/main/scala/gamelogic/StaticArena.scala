@@ -51,8 +51,8 @@ case class StaticArena (
   initMap()
 
   private def initMap(): Unit = {
-    createEmptyScenario()
-    player.lives = initialPlayerLife
+    /*createEmptyScenario()
+    hero.lives = initialPlayerLife
     if(!bonusScorePoint.equals(0,0)) { collectibles = collectibles + BonusScore(Position(bonusScorePoint, None), scoreToIncrease) }
     if(!bonusLifePoint.equals(0,0)) { collectibles = collectibles + BonusLife(Position(bonusLifePoint, None)) }
     enemies = enemies + enemy
@@ -60,13 +60,13 @@ case class StaticArena (
       val otherEnemy = Enemy(Position(otherEnemyPoint, Some(Up)))
       otherEnemy.onTestingMode()
       enemies = enemies + otherEnemy
-    }
+    } */
   }
 
   def createEmptyScenario(): Unit = {
-    obstacles = Set()
+   /* obstacles = Set()
     enemies = Set()
     collectibles = Set()
-    player moveTo initialPlayerPosition
+    hero moveTo initialPlayerPosition */
   }
 }

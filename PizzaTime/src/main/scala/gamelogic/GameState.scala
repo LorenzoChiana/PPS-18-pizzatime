@@ -1,6 +1,6 @@
 package gamelogic
 
-import gamemanager.{GameLogicObserver, ViewObserver}
+import gamemanager.GameLogicObserver
 import gamemanager.handlers.PreferencesHandler.difficulty
 import utilities.Direction
 
@@ -25,10 +25,13 @@ object GameState {
   }
 
   def endGame(): Unit = {
-    arena.get.player.checkNewOwnRecord()
+    //prendi il record del player
+    //confronta con quello del mondo e nel casoaggiornalo
     addRecord()
     observers.foreach(_.finishGame())
   }
+
+  def checkNewWorldRecord(s: Int): Boolean = s > worldRecord
 
   def nextStep(movement: Option[Direction], shoot: Option[Direction]): Unit = arena.get.updateMap(movement, shoot)
 
@@ -38,6 +41,6 @@ object GameState {
 
   def addRecord(): Unit =
     playerRankings = playerRankings ++ Map(difficulty.toString -> (
-      playerRankings(difficulty.toString) ++ Map(arena.get.player.playerName -> arena.get.player.record)))
+      playerRankings(difficulty.toString) ++ Map(arena.get.player.name -> arena.get.player.record)))
 }
 
