@@ -1,13 +1,14 @@
 package gameview.fx.gamesceneelements
 
 import gamelogic.GameState.arena
+import gamelogic.{Sink, Stove, Table}
 import gamemanager.ImageLoader.images
 import gameview.fx.FXGameScene.dungeon
 import gameview.fx.gamesceneelements.GameElements.{addToDungeon, createElement, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
-import utilities.{FloorImage, WallImage}
+import utilities.{FloorImage, SinkImage, StoveImage, TableImage, WallImage}
 
 /** [[GridPane]] representing [[ArenaRoom]]*/
 class ArenaRoom extends GameElements {
@@ -42,7 +43,11 @@ class ArenaRoom extends GameElements {
   private def createArena(): Unit = {
     for (f <- arena.get.floor) addToDungeon (f, images(FloorImage))
     for (w <- arena.get.walls) addToDungeon (w, images(WallImage))
-    for (o <- arena.get.obstacles) addToDungeon (o, images(o.`type`))
+    for (o <- arena.get.obstacles) o.`type` match {
+      case Table => addToDungeon (o, images(TableImage))
+      case Sink => addToDungeon (o, images(SinkImage))
+      case Stove => addToDungeon (o, images(StoveImage))
+    }
 
     createDoor()
   }

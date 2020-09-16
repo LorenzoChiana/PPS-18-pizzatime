@@ -6,15 +6,17 @@ import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes._
 import SceneType._
 import gameview.Window
+
 import scala.collection.immutable.Queue
 import utilities.Difficulty._
 import Runtime.getRuntime
 import java.io.PrintWriter
 import java.util.concurrent.Executors.newFixedThreadPool
+
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.fromExecutorService
 import gamelogic.{GameState, MapGenerator}
-import gamelogic.GameState.{playerRankings, worldRecord}
+import gamelogic.GameState.{arena, playerRankings, worldRecord}
 import gamemanager.ImageLoader.loadImage
 import gamemanager.SoundLoader.{play, stopSound}
 import gameview.fx.FXWindow
@@ -23,6 +25,7 @@ import javafx.stage.Stage
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
+
 import scala.io.Source
 import scala.util.{Failure, Success, Using}
 
@@ -69,8 +72,10 @@ object GameManager extends ViewObserver with GameLogicObserver {
   /** Notifies that the game has ended */
   def notifyEndGame(): Unit = {
     endGame = true
+    arena.get.player.checkNewOwnRecord()
     GameState.endGame()
     savePlayerRankings()
+    finishGame()
   }
 
   /** Notifies that the player has moved or shot.
