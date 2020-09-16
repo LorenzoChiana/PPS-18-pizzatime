@@ -31,79 +31,11 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
 
   /** Updates the [[Arena]] for the new logical step. */
   def updateMap(movement: Option[Direction], shoot: Option[Direction]): Unit = {
-
-    if (shoot.isDefined && !isDoor(player.position.point)) {
-      player.changeDirection(shoot.get)
-      bullets = bullets + Bullet(Position(player.position.point, shoot))
-      observers.foreach(_.shoot())
-    }
-
-    if (movement.isDefined) {
-      player.move(movement.get)
-      lastInjury = None
-
-      player.position.point match {
-        case p if Arena.containsCollectible(p) =>
-          observers.foreach(_.takesCollectible())
-          collectibles.find(_.position.point.equals(p)).get match {
-            case _: BonusLife => player.increaseLife()
-            case c: BonusScore => player.addScore(c.value)
-          }
-          collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
-
-        case p if containsEnemy(p).isDefined => playerInjury(containsEnemy(p).get); observers.foreach(_.playerInjury())
-
-        case p if isDoor(p) && enemies.isEmpty =>
-          endedLevel = true
-          emptyMap()
-          door.get.position.point match {
-            case Point(0, y) => door = Some(Door.entranceDoor(Position(Point(arenaWidth - 1, y), None)))
-            case Point(x, 0) => door = Some(Door.entranceDoor(Position(Point(x, arenaHeight - 1), None)))
-            case Point(x, y) if x.equals(arenaWidth - 1) => door = Some(Door.entranceDoor(Position(Point(0, y), None)))
-            case Point(x, y) if y.equals(arenaHeight - 1) => door = Some(Door.entranceDoor(Position(Point(x, 0), None)))
-          }
-          generateMap()
-
-        case _ => None
-      }
-    }
-
-    bullets.foreach(bullet => bullet.advances())
-    
-    /**Check if any bullets are explode*/
-    bullets = bullets -- bullets.filter(!_.unexploded)
-
-    enemies.foreach(en => {
-      if (en.movementBehaviour && lastInjury.isDefined && en.equals(lastInjury.get)) lastInjury = None
-
-      playerInjury(en)
-
-      val bulletOnEnemy = containsBullet(en.position.point)
-
-      if (bulletOnEnemy.nonEmpty) {
-        en.decreaseLife()
-        bullets = bullets -- bulletOnEnemy
-      }
-
-      if (player.isDead) observers.foreach(_.playerDead())
-
-    })
-
-    /**Check if any enemies are dead*/
-    enemies.filter(_.isDead).foreach(en => player.addScore(en.pointsKilling))
-    enemies = enemies.filter(!_.isDead)
-
-    /**Check if door is open*/
-    if (door.isEmpty) {
-      if (enemies.isEmpty) {
-        door = Some(Door.exitDoor(walls))
-        observers.foreach(_.openDoor())
-        observers.foreach(_.openDoor())
-      }
-    } else if (enemies.nonEmpty && !player.position.point.equals(door.get.position.point)) {
-      walls = walls + Wall(Position(door.get.position.point, None))
-      door = None
-    }
+    checkShoot(shoot)
+    checkMovement(movement)
+    checkBullets()
+    checkEnemies()
+    checkDoor()
   }
 
   /** Empties the [[Arena]]. */
@@ -124,12 +56,95 @@ class Arena(val playerName: String, val mapGen: MapGenerator) extends GameMap {
     }
   }
 
-  private def playerInjury(enemy: EnemyCharacter): Unit =
+  private def checkShoot(shoot: Option[Direction]): Unit = {
+    if (shoot.isDefined && !isDoor(player.position.point)) {
+      player.changeDirection(shoot.get)
+      bullets = bullets + Bullet(Position(player.position.point, shoot))
+      observers.foreach(_.shoot())
+    }
+  }
+
+  private def checkMovement(movement: Option[Direction]): Unit = {
+    if (movement.isDefined) {
+      player.move(movement.get)
+      lastInjury = None
+
+      player.position.point match {
+        case p if containsCollectible(p) =>
+          observers.foreach(_.takesCollectible())
+          collectibles.find(_.position.point.equals(p)).get match {
+            case _: BonusLife => player.increaseLife()
+            case c: BonusScore => player.addScore(c.value)
+          }
+          collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
+
+        case p if containsEnemy(p).isDefined =>
+          playerInjury(containsEnemy(p).get)
+          observers.foreach(_.playerInjury())
+
+        case p if isDoor(p) && enemies.isEmpty =>
+          endedLevel = true
+          emptyMap()
+          door.get.position.point match {
+            case Point(0, y) => door = Some(entranceDoor(Position(Point(arenaWidth - 1, y), None)))
+            case Point(x, 0) => door = Some(entranceDoor(Position(Point(x, arenaHeight - 1), None)))
+            case Point(x, y) if x.equals(arenaWidth - 1) => door = Some(entranceDoor(Position(Point(0, y), None)))
+            case Point(x, y) if y.equals(arenaHeight - 1) => door = Some(entranceDoor(Position(Point(x, 0), None)))
+          }
+          generateMap()
+
+        case _ => None
+      }
+    }
+  }
+
+  private def checkBullets(): Unit = {
+    bullets.foreach(bullet => bullet.advance())
+    bullets = bullets -- bullets.filter(!_.unexploded)
+
+    enemies.foreach(en => {
+      if (en.movementBehaviour && lastInjury.isDefined && en.equals(lastInjury.get)) {
+        lastInjury = None
+      }
+      playerInjury(en)
+
+      val bulletOnEnemy = containsBullet(en.position.point)
+
+      if (bulletOnEnemy.nonEmpty) {
+        en.decreaseLife()
+        bullets = bullets -- bulletOnEnemy
+      }
+      if (player.isDead) {
+        observers.foreach(_.playerDead())
+      }
+    })
+  }
+
+  private def playerInjury(enemy: EnemyCharacter): Unit = {
     if (containsEnemy(player.position.point).isDefined && lastInjury.isEmpty) {
       lastInjury = Some(enemy)
       player.decreaseLife()
       observers.foreach(_.playerInjury())
     }
+  }
+
+  private def checkEnemies(): Unit = {
+    enemies.filter(_.isDead).foreach(en => player.addScore(en.pointsKilling))
+    enemies = enemies.filter(!_.isDead)
+  }
+
+  private def checkDoor(): Unit = {
+    if (door.isEmpty) {
+      if (enemies.isEmpty) {
+        door = Some(Door.exitDoor(walls))
+        observers.foreach(_.openDoor())
+        observers.foreach(_.openDoor())
+      }
+    } else if (enemies.nonEmpty && !player.position.point.equals(door.get.position.point)) {
+      walls = walls + Wall(Position(door.get.position.point, None))
+      door = None
+    }
+  }
 }
 
 /** Utility methods for [[Arena]]. */

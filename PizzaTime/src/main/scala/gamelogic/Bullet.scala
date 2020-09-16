@@ -11,7 +11,7 @@ import GameState.arena
 case class Bullet(var position: Position, var unexploded: Boolean = true, range: Int = 5) extends MovableEntity {
   private var bulletRange: Int = 0
 
-  def advances(): Unit = {
+  def advance(): Unit = {
     position.dir.get match {
       case Up => move(Up)
       case Down => move(Down)
