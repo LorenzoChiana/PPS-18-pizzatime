@@ -91,7 +91,6 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
    */
   private def eventOccurred(event: Action): Unit =  FXWindow.observers.foreach(_.notifyAction(event))
 
-
   /**
    *  Updating player's label
    */
