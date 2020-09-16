@@ -68,15 +68,11 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
   /**
    * Method called by the controller cyclically to update the view
    */
-  def updateView(): Unit = arena.get.player.isDead match {
-    case false =>
-      elements.foreach(e => e.update())
-      updateStatsLabel()
-      updateLifeBar()
-
-    case true =>
-      FXWindow.observers.foreach(_.notifyEndGame())
-      showMessage("OH NO!", "You Lose", MessageTypes.Warning)
+  def updateView(): Unit = {
+    elements.foreach(e => e.update())
+    updateStatsLabel()
+    updateLifeBar()
+    if (arena.get.player.isDead) showMessage("OH NO!", "You Lose", MessageTypes.Warning)
   }
 
   /** Method called by controller when the level ended. */
