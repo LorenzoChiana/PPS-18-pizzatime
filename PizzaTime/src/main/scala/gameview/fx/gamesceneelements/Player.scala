@@ -4,6 +4,7 @@ import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
 import gameview.SpriteAnimation
 import gameview.fx.FXGameScene.dungeon
+import gameview.fx.FXWindow
 import gameview.fx.gamesceneelements.GameElements.{createElement, pointToPixel, setDimension, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
@@ -22,6 +23,8 @@ class Player extends GameElements{
    */
   override def update(): Unit = {
     val playerPosition: Position = arena.get.player.position
+
+
 
     if (!playerPosition.equals(currentPosition)){
       currentPosition = playerPosition

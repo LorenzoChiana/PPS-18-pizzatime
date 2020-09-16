@@ -8,7 +8,7 @@ import gameview.scene.{Scene, SceneType}
 import javafx.application.Platform
 import javafx.scene.{Scene => JFXScene}
 import javafx.scene.control.Alert.AlertType
-import javafx.scene.control.{Alert, DialogPane}
+import javafx.scene.control.{Alert, ButtonType, DialogPane}
 import javafx.scene.effect.BoxBlur
 import javafx.scene.image.Image
 import javafx.scene.layout.BorderPane
