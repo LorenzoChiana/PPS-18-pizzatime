@@ -14,8 +14,6 @@ case object LifeBarImage3 extends ImageType { val path: String = "/images/sprite
 case object LifeBarImage2 extends ImageType { val path: String = "/images/sprites/lifeBar/life2.png" }
 case object LifeBarImage1 extends ImageType { val path: String = "/images/sprites/lifeBar/life1.png" }
 case object LifeBarImage0 extends ImageType { val path: String = "/images/sprites/lifeBar/life0.png" }
-
-sealed trait ObstacleImage extends ImageType { val allObstacleImages: Seq[ObstacleImage] = Seq(Obstacle1Image, Obstacle2Image, Obstacle3Image) }
-case object Obstacle1Image extends ObstacleImage { val path: String = "/images/sprites/obstacles/obstacle1.png" }
-case object Obstacle2Image extends ObstacleImage { val path: String = "/images/sprites/obstacles/obstacle2.png" }
-case object Obstacle3Image extends ObstacleImage { val path: String = "/images/sprites/obstacles/obstacle3.png" }
+case object TableImage extends ImageType { val path: String = "/images/sprites/obstacles/obstacle1.png" }
+case object StoveImage extends ImageType { val path: String = "/images/sprites/obstacles/obstacle2.png" }
+case object SinkImage extends ImageType { val path: String = "/images/sprites/obstacles/obstacle3.png" }

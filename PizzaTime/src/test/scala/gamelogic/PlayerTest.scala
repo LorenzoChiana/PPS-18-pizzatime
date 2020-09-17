@@ -1,7 +1,12 @@
 package gamelogic
 
-import org.scalatest.flatspec.AnyFlatSpec
+/*import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
+<<<<<<< HEAD
+=======
+import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import utilities.{Direction, Down, Left, Position, Right, StaticArena, Up}
+>>>>>>> development
 
 /** Test class for [[Hero]] */
 class PlayerTest extends AnyFlatSpec with Matchers {
@@ -68,3 +73,4 @@ class PlayerTest extends AnyFlatSpec with Matchers {
 
    */
 }
+*/

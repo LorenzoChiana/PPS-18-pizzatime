@@ -26,12 +26,14 @@ object GameState {
 
   def endGame(): Unit = {
     //prendi il record del player
-    //confronta con quello del mondo e nel casoaggiornalo
+    //confronta con quello del mondo e nel caso aggiornalo
     addRecord()
-    observers.foreach(_.finishGame())
   }
 
-  def checkNewWorldRecord(s: Int): Boolean = s > worldRecord
+  def checkNewWorldRecord(): Option[Int] = arena.get.player.record match{
+    case r if r > worldRecord => Some(arena.get.player.record)
+    case _ => None
+  }
 
   def nextStep(movement: Option[Direction], shoot: Option[Direction]): Unit = arena.get.updateMap(movement, shoot)
 
@@ -39,8 +41,9 @@ object GameState {
     arena.get.generateMap()
   }
 
-  def addRecord(): Unit =
+  def addRecord(): Unit = {
     playerRankings = playerRankings ++ Map(difficulty.toString -> (
       playerRankings(difficulty.toString) ++ Map(arena.get.player.name -> arena.get.player.record)))
+  }
 }
 

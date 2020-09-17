@@ -1,11 +1,11 @@
 package gamelogic
-
+/*
 import Entity._
 import GameState.nextStep
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.{Down, Left, Position, Right, Up}
+import utilities.{Down, Left, Position, Right, StaticArena, Up}
 
 /** Test class for [[Bullet]] */
 class BulletTest extends AnyFlatSpec with Matchers {
@@ -79,3 +79,4 @@ class BulletTest extends AnyFlatSpec with Matchers {
 
   */
 }
+*/

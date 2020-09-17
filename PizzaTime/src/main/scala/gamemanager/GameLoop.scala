@@ -4,8 +4,7 @@ import java.lang.System.currentTimeMillis
 import Thread.sleep
 
 import GameManager._
-import gamelogic.GameState.{arena, nextStep}
-import gamelogic.Hero
+import gamelogic.GameState.{arena, checkNewWorldRecord, nextStep, worldRecord}
 import gameview.fx.FXGameScene
 
 class GameLoop() extends Runnable  {
@@ -33,10 +32,8 @@ class GameLoop() extends Runnable  {
         case _ =>
       }
 
-    if(arena.get.hero.isDead) {
-      println(arena.get.hero.isDead + " live "+arena.get.hero.lives)
-      notifyEndGame()
-    }
+    if (checkNewWorldRecord().isDefined) worldRecord = checkNewWorldRecord().get
+    if(arena.get.hero.isDead) notifyEndGame()
 
   }
 

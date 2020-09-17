@@ -1,14 +1,13 @@
 package gameview.fx
 
 import gamelogic.GameState.{arena, worldRecord}
+import gamemanager.GameManager.windowManager.showMessage
 import gamemanager.ImageLoader.images
 import gameview.Window
 import gameview.fx.FXGameScene.dungeon
 import gameview.fx.gamesceneelements.{ArenaRoom, Bullets, Collectibles, Enemies, GameElements, Player}
 import gameview.scene.Scene
-import javafx.animation.{Animation, KeyFrame, Timeline}
 import javafx.application.Platform
-import javafx.event.ActionEvent
 import javafx.fxml.FXML
 import javafx.scene.Group
 import javafx.scene.input.KeyCode.{A, D, DOWN, LEFT, RIGHT, S, UP, W}
@@ -17,30 +16,20 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.{BorderPane, GridPane}
 import javafx.stage.Stage
-import javafx.util.Duration
-import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, Movement, Right, Shoot, Up}
-
+import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, MessageTypes, Movement, Right, Shoot, Up}
+import scala.collection.immutable
 import scala.collection.immutable.HashSet
-import scala.collection.mutable
 
 /** Represents the game scene made with JavaFX.
- *
- * @param windowManager the window on which the scene is applied
- * @param stage the top level JavaFX container
- */
+*
+* @param windowManager the window on which the scene is applied
+* @param stage the top level JavaFX container
+*/
 case class FXGameScene(override val windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
   private val LifeBarHeight = 40
   private val LifeBarWight = 208
 
-  private val actions: mutable.Map[Action, Boolean] = mutable.Map(
-    Action(Movement, Some(Up)) -> false,
-    Action(Movement, Some(Down)) -> false,
-    Action(Movement, Some(Left)) -> false,
-    Action(Movement, Some(Right)) -> false,
-    Action(Shoot, None) -> false,
-  )
-
-  private var elements: Set[GameElements] = HashSet(ArenaRoom(), Enemies(), Collectibles(), Bullets(), Player())
+  private var elements: immutable.Set[GameElements] = HashSet(ArenaRoom(), Enemies(), Collectibles(), Bullets(), Player())
 
   @FXML protected var root: GridPane = _
   @FXML protected var statsPane: BorderPane = _
@@ -61,43 +50,45 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
     obs.onBack()
   }))
 
+
   stage.getScene.setOnKeyPressed((keyEvent: KeyEvent) => keyEvent.getCode match {
-    case W => actions(Action(Movement, Some(Up))) = true
-    case S => actions(Action(Movement, Some(Down))) = true
-    case A => actions(Action(Movement, Some(Left))) = true
-    case D => actions(Action(Movement, Some(Right))) = true
-    case UP => actions(Action(Shoot, Some(Up))) = true
-    case DOWN => actions(Action(Shoot, Some(Down))) = true
-    case LEFT => actions(Action(Shoot, Some(Left))) = true
-    case RIGHT => actions(Action(Shoot, Some(Right))) = true
+    case W => eventOccurred(Action(Movement, Some(Up)))
+    case S => eventOccurred(Action(Movement, Some(Down)))
+    case A => eventOccurred(Action(Movement, Some(Left)))
+    case D => eventOccurred(Action(Movement, Some(Right)))
+    case UP => eventOccurred(Action(Shoot, Some(Up)))
+    case DOWN => eventOccurred(Action(Shoot, Some(Down)))
+    case LEFT => eventOccurred(Action(Shoot, Some(Left)))
+    case RIGHT => eventOccurred(Action(Shoot, Some(Right)))
     case _ => None
   })
 
-  stage.getScene.setOnKeyReleased((keyEvent: KeyEvent) => keyEvent.getCode match {
-    case W => actions(Action(Movement, Some(Up))) = false
-    case S => actions(Action(Movement, Some(Down))) = false
-    case A => actions(Action(Movement, Some(Left))) = false
-    case D => actions(Action(Movement, Some(Right))) = false
-    case UP => actions(Action(Shoot, Some(Up))) = false
-    case DOWN => actions(Action(Shoot, Some(Down))) = false
-    case LEFT => actions(Action(Shoot, Some(Left))) = false
-    case RIGHT => actions(Action(Shoot, Some(Right))) = false
-    case _ => None
-  })
-
-  val timeline = new Timeline(new KeyFrame(Duration.millis(100), (_: ActionEvent) => {
-    actions.foreach(d => if (d._2) FXWindow.observers.foreach(_.notifyAction(d._1)))
-  }))
-  timeline.setCycleCount(Animation.INDEFINITE)
-  timeline.play()
-
-  var lastLives: Int = 5 //arena.get.hero.lives
-
-  /** Method called by the controller cyclically to update the view */
+  /**
+  * Method called by the controller cyclically to update the view
+  */
   def updateView(): Unit = {
     elements.foreach(e => e.update())
+    updateStatsLabel()
+    updateLifeBar()
+    if (arena.get.hero.isDead) showMessage("OH NO!", "You Lose", MessageTypes.Warning)
+  }
 
-    /** Updating player's label */
+  /** Method called by controller when the level ended. */
+  def endLevel(): Unit = {
+    Platform.runLater(() => dungeon.getChildren.clear())
+    elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
+  }
+
+  /**
+  * Call when [[KeyEvent]] occured
+  * @param event the [[Action]] to be notified to the observers
+    */
+  private def eventOccurred(event: Action): Unit =  FXWindow.observers.foreach(_.notifyAction(event))
+
+  /**
+  *  Updating player's label
+  */
+  private def updateStatsLabel(): Unit =
     Platform.runLater(() => {
       statsLabel.setText("Level: " + arena.get.mapGen.currentLevel +
         "   Score: " + arena.get.player.score +
@@ -105,29 +96,23 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
         "   Your record: " + arena.get.player.record)
     })
 
-    if (!lastLives.equals(5/*arena.get.hero.lives*/)) {
-      Platform.runLater(()=>{
-        /*arena.get.hero.lives */ 5 match {
-          case 5 => lifeBar.setImage(images(LifeBarImage5))
-          case 4 => lifeBar.setImage(images(LifeBarImage4))
-          case 3 => lifeBar.setImage(images(LifeBarImage3))
-          case 2 => lifeBar.setImage(images(LifeBarImage2))
-          case 1 => lifeBar.setImage(images(LifeBarImage1))
-          case 0 => lifeBar.setImage(images(LifeBarImage0))
-          case _ =>
-        }
+  /**
+  * Updating lifeBar
+  */
+  var lastLives: Int = arena.get.hero.lives
+  private def updateLifeBar(): Unit =
+    if (!lastLives.equals(arena.get.hero.lives)) {
+      Platform.runLater(() => arena.get.hero.lives match {
+        case 5 => lifeBar.setImage(images(LifeBarImage5))
+        case 4 => lifeBar.setImage(images(LifeBarImage4))
+        case 3 => lifeBar.setImage(images(LifeBarImage3))
+        case 2 => lifeBar.setImage(images(LifeBarImage2))
+        case 1 => lifeBar.setImage(images(LifeBarImage1))
+        case 0 => lifeBar.setImage(images(LifeBarImage0))
+        case _ =>
       })
-
-      lastLives = 5 //arena.get.hero.lives
+      lastLives = arena.get.hero.lives
     }
-   // if (arena.get.hero.isDead) FXWindow.observers.foreach(_.notifyEndGame())
-  }
-
-  /** Method called by game loop when the level ended. */
-  def endLevel(): Unit = {
-    Platform.runLater(() => dungeon.getChildren.clear())
-    elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
-  }
 }
 
 object FXGameScene {

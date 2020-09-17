@@ -1,11 +1,10 @@
 package gamelogic
-
+/*
 import Entity._
-import Arena.containsWall
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.{Direction, Down, Left, Point, Position, Right, Up}
+import utilities.{Direction, Down, Left, Point, Position, Right, StaticArena, Up}
 
 /** Test class for [[MovableEntity]] */
 class MovableEntityTest extends AnyFlatSpec with Matchers {
@@ -31,7 +30,6 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
     it should "move left" in moveDirectionTest(entity, Left)
     it should "move right" in moveDirectionTest(entity, Right)
     it should "collide with obstacles" in obstaclesCollisionsTest(entity)
-    it should "collide with walls" in wallsCollisionTest(entity)
   }
 
   private def advancedMovableTests(entityName: String, entity: MovableEntity): Unit = {
@@ -69,17 +67,6 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
     }
   }
 
-  private def wallsCollisionTest(entity: MovableEntity): Unit = {
-    List(Up, Down, Left, Right).foreach(direction => {
-      entity moveTo Position(Arena.center, Some(direction))
-      while(entity canMoveIn nearPoint(entity.position.point, direction))
-        entity move direction
-
-      containsWall(nearPoint(entity.position.point, direction)) shouldBe true
-    })
-
-  }
-
   private def obstaclesCollisionsTest(entity: MovableEntity): Unit = {
     val obstaclePoint = nearPoint(Arena.center, Down)
     obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
@@ -101,3 +88,4 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
 
    */
 }
+*/
