@@ -1,6 +1,7 @@
 package gamelogic
 
-import utilities.{Down, Left, Position, Right, Up}
+import utilities.IdGenerator.nextId
+import utilities.{Down, IdGenerator, Left, Position, Right, Up}
 
 import scala.util.Random.nextInt
 import utilities.Position.changePosition
@@ -10,7 +11,7 @@ import utilities.Position.changePosition
  *  @param position its starting position
  *  @param lives its starting lives
  */
-case class Enemy(position: Position, lives: Int) extends EnemyCharacter {
+case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity with EnemyCharacter   {
   val pointsKilling = 20
 
   private var disableBehavior = false
@@ -18,10 +19,10 @@ case class Enemy(position: Position, lives: Int) extends EnemyCharacter {
   override def movementBehaviour: Option[EnemyCharacter] =
     if (!disableBehavior)
       nextInt(40) match {
-        case 0 => Some(Enemy(changePosition(position, Up), lives))
-        case 1 => Some(Enemy(changePosition(position, Down), lives))
-        case 2 => Some(Enemy(changePosition(position, Left), lives))
-        case 3 => Some(Enemy(changePosition(position, Right), lives))
+        case 0 => Some(Enemy(id, changePosition(position, Up), lives))
+        case 1 => Some(Enemy(id, changePosition(position, Down), lives))
+        case 2 => Some(Enemy(id, changePosition(position, Left), lives))
+        case 3 => Some(Enemy(id, changePosition(position, Right), lives))
         case _ => None
       }
     else None
@@ -33,6 +34,6 @@ case class Enemy(position: Position, lives: Int) extends EnemyCharacter {
 object Enemy {
   val maxLife = 5
 
-  def apply(p: Position): Enemy = Enemy(p, maxLife)
+  def apply(p: Position): Enemy = Enemy(nextId, p, maxLife)
 
 }

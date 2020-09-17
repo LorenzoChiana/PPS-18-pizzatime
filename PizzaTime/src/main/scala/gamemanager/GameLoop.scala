@@ -13,7 +13,6 @@ class GameLoop() extends Runnable  {
   def run(): Unit = {
     while (!endGame) {
       val startTime: Long = currentTimeMillis()
-
       gameStep()
       val deltaTime: Long = currentTimeMillis() - startTime
       if (deltaTime < TimeSliceMillis) sleep(TimeSliceMillis - deltaTime)
@@ -34,9 +33,14 @@ class GameLoop() extends Runnable  {
         case _ =>
       }
 
-    if(arena.get.hero.isDead) notifyEndGame()
+    if(arena.get.hero.isDead) {
+      println(arena.get.hero.isDead + " live "+arena.get.hero.lives)
+      notifyEndGame()
+    }
 
   }
 
-  def finishGame(): Unit = println("Finish!")
+  def finishGame(): Unit = {
+    println("Finish!")
+  }
 }

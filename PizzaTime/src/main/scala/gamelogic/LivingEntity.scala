@@ -2,7 +2,7 @@ package gamelogic
 
 import gamemanager.handlers.PreferencesHandler.difficulty
 
-trait LivingEntity extends MovableEntity {
+trait LivingEntity {
   val lives: Int
 
   def isDead: Boolean = lives <= 0
@@ -15,7 +15,7 @@ trait LivingEntity extends MovableEntity {
       case _ => l
     }
     case l: Enemy => l.lives match {
-      case lives if lives < difficulty.maxLife => Enemy(l.position, lives + 1)
+      case lives if lives < difficulty.maxLife => Enemy(l.id, l.position, lives + 1)
       case _ => l
     }
   }
@@ -26,7 +26,7 @@ trait LivingEntity extends MovableEntity {
       case _ => l
     }
     case l: Enemy => l.lives match {
-      case lives if lives > 0 => Enemy(l.position, lives - 1)
+      case lives if lives > 0 => Enemy(l.id, l.position, lives - 1)
       case _ => l
     }
   }

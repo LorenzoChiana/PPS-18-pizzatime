@@ -1,5 +1,6 @@
 package utilities
 
+import gamelogic.{LivingEntity, MovableEntity}
 import utilities.Difficulty.DifficultyVal
 
 import scala.language.implicitConversions
@@ -41,4 +42,6 @@ object ImplicitConversions {
    * @return the converted [[String]]
    */
   implicit def diffValueToString(dv: Difficulty.Value): String = dv.toString
+
+  implicit def movableEntityToLivingEntity(me: MovableEntity): LivingEntity = me.asInstanceOf[LivingEntity]
 }

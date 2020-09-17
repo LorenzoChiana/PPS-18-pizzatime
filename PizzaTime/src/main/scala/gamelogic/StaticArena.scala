@@ -32,7 +32,7 @@ case class StaticArena (
 ) {
   difficulty_(Easy)
   startGame(playerName, MapGenerator(Easy))
-  val arena: GameMap = GameState.arena.get
+  val arena: Arena = GameState.arena.get
 
   import arena._
 

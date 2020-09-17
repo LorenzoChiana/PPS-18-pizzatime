@@ -8,10 +8,8 @@ import utilities.Position
  *  @param position [[Hero]] position
  *  @param lives [[Hero]] lives
  */
-case class Hero(position: Position, lives: Int) extends LivingEntity
+case class Hero(position: Position, lives: Int) extends LivingEntity with MovableEntity
 
 object Hero {
   def apply(p: Position): Hero = Hero(p, difficulty.maxLife)
-
-
 }

@@ -1,18 +1,14 @@
 package gamelogic
 
+import utilities.IdGenerator.nextId
+
 /** Represents an enemy character.
  *  Implemented by [[Enemy]].
  */
-trait EnemyCharacter extends LivingEntity {
+trait EnemyCharacter extends LivingEntity with MovableEntity {
 
+  def id: Int
   def pointsKilling: Int
   def movementBehaviour: Option[EnemyCharacter]
 
-}
-
-object EnemyCharacter {
-  def decreaseLife(e: EnemyCharacter): Enemy = e.lives match {
-    case l if l > 0 => Enemy(e.position, l -1)
-    case _ => Enemy(e.position, 0)
-  }
 }

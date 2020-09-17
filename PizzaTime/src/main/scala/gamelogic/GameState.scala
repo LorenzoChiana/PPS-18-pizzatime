@@ -8,7 +8,7 @@ import scala.collection.immutable
 
 /** Represents the game's logical state. */
 object GameState {
-  var arena: Option[GameMap] = None
+  var arena: Option[Arena] = None
   var arenaWidth: Int = difficulty.arenaWidth
   var arenaHeight: Int = difficulty.arenaHeight
   var playerRankings = Map.empty[String, Map[String, Int]]
