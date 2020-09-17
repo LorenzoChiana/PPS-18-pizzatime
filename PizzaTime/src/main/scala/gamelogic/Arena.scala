@@ -109,8 +109,12 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
   private def checkBullets(): Unit = {
     var newBullets: Set[Bullet] = Set()
 
-    bullets.foreach(bullet => newBullets = newBullets + bullet.move())
+    bullets.foreach(bullet => {
+      newBullets = newBullets + bullet.move()
+    })
+    bullets = newBullets
     bullets = bullets -- bullets.filter(!_.unexploded)
+
     enemies = enemiesMovement
     enemies.foreach(en => playerInjury(en))
     enemies = checkHitEnemies
