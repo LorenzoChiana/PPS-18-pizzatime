@@ -6,7 +6,6 @@ object Position{
   /** Returns the adjacent [[Point]] in a given [[Direction]].
    *
    *  @param dir the [[Direction]] to consider
-   *
    *  @return the new [[Position]]
    */
   def changePosition(pos: Position, dir: Direction): Position = dir match {
@@ -17,5 +16,4 @@ object Position{
   }
 
   def changeDirection(pos: Position, newDir: Direction): Position = Position(pos.point, Some(newDir))
-
 }

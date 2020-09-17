@@ -8,13 +8,13 @@ import utilities.Position.changePosition
 
 /** An enemy character.
  *
- *  @param position its starting position
- *  @param lives its starting lives
+ *  @param position its position
+ *  @param lives its lives
  */
-case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity with EnemyCharacter   {
-  val pointsKilling = 20
+case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity with EnemyCharacter {
+  val pointsKilling: Int = 20
 
-  private var disableBehavior = false
+  private var disableBehavior: Boolean = false
 
   override def movementBehaviour: Option[EnemyCharacter] =
     if (!disableBehavior)
@@ -32,8 +32,7 @@ case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity w
 }
 
 object Enemy {
-  val maxLife = 5
+  val maxLife: Int = 5
 
   def apply(p: Position): Enemy = Enemy(nextId, p, maxLife)
-
 }

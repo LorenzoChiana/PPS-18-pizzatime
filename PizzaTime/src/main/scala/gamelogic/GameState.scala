@@ -14,7 +14,7 @@ object GameState {
   var playerRankings = Map.empty[String, Map[String, Int]]
   var worldRecord: Int = 0
 
-  var observers: immutable.Set[GameLogicObserver] = Set[GameLogicObserver]()
+  var observers: Set[GameLogicObserver] = Set[GameLogicObserver]()
 
   def addObserver(obs: GameLogicObserver): Unit = {observers = observers + obs}
 
@@ -25,12 +25,10 @@ object GameState {
   }
 
   def endGame(): Unit = {
-    //prendi il record del player
-    //confronta con quello del mondo e nel caso aggiornalo
     addRecord()
   }
 
-  def checkNewWorldRecord(): Option[Int] = arena.get.player.record match{
+  def checkNewWorldRecord(): Option[Int] = arena.get.player.record match {
     case r if r > worldRecord => Some(arena.get.player.record)
     case _ => None
   }

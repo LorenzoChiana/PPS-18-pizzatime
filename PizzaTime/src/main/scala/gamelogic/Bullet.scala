@@ -6,9 +6,9 @@ import utilities.Position
 
 /** A bullet fired by the [[Hero]].
  *
- *  @param position its initial [[Position]]
+ *  @param position its [[Position]]
  */
-case class Bullet(id: Int, position: Position, unexploded: Boolean, bulletRange: Int ) extends MovableEntity{
+case class Bullet(id: Int, position: Position, unexploded: Boolean, bulletRange: Int ) extends MovableEntity {
 
   def move(): Bullet = Bullet(id, changePosition(position, position.dir.get), checkInRange(bulletRange), incRange(bulletRange))
 

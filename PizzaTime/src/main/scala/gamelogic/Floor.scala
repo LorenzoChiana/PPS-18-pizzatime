@@ -2,7 +2,7 @@ package gamelogic
 
 import utilities.Position
 
-/** The [[GameMap]]'s floor, inside the [[Wall]]s.
+/** The [[Arena]]'s floor, inside the [[Wall]]s.
  *
  *  @param position its [[Position]]
  */

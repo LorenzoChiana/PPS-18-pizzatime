@@ -73,5 +73,5 @@ case class StaticArena(
     enemies = Set()
     collectibles = Set()
     player moveTo initialPlayerPosition
-  } 
+  }
 } */

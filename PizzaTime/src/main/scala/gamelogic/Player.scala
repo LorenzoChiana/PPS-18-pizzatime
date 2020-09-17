@@ -6,7 +6,7 @@ import gamemanager.handlers.PreferencesHandler.{difficulty, playerName}
 case class Player(name: String, score: Int, record: Int)
 
 object Player {
-  val initialScore = 0
+  val initialScore: Int = 0
   val initialRecord: Int = if (playerRankings.nonEmpty && playerRankings(difficulty.toString).isDefinedAt(playerName))
     playerRankings(difficulty.toString)(playerName)
   else

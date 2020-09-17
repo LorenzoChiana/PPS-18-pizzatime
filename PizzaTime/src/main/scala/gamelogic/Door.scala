@@ -5,7 +5,7 @@ import utilities.Position
 
 import scala.util.Random.nextInt
 
-/** The [[GameMap]]'s door, used to move the [[Hero]] between the levels.
+/** The [[Arena]]'s door, used to move the [[Hero]] between the levels.
  *
  *  @param position its [[Position]]
  */

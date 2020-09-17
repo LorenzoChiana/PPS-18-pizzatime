@@ -5,8 +5,8 @@ import utilities.Position
 
 /** The main character.
  *
- *  @param position [[Hero]] position
- *  @param lives [[Hero]] lives
+ *  @param position its [[Position]]
+ *  @param lives its lives
  */
 case class Hero(position: Position, lives: Int) extends LivingEntity with MovableEntity
 

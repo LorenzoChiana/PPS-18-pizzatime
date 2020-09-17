@@ -3,7 +3,7 @@ package gamelogic
 import utilities.Position
 
 /** A collectible placed on the [[Floor]]. */
-sealed trait Collectible extends Entity{
+sealed trait Collectible extends Entity {
   def id: Int
 }
 

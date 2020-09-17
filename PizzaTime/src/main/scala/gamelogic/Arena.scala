@@ -7,13 +7,12 @@ import gamelogic.Player.addScore
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 import utilities.ImplicitConversions._
 import utilities.Position.changePosition
-
 import scala.annotation.tailrec
 
 /** The playable area, populated with all the [[Entity]]s.
  *
  *  @param playerName the [[Hero]]'s name
- *  @param mapGen     the [[MapGenerator]] to use
+ *  @param mapGen the [[MapGenerator]] to use
  */
 class Arena(val playerName: String, val mapGen: MapGenerator) {
   var player: Player = Player(playerName)
@@ -237,8 +236,8 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
 
   /** Checks whether a [[Point]] contains the [[Door]] or not.
    *
-   * @param p the [[Point]] to check
-   * @return true if the [[Point]] contains the [[Door]]
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains the [[Door]]
    */
   private def isDoor(p: Point): Boolean = door.isDefined && door.get.position.point.equals(p)
 
@@ -250,7 +249,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     case _: Hero | _: Bullet => checkBounds(e.position.point, bounds = true) && !containsWall(e.position.point) && !containsObstacle(e.position.point)
     case e: Enemy => checkBounds(e.position.point) && !containsObstacle(e.position.point) && containsEnemy(e.position.point).isEmpty && !containsCollectible(e.position.point)
   }
-
 }
 
 /** Utility methods for [[Arena]]. */
@@ -260,7 +258,7 @@ object Arena {
   /** Creates an [[Arena]].
    *
    *  @param playerName the [[Hero]]'s name
-   *  @param mapGen     the [[MapGenerator]] to use
+   *  @param mapGen the [[MapGenerator]] to use
    *  @return the new [[Arena]] instance
    */
   def apply(playerName: String, mapGen: MapGenerator): Arena = new Arena(playerName, mapGen)
@@ -281,7 +279,6 @@ object Arena {
     if (horizontal) {
       surroundings = surroundings ++ Set(changePosition(e.position, Left).point, changePosition(e.position, Right).point)
     }
-
     if (vertical) {
       surroundings = surroundings ++ Set(changePosition(e.position, Up).point, changePosition(e.position, Down).point)
     }
@@ -340,17 +337,17 @@ object Arena {
    */
   def containsWall(p: Point): Boolean = arena.get.walls.exists(_.position.point.equals(p))
 
-  /** Checks whether a [[Point]] contains a [[Enemy]] or not.
+  /** Checks whether a [[Point]] contains an [[EnemyCharacter]] or not.
    *
    *  @param p the [[Point]] to check
-   *  @return [[EnemyCharacter]] if the [[Point]] contains a [[Enemy]]
+   *  @return an [[EnemyCharacter]] if the [[Point]] contains an [[EnemyCharacter]]
    */
   private def containsEnemy(p: Point): Option[EnemyCharacter] = arena.get.enemies.find(_.position.point.equals(p))
 
   /** Checks whether a [[Point]] contains a [[Bullet]] or not.
    *
    *  @param p the [[Point]] to check
-   *  @return true if the [[Point]] contains a [[Bullet]]
+   *  @return a [[Bullet]] if the [[Point]] contains a [[Bullet]]
    */
   def containsBullet(p: Point): Option[Bullet] = arena.get.bullets.find(_.position.point.equals(p))
 
