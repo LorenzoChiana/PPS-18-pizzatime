@@ -1,7 +1,6 @@
 package gamelogic
 
-import utilities.{Point, Position}
-import  Arena.isClearFloor
+import utilities.Position
 
 /** The [[GameMap]]'s wall, situated on its bounds.
  *

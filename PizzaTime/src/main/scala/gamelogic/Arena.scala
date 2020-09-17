@@ -75,7 +75,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
       if (canMoveIn(h)) {
         hero = h
         lastInjury = None
-      }
+      } else hero = hero.changeDirection(movement.get).asInstanceOf[Hero]
 
       hero.position.point match {
         case p if containsCollectible(p) =>
@@ -84,7 +84,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
             case _: BonusLife => hero = hero.increaseLife().asInstanceOf[Hero]
             case c: BonusScore => player = addScore(player, c.value)
           }
-          collectibles = collectibles -- collectibles.filter(_.position.point.equals(p))
+          collectibles = collectibles.filter(!_.position.point.equals(p))
 
         case p if containsEnemy(p).isDefined =>
           playerInjury(containsEnemy(p).get)
@@ -93,6 +93,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
         case p if isDoor(p) && enemies.isEmpty =>
           endedLevel = true
           emptyMap()
+          walls = walls + Wall(door.get.position)
           door.get.position.point match {
             case Point(0, y) => door = Some(entranceDoor(Position(Point(arenaWidth - 1, y), None)))
             case Point(x, 0) => door = Some(entranceDoor(Position(Point(x, arenaHeight - 1), None)))
@@ -110,10 +111,14 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     var newBullets: Set[Bullet] = Set()
 
     bullets.foreach(bullet => {
-      newBullets = newBullets + bullet.move()
+      val b = bullet.move()
+      if(canMoveIn(b)){
+        newBullets = newBullets + bullet.move()
+      }
     })
+
     bullets = newBullets
-    bullets = bullets -- bullets.filter(!_.unexploded)
+    bullets = bullets.filter(_.unexploded)
 
     enemies = enemiesMovement
     enemies.foreach(en => playerInjury(en))
@@ -177,11 +182,11 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     if (door.isEmpty) {
       if (enemies.isEmpty) {
         door = Some(Door.exitDoor(walls))
-        observers.foreach(_.openDoor())
+        walls = walls.filter(!_.position.equals(door.get.position))
         observers.foreach(_.openDoor())
       }
-    } else if (enemies.nonEmpty && !hero.position.point.equals(door.get.position.point)) {
-      walls = walls + Wall(Position(door.get.position.point, None))
+    } else if (enemies.nonEmpty && !isDoor(hero.position.point)) {
+      walls = walls + Wall(door.get.position)
       door = None
     }
   }
@@ -231,70 +236,22 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     allEntities.filter(_.position.point.equals(p)).foreach(e => arena.get.removeEntity(e))
   }
 
-  /** Checks whether a [[Point]] contains a [[Collectible]] or not.
-   *
-   *  @param p the [[Point]] to check
-   *  @return true if the [[Point]] contains a [[Collectible]]
-   */
-  private def containsCollectible(p: Point): Boolean = collectibles.exists(_.position.point.equals(p))
-
-  private def isBonusLife(collectible: Collectible): Boolean = collectible match {
-    case _: BonusLife => true
-    case _ => false
-  }
-
-  private def isBonusScore(collectible: Collectible): Boolean = collectible match {
-    case _: BonusScore => true
-    case _ => false
-  }
-
-  /** Checks whether a [[Point]] contains a [[Enemy]] or not.
-   *
-   *  @param p the [[Point]] to check
-   *  @return [[EnemyCharacter]] if the [[Point]] contains a [[Enemy]]
-   */
-  private def containsEnemy(p: Point): Option[EnemyCharacter] = arena.get.enemies.find(_.position.point.equals(p))
-
-  /** Checks whether a [[Point]] contains a [[Bullet]] or not.
-   *
-   *  @param p the [[Point]] to check
-   *  @return true if the [[Point]] contains a [[Bullet]]
-   */
-  private def containsBullet(p: Point): Set[Bullet] = arena.get.bullets.filter(_.position.point.equals(p))
-
-  /** Checks whether a [[Point]] contains a [[Wall]] or not.
-   *
-   *  @param p the [[Point]] to check
-   *  @return true if the [[Point]] contains a [[Wall]]
-   */
-  private def containsWall(p: Point): Boolean = arena.get.walls.exists(_.position.point.equals(p))
-
   /** Checks whether a [[Point]] contains the [[Door]] or not.
    *
    * @param p the [[Point]] to check
    * @return true if the [[Point]] contains the [[Door]]
    */
-  private def isDoor(p: Point): Boolean = arena.get.door.isDefined && arena.get.door.get.position.point.equals(p)
-
-
-  /** Checks whether a [[Hero]] is exiting the level or not.
-   *
-   * @return true if the [[Hero]]'s [[Position]] is the same as the [[Door]]'s
-   */
-  private def exitLevel(): Boolean = arena.get.door.isDefined && arena.get.hero.position.point.equals(arena.get.door.get.position.point)
-
+  private def isDoor(p: Point): Boolean = door.isDefined && door.get.position.point.equals(p)
 
   /** Returns true if a [[Point]] is transitable.
    *
    *  @param e the [[MovableEntity]] to check
    */
-  private def canMoveIn(e: MovableEntity): Boolean = checkBounds(e.position.point) && !containsObstacle(e.position.point)
+  private def canMoveIn(e: MovableEntity): Boolean = e match {
+    case _: Hero | _: Bullet => checkBounds(e.position.point, bounds = true) && !containsWall(e.position.point) && !containsObstacle(e.position.point)
+    case e: Enemy => checkBounds(e.position.point) && !containsObstacle(e.position.point) && containsEnemy(e.position.point).isEmpty && !containsCollectible(e.position.point)
+  }
 
-  /** Check if an entity can move
-   *
-   * @return true if there is a [[Point]] transitable
-   */
-  //private def canMove(e: MovableEntity): Boolean = List(Up, Down, Right, Left).forall(direction => canMoveIn(e, Position.changePosition(e.position, direction).point))
 }
 
 /** Utility methods for [[Arena]]. */
@@ -317,7 +274,6 @@ object Arena {
     val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.collectibles ++ arena.get.obstacles
     allEntities.size < (arena.get.floor.size * fillRatio)
   }
-
 
   /** Returns the set of [[Point]]s that represent an [[Entity]]'s surroundings. */
   def surroundings(e: Entity, horizontal: Boolean = true, vertical: Boolean = true): Set[Point] = {
@@ -356,13 +312,20 @@ object Arena {
     allEntities.forall(!_.position.point.equals(p) && checkBounds(p))
   }
 
-
   /** Checks whether a [[Point]] is on the entrance of the [[Arena]] or not.
    *
    *  @param p the [[Point]] to check
    *  @return true if the [[Point]] is in the [[Door]]'s surroundings
    */
   def isEntrance(p: Point): Boolean = checkBounds(p) && arena.get.door.isDefined && surroundings(arena.get.door.get).contains(p)
+
+
+  /** Checks whether a [[Point]] contains a [[Collectible]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Collectible]]
+   */
+  def containsCollectible(p: Point): Boolean = arena.get.collectibles.exists(_.position.point.equals(p))
 
   /** Checks whether a [[Point]] contains an [[Obstacle]] or not.
    *
@@ -378,12 +341,19 @@ object Arena {
    */
   def containsWall(p: Point): Boolean = arena.get.walls.exists(_.position.point.equals(p))
 
-  /** Checks whether a [[Point]] contains an [[Obstacle]] or not.
+  /** Checks whether a [[Point]] contains a [[Enemy]] or not.
    *
    *  @param p the [[Point]] to check
-   *  @return true if the [[Point]] contains an [[Obstacle]]
+   *  @return [[EnemyCharacter]] if the [[Point]] contains a [[Enemy]]
    */
-  def containsEnemy(p: Point): Boolean = arena.get.enemies.exists(_.position.point.equals(p))
+  private def containsEnemy(p: Point): Option[EnemyCharacter] = arena.get.enemies.find(_.position.point.equals(p))
+
+  /** Checks whether a [[Point]] contains a [[Bullet]] or not.
+   *
+   *  @param p the [[Point]] to check
+   *  @return true if the [[Point]] contains a [[Bullet]]
+   */
+  def containsBullet(p: Point): Option[Bullet] = arena.get.bullets.find(_.position.point.equals(p))
 
   /** Returns the [[Arena]]'s center [[Point]]. */
   def center: Point = (arenaWidth / 2, arenaHeight / 2)
