@@ -23,6 +23,8 @@ case class StaticArena(
                         initialPlayerPosition: Position = Position(Point(0, 0), Some(Down)),
                         initialPlayerScore: Int = 0,
                         scoreToIncrease: Int = 5,
+                        obstaclePosition: Position = Position(Point(0, 0), Some(Down)),
+                        wallPosition: Position = Position(Point(0, 0), Some(Down)),
                         bonusLifePosition: Position = Position(Point(0, 0), Some(Down)),
                         bonusScorePosition: Position = Position(Point(0, 0), Some(Down)),
                         initialEnemyPosition: Position = Position(Point(0, 0), Some(Down)),

@@ -1,14 +1,15 @@
 package gamelogic
-/*
-import Entity._
+
+import gamelogic.GameState.nextStep
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import utilities.Position.changePosition
 import utilities.{Direction, Down, Left, Point, Position, Right, StaticArena, Up}
 
 /** Test class for [[MovableEntity]] */
 class MovableEntityTest extends AnyFlatSpec with Matchers {
-  /* val staticArena: StaticArena = StaticArena()
+  val staticArena: StaticArena = StaticArena()
   import staticArena.arena._
   import staticArena._
 
@@ -39,8 +40,8 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
 
   private def moveDirectionTest(entity: MovableEntity, direction: Direction): Unit = {
     entity moveTo insideArena
-    entity move direction
-    entity.position.point shouldEqual nearPoint(insideArena.point, direction)
+    nextStep(Some(direction), None)
+    entity.position.point shouldEqual changePosition(insideArena, direction)
   }
 
   private def walkAroundMapTest(entity: MovableEntity): Unit = {
@@ -68,14 +69,14 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   }
 
   private def obstaclesCollisionsTest(entity: MovableEntity): Unit = {
-    val obstaclePoint = nearPoint(Arena.center, Down)
+   /* val obstaclePoint = changePosition(Arena.center, Down)
     obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
 
     entity moveTo Position(Arena.center, Some(Down))
     entity move Down
     entity.position.point shouldEqual Arena.center
 
-    obstacles = Set()
+    obstacles = Set()*/
   }
 
   object Even {
@@ -85,7 +86,4 @@ class MovableEntityTest extends AnyFlatSpec with Matchers {
   object Odd {
     def unapply(x: Int): Option[Int] = if (x % 2 == 1) Some(x) else None
   }
-
-   */
 }
-*/
