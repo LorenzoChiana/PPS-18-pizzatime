@@ -1,6 +1,6 @@
 package gamemanager
 
-import utilities.{Action, BonusSound, Direction, FailureSound, InjurySound, Intent, LevelMusic, LevelUpSound, Movement, SettingPreferences, Shoot, ShootSound}
+import utilities.{Action, BonusSound, Direction, FailureSound, InjurySound, Intent, LevelUpSound, Movement, SettingPreferences, Shoot, ShootSound}
 import handlers.PreferencesHandler._
 import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes._
@@ -16,7 +16,7 @@ import java.util.concurrent.Executors.newFixedThreadPool
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.fromExecutorService
 import gamelogic.{GameState, MapGenerator}
-import gamelogic.GameState.{arena, playerRankings, worldRecord}
+import gamelogic.GameState.{playerRankings, worldRecord}
 import gamemanager.ImageLoader.loadImage
 import gamemanager.SoundLoader.{play, stopSound}
 import gameview.fx.FXWindow
@@ -168,8 +168,9 @@ object GameManager extends ViewObserver with GameLogicObserver {
 
   import utilities.ImplicitConversions._
   /** Loads the world record from the ranking */
-  def loadWorldRecord(): Unit =
+  def loadWorldRecord(): Unit = {
     worldRecord = if (playerRankings(difficulty).nonEmpty) playerRankings(difficulty).maxBy(_._2)._2 else 0
+  }
 
   override def startNewLevel(): Unit = GameState.nextLevel()
 
