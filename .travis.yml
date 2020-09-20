@@ -10,7 +10,3 @@ jdk:
 before_install:
   - sudo apt update
   - sudo apt install openjfx
-branches:
-  only:
-  - master
-  - development
