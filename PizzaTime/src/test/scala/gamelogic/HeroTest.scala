@@ -11,20 +11,23 @@ import utilities.{Down, Left, Position, Right, StaticArena, Up}
 /** Test class for [[Hero]] */
 class HeroTest extends AnyFlatSpec with Matchers {
    val staticArena: StaticArena = StaticArena(
-    initialPlayerPosition = Position(Arena.center, Some(Right)),
-    initialEnemyPosition = changePosition(Position(Arena.center, Some(Right)), Up),
-    bonusLifePosition = changePosition(Position(Arena.center, Some(Right)), Right),
-    bonusScorePosition = changePosition(Position(Arena.center, Some(Right)), Left)
+     initialHeroPosition = Position(Arena.center, Some(Right)),
+     initialEnemyPosition = changePosition(Position(Arena.center, Some(Right)), Up),
+     obstaclePosition = changePosition(Position(Arena.center, Some(Right)), Down),
+     bonusLifePosition = changePosition(Position(Arena.center, Some(Right)), Right),
+     bonusScorePosition = changePosition(Position(Arena.center, Some(Right)), Left),
+     wallPosition = changePosition(changePosition(Position(Arena.center, Some(Right)), Right), Right),
   )
   import staticArena.arena._
+  import staticArena._
 
   "The hero" should "have a life of 5" in {
-    hero.lives shouldEqual 5
+    hero.lives shouldBe 5
   }
 
   it should "walk over score bonus" in {
     nextStep(Some(Left), None)
-    hero.position.point shouldEqual staticArena.bonusScorePosition.point
+    hero.position.point shouldBe bonusScorePosition.point
     nextStep(Some(Right), None)
   }
 
@@ -37,9 +40,21 @@ class HeroTest extends AnyFlatSpec with Matchers {
 
   it should "walk over life bonus and increase his life" in {
     nextStep(Some(Right), None)
-    hero.position.point shouldEqual staticArena.bonusLifePosition.point
+    hero.position.point shouldBe bonusLifePosition.point
     hero.lives shouldBe 5
+  }
+
+  it should "collide with wall" in {
+    nextStep(Some(Right), None)
+    hero.position.point shouldBe bonusLifePosition.point
     nextStep(Some(Left), None)
+  }
+
+  it should "collide with obstacles" in {
+    nextStep(Some(Down), None)
+    hero.position.point should not be obstaclePosition.point
+    hero.position.point shouldBe initialHeroPosition.point
+    nextStep(Some(Up), None)
   }
 
   it should "shoot in all directions" in {

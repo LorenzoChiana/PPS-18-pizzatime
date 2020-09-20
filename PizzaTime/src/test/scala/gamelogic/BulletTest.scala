@@ -10,7 +10,7 @@ import utilities.{Direction, Down, Left, Position, Right, StaticArena, Up}
 /** Test class for [[Bullet]] */
 class BulletTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
-    initialPlayerPosition = Position(Arena.center, Some(Up)),
+    initialHeroPosition = Position(Arena.center, Some(Up)),
     initialEnemyPosition = changePosition(changePosition(Position(Arena.center, Some(Up)), Up), Up),
     obstaclePosition = changePosition(changePosition(Position(Arena.center, Some(Up)), Right), Right),
     wallPosition = changePosition(changePosition(Position(Arena.center, Some(Up)), Down), Down)

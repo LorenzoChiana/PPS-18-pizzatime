@@ -11,7 +11,7 @@ import utilities.{Left, Position, Right, StaticArena}
 class PlayerTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
     playerName = "Player1",
-    initialPlayerPosition = Position(Arena.center, Some(Right)),
+    initialHeroPosition = Position(Arena.center, Some(Right)),
     bonusScorePosition = changePosition(Position(Arena.center, Some(Right)), Left)
   )
   import staticArena.arena._
