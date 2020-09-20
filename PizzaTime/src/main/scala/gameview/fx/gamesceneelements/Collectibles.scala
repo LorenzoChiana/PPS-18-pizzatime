@@ -11,14 +11,14 @@ import utilities.{BonusLifeImage, BonusScoreImage}
 
 import scala.collection.immutable
 
-/**Set of [[ImageView]] representing [[Collectibles]]*/
+/** Set of [[ImageView]] representing [[Collectibles]]. */
 class Collectibles extends GameElements{
   private var collectibles: immutable.Map[Int, ImageView] = new immutable.HashMap[Int, ImageView]()
 
   /**
    * Updating collectibles
    */
-  def update(): Unit ={
+  def update(): Unit = {
     Platform.runLater(() => {
       val collectiblesTaken = collectibles.keySet.diff(arena.get.collectibles.map(_.id))
       collectiblesTaken.foreach(c => dungeon.getChildren.remove(collectibles(c)))

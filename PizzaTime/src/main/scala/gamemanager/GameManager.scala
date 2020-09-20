@@ -81,11 +81,9 @@ object GameManager extends ViewObserver with GameLogicObserver {
    *
    *  @param action the [[Action]] notified by the view
    */
-  def notifyAction(action: Action): Unit = {
-    action.actionType match {
-      case Movement => playerMoves = playerMoves :+ action.direction
-      case Shoot => playerShoots = playerShoots :+ action.direction
-    }
+  def notifyAction(action: Action): Unit = action.actionType match {
+    case Movement => playerMoves = playerMoves :+ action.direction
+    case Shoot => playerShoots = playerShoots :+ action.direction
   }
 
   /** Notifies the transition to the game scene. */
@@ -140,11 +138,12 @@ object GameManager extends ViewObserver with GameLogicObserver {
     Using(Source.fromFile("rank.json")){ _.mkString } match {
       case Success(stringRank) =>
         allDifficulty.foreach( difficulty => {
-          playerRankings = playerRankings ++ Map(difficulty.toString() -> ( for {
-            JObject(playerRecord) <- parse(stringRank) \ difficulty
-            JField("PlayerName", JString(name)) <- playerRecord
-            JField("Record", JInt(record)) <- playerRecord
-          } yield name -> record).toMap)
+          playerRankings = playerRankings ++ Map(difficulty.toString() -> (
+            for {
+              JObject(playerRecord) <- parse(stringRank) \ difficulty
+              JField("PlayerName", JString(name)) <- playerRecord
+              JField("Record", JInt(record)) <- playerRecord
+            } yield name -> record).toMap)
         })
       case Failure(_) =>
         allDifficulty.foreach(difficulty => playerRankings = playerRankings ++ Map(difficulty.toString() -> Map()))

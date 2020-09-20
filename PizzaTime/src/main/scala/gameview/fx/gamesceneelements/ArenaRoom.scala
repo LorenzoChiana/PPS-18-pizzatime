@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 import utilities.{FloorImage, SinkImage, StoveImage, TableImage, WallImage}
 
-/** [[GridPane]] representing [[ArenaRoom]]*/
+/** [[GridPane]] representing [[ArenaRoom]]. */
 class ArenaRoom extends GameElements {
   /**
    * Checks if the door should be opened

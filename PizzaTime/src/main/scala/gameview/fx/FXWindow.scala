@@ -20,9 +20,9 @@ import utilities.MessageTypes._
 
 import scala.collection.immutable
 
-/**
- * Implementation for the [[Window]] in JavaFx.
- * @param stage the top level JavaFX container.
+/** Implementation for the [[Window]] in JavaFx.
+ *
+ *  @param stage the top level JavaFX container
  */
 case class FXWindow(stage: Stage) extends Window {
   private val windowContent = new BorderPane()
@@ -143,7 +143,8 @@ case class FXWindow(stage: Stage) extends Window {
   }
 
   /**
-   * Implements the dialog to display.
+   * Implements the dialog to display
+   *
    * @param title the title of dialog
    * @param message the message to be displayed
    * @param messageType the [[MessageType]] of the message
@@ -162,7 +163,8 @@ case class FXWindow(stage: Stage) extends Window {
   }
 
   /**
-   * Generates the alert depending on the type of message.
+   * Generates the alert depending on the type of message
+   *
    * @param messageType the [[MessageType]] of the message
    * @return the alert
    */
@@ -183,7 +185,8 @@ case class FXWindow(stage: Stage) extends Window {
   }
 
   /**
-   * Shows the alert.
+   * Shows the alert
+   *
    * @param alert the alert to display
    */
   private def showAlert(alert: Alert): Unit = {

@@ -6,7 +6,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import utilities.Position.changePosition
 import utilities.{Down, Left, Position, Right, StaticArena, Up}
 
-/** Test class for [[MovableEntity]] */
+/** Test class for [[MovableEntity]]. */
 class MovableEntityTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
     initialHeroPosition = Position(Arena.center, Some(Down)),

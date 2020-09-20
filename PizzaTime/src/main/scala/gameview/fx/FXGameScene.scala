@@ -63,9 +63,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
     case _ => None
   })
 
-  /**
-  * Method called by the controller cyclically to update the view
-  */
+  /** Method called by the controller cyclically to update the view */
   def updateView(): Unit = {
     elements.foreach(e => e.update())
     updateStatsLabel()
@@ -73,21 +71,19 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
     if (arena.get.hero.isDead) showMessage("OH NO!", "You Lose", MessageTypes.Warning)
   }
 
-  /** Method called by controller when the level ended. */
+  /** Method called by controller when the level ended */
   def endLevel(): Unit = {
     Platform.runLater(() => dungeon.getChildren.clear())
     elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
   }
 
   /**
-  * Call when [[KeyEvent]] occured
+  * Call when [[KeyEvent]] occurred
   * @param event the [[Action]] to be notified to the observers
     */
   private def eventOccurred(event: Action): Unit =  FXWindow.observers.foreach(_.notifyAction(event))
 
-  /**
-  *  Updating player's label
-  */
+  /** Updating player's label */
   private def updateStatsLabel(): Unit =
     Platform.runLater(() => {
       statsLabel.setText("Level: " + arena.get.mapGen.currentLevel +
@@ -96,9 +92,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
         "   Your record: " + arena.get.player.record)
     })
 
-  /**
-  * Updating lifeBar
-  */
+  /** Updating lifeBar */
   var lastLives: Int = arena.get.hero.lives
   private def updateLifeBar(): Unit =
     if (!lastLives.equals(arena.get.hero.lives)) {

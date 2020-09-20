@@ -1,5 +1,6 @@
 package gamelogic
 
+/** Type of [[Obstacle]]s. */
 sealed trait ObstacleType {
   val allObstacleTypes: Seq[ObstacleType] = Seq(Table, Sink, Stove)
 }

@@ -4,8 +4,6 @@ import gamemanager.GameLogicObserver
 import gamemanager.handlers.PreferencesHandler.difficulty
 import utilities.Direction
 
-import scala.collection.immutable
-
 /** Represents the game's logical state. */
 object GameState {
   var arena: Option[Arena] = None
@@ -16,7 +14,7 @@ object GameState {
 
   var observers: Set[GameLogicObserver] = Set[GameLogicObserver]()
 
-  def addObserver(obs: GameLogicObserver): Unit = {observers = observers + obs}
+  def addObserver(obs: GameLogicObserver): Unit = { observers = observers + obs }
 
   def startGame(playerName: String, mapGen: MapGenerator): Unit = {
     arena = Some(Arena(playerName, mapGen))
@@ -24,9 +22,7 @@ object GameState {
     observers.foreach(_.startGame())
   }
 
-  def endGame(): Unit = {
-    addRecord()
-  }
+  def endGame(): Unit = addRecord()
 
   def checkNewWorldRecord(): Option[Int] = arena.get.player.record match {
     case r if r > worldRecord => Some(arena.get.player.record)
@@ -35,13 +31,11 @@ object GameState {
 
   def nextStep(movement: Option[Direction], shoot: Option[Direction]): Unit = arena.get.updateMap(movement, shoot)
 
-  def nextLevel(): Unit = {
-    arena.get.generateMap()
-  }
+  def nextLevel(): Unit = arena.get.generateMap()
 
   def addRecord(): Unit = {
     playerRankings = playerRankings ++ Map(difficulty.toString -> (
-      playerRankings(difficulty.toString) ++ Map(arena.get.player.name -> arena.get.player.record)))
+        playerRankings(difficulty.toString) ++ Map(arena.get.player.name -> arena.get.player.record)))
   }
 }
 

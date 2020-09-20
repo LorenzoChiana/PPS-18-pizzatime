@@ -8,7 +8,7 @@ import utilities.Position.changePosition
 import utilities.{Down, Left, Position, Right, StaticArena, Up}
 
 
-/** Test class for [[Hero]] */
+/** Test class for [[Hero]]. */
 class HeroTest extends AnyFlatSpec with Matchers {
    val staticArena: StaticArena = StaticArena(
      initialHeroPosition = Position(Arena.center, Some(Right)),

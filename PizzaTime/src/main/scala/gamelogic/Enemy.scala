@@ -1,7 +1,7 @@
 package gamelogic
 
 import utilities.IdGenerator.nextId
-import utilities.{Down, IdGenerator, Left, Position, Right, Up}
+import utilities.{Down, Left, Position, Right, Up}
 
 import scala.util.Random.nextInt
 import utilities.Position.changePosition

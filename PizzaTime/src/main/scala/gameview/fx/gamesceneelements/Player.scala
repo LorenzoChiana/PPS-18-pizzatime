@@ -4,27 +4,33 @@ import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
 import gameview.SpriteAnimation
 import gameview.fx.FXGameScene.dungeon
-import gameview.fx.FXWindow
 import gameview.fx.gamesceneelements.GameElements.{createElement, pointToPixel, setDimension, tileHeight, tileWidth}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.util.Duration
 import utilities.{Direction, Down, HeroImage, Left, Position, Right, Up}
 
-/** [[ImageView]] representing [[Player]]*/
+/** [[ImageView]] representing [[Player]]. */
 class Player extends GameElements{
   private val player: ImageView = createElement(images(HeroImage))
   private var currentPosition: Position = arena.get.hero.position
 
-  val heroAnimation = new SpriteAnimation(player, Duration.millis(25), 4, 4, 0, 0, 100, 130)
+  val heroAnimation = new SpriteAnimation(
+    player,
+    Duration.millis(25),
+    count = 4,
+    col = 4,
+    offsetX = 0,
+    offsetY = 0,
+    width = 100,
+    height = 130
+  )
 
   /**
    * Updating position and animate player
    */
   override def update(): Unit = {
     val playerPosition: Position = arena.get.hero.position
-
-
 
     if (!playerPosition.equals(currentPosition)){
       currentPosition = playerPosition

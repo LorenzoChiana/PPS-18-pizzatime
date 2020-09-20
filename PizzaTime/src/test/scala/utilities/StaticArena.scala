@@ -11,6 +11,8 @@ import utilities.IdGenerator.nextId
  * @param playerName            the [[Player]]'s name
  * @param initialHeroPosition   the [[Hero]]'s starting [[Position]]
  * @param scoreToIncrease       the score given by the score-related [[Collectible]]s
+ * @param obstaclePosition      the [[Obstacle]]'s [[Position]]
+ * @param wallPosition          the [[Wall]]'s [[Position]]
  * @param bonusLifePosition     the life-related [[Collectible]]'s [[Position]]
  * @param bonusScorePosition    the score-related [[Collectible]]'s [[Position]]
  * @param initialEnemyPosition  the [[Enemy]]'s starting [[Position]]
@@ -25,10 +27,10 @@ case class StaticArena(
   bonusScorePosition: Position = Position(Point(0, 0), Some(Down)),
   initialEnemyPosition: Position = Position(Point(0, 0), Some(Down))
 ) {
+
   difficulty_(Easy)
   startGame(playerName, MapGenerator(Easy))
   val arena: Arena = GameState.arena.get
-
   import arena._
 
   val enemy: Enemy = Enemy(initialEnemyPosition)

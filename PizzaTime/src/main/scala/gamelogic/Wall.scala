@@ -2,7 +2,7 @@ package gamelogic
 
 import utilities.Position
 
-/** The [[GameMap]]'s wall, situated on its bounds.
+/** The map's wall, situated on its bounds.
  *
  *  @param position its [[Position]]
  */

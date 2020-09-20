@@ -35,6 +35,7 @@ trait ViewObserver {
   /** Saves preferences */
   def onSave(settingPreferences: SettingPreferences): Unit
 
+  /** Starts new level */
   def startNewLevel(): Unit
 
 }

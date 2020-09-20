@@ -23,7 +23,7 @@ class Bullets extends GameElements{
       arena.get.bullets.find(_.id.equals(b._1)) match {
         case Some(unexplodedBullet) => val pos = pointToPixel(unexplodedBullet.position.point)
           Platform.runLater(() => b._2 relocate(pos._1, pos._2))
-        case None => bullets = bullets -  b._1
+        case None => bullets = bullets - b._1
           Platform.runLater(() => dungeon.getChildren.remove(b._2))
       }
     })
@@ -33,9 +33,8 @@ class Bullets extends GameElements{
    *
    *  @param b bullet
    */
-  private def addBullet(b: Bullet): Unit = {
-    if (!bullets.contains(b.id))
-      bullets = bullets + (b.id -> setDimension(addToDungeon(b, images(BulletImage)),tileHeight / 2, tileWidth / 2))
+  private def addBullet(b: Bullet): Unit = if (!bullets.contains(b.id)) {
+    bullets = bullets + (b.id -> setDimension(addToDungeon(b, images(BulletImage)),tileHeight / 2, tileWidth / 2))
   }
 }
 

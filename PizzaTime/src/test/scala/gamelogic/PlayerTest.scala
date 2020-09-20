@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import utilities.Position.changePosition
 import utilities.{Left, Position, Right, StaticArena}
 
-/** Test class for [[Player]] */
+/** Test class for [[Player]]. */
 class PlayerTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
     playerName = "Player1",

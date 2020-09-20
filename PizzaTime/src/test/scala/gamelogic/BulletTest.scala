@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import utilities.Position.changePosition
 import utilities.{Direction, Down, Left, Position, Right, StaticArena, Up}
 
-/** Test class for [[Bullet]] */
+/** Test class for [[Bullet]]. */
 class BulletTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
     initialHeroPosition = Position(Arena.center, Some(Up)),

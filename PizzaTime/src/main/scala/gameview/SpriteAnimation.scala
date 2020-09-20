@@ -6,7 +6,7 @@ import javafx.geometry.Rectangle2D
 import javafx.scene.image.ImageView
 import javafx.util.Duration
 
-/**Used to animate the [[Player]]**
+/**Used to animate the [[Player]].
  *
  * @param imageView imageview of the player
  * @param duration duration of the animation
@@ -18,7 +18,17 @@ import javafx.util.Duration
  * @param height the height of the Viewport
  */
 
-class SpriteAnimation(imageView: ImageView, duration: Duration, count: Int, col: Int, var offsetX: Int, var offsetY: Int, width: Int, height: Int) extends Transition{
+class SpriteAnimation(
+  imageView: ImageView,
+  duration: Duration,
+  count: Int,
+  col: Int,
+  var offsetX: Int,
+  var offsetY: Int,
+  width: Int,
+  height: Int
+) extends Transition {
+
   var lastIndex: Int = 0
 
   Platform.runLater(() => {

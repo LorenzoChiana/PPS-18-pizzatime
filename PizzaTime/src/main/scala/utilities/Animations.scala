@@ -5,7 +5,7 @@ import javafx.application.Platform
 import javafx.scene.Node
 import javafx.util.Duration
 
-/** Provides animations between scenes */
+/** Provides animations between scenes. */
 object Animations {
   val FADE_DURATION = 400
   val OPACITY_FADE_IN = 0

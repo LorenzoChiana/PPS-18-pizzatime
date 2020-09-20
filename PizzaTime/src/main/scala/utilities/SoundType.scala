@@ -11,7 +11,6 @@ import java.lang.System.getProperty
    *    Bonus
    *    LevelUp
    */
-
   sealed trait SoundType
   case object ShootSound extends SoundType {
     val path: String = getProperty("user.dir")+"/src/main/resources/sounds/shoot.wav"}
