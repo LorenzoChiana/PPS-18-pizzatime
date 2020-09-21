@@ -1,6 +1,6 @@
 package gamemanager
 
-import utilities.{Action, BonusSound, Direction, FailureSound, InjurySound, Intent, LevelUpSound, Movement, SettingPreferences, Shoot, ShootSound}
+import utilities.{Action, BonusSound, Direction, FailureSound, InjurySound, Intent, LevelMusic, LevelUpSound, Movement, SettingPreferences, Shoot, ShootSound}
 import handlers.PreferencesHandler._
 import gameview.scene.{Scene, SceneType}
 import utilities.MessageTypes._
@@ -209,7 +209,8 @@ object GameManager extends ViewObserver with GameLogicObserver {
   override def playerDead(): Unit = play(FailureSound);  stopSound()
 
   /** Notifies when start new level */
-  override def startGame(): Unit = println()//play(LevelMusic)
+  override def startGame(): Unit = println()
+  play(LevelMusic)
 
   /** Notifies end game */
   override def finishGame(): Unit = stopSound()
