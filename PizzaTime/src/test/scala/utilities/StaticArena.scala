@@ -5,6 +5,7 @@ import gamelogic._
 import gamemanager.handlers.PreferencesHandler.difficulty_
 import utilities.Difficulty.Easy
 import utilities.IdGenerator.nextId
+import ImplicitConversions._
 
 /** Builder class used to create a custom [[Arena]].
  *
@@ -60,6 +61,6 @@ case class StaticArena(
     obstacles = Set()
     enemies = Set()
     collectibles = Set()
-    hero = hero.moveTo(initialHeroPosition).asInstanceOf[Hero]
+    hero = hero.moveTo(initialHeroPosition)
   }
 }

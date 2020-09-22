@@ -44,7 +44,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
 
   /** Empties the [[Arena]]. */
   def emptyMap(): Unit = {
-    hero = hero.moveTo(Position(center, Some(Down))).asInstanceOf[Hero]
+    hero = hero.moveTo(Position(center, Some(Down)))
     enemies = Set()
     bullets = Set()
     collectibles = Set()
@@ -53,16 +53,16 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
 
   private def movePlayerOnDoor(): Unit = {
     door.get.position.point match {
-      case Point(0, _) => hero = hero.moveTo(Position(door.get.position.point, Some(Right))).asInstanceOf[Hero]
-      case Point(_, 0) => hero = hero.moveTo(Position(door.get.position.point, Some(Down))).asInstanceOf[Hero]
-      case Point(x, _) if x.equals(arenaWidth - 1) => hero = hero.moveTo(Position(door.get.position.point, Some(Left))).asInstanceOf[Hero]
-      case Point(_, y) if y.equals(arenaHeight - 1) => hero = hero.moveTo(Position(door.get.position.point, Some(Up))).asInstanceOf[Hero]
+      case Point(0, _) => hero = hero.moveTo(Position(door.get.position.point, Some(Right)))
+      case Point(_, 0) => hero = hero.moveTo(Position(door.get.position.point, Some(Down)))
+      case Point(x, _) if x.equals(arenaWidth - 1) => hero = hero.moveTo(Position(door.get.position.point, Some(Left)))
+      case Point(_, y) if y.equals(arenaHeight - 1) => hero = hero.moveTo(Position(door.get.position.point, Some(Up)))
     }
   }
 
   private def checkShoot(shoot: Option[Direction]): Unit = {
     if (shoot.isDefined && !isDoor(hero.position.point)) {
-      hero = hero.changeDirection(shoot.get).asInstanceOf[Hero]
+      hero = hero.changeDirection(shoot.get)
       bullets = bullets + Bullet(Position(hero.position.point, shoot))
       observers.foreach(_.shoot())
     }
@@ -70,17 +70,17 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
 
   private def checkMovement(movement: Option[Direction]): Unit = {
     if (movement.isDefined) {
-      val h = hero.move(movement.get).asInstanceOf[Hero]
+      val h = hero.move(movement.get)
       if (canMoveIn(h)) {
         hero = h
         lastInjury = None
-      } else hero = hero.changeDirection(movement.get).asInstanceOf[Hero]
+      } else hero = hero.changeDirection(movement.get)
 
       hero.position.point match {
         case p if containsCollectible(p) =>
           observers.foreach(_.takesCollectible())
           collectibles.find(_.position.point.equals(p)).get match {
-            case _: BonusLife => hero = hero.increaseLife().asInstanceOf[Hero]
+            case _: BonusLife => hero = hero.increaseLife()
             case c: BonusScore => player = addScore(player, c.value)
           }
           collectibles = collectibles.filter(!_.position.point.equals(p))
@@ -133,7 +133,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     enemies.foreach(en => {
       val bulletOnEnemy = containsBullet(en.position.point)
       if (bulletOnEnemy.nonEmpty) {
-        newEnemies = newEnemies + en.decreaseLife().asInstanceOf[EnemyCharacter]
+        newEnemies = newEnemies + en.decreaseLife()
         bullets = bullets -- bulletOnEnemy
       }else
         newEnemies = newEnemies + en
@@ -166,7 +166,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
   private def playerInjury(enemy: EnemyCharacter): Unit = {
     if (containsEnemy(hero.position.point).isDefined && lastInjury.isEmpty) {
       lastInjury = Some(enemy)
-      hero = hero.decreaseLife().asInstanceOf[Hero]
+      hero = hero.decreaseLife()
       observers.foreach(_.playerInjury())
     }
   }
@@ -223,15 +223,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
       y <- 0 until arenaHeight
     ) tiles = tiles ++ Set[Point]((x, y))
     tiles -- bounds
-  }
-
-  /** Clears a specified [[Point]] inside the [[Arena]]'s inner bounds.
-   *
-   *  @param p the [[Point]] to clear
-   */
-  private def clearPoint(p: Point): Unit = {
-    val allEntities: Set[Entity] = arena.get.enemies ++ arena.get.bullets ++ arena.get.collectibles ++ arena.get.obstacles
-    allEntities.filter(_.position.point.equals(p)).foreach(e => arena.get.removeEntity(e))
   }
 
   /** Checks whether a [[Point]] contains the [[Door]] or not.
@@ -293,7 +284,7 @@ object Arena {
    */
   def checkBounds(p: Point, bounds: Boolean = false): Boolean = {
     if (bounds)
-      (p.x < arenaWidth) && (p.y < arenaHeight)
+      (p.x >= 0) && (p.y >= 0) && (p.x < arenaWidth) && (p.y < arenaHeight)
     else
       (p.x > 0) && (p.y > 0) && (p.x < arenaWidth - 1) && (p.y < arenaHeight - 1)
   }
