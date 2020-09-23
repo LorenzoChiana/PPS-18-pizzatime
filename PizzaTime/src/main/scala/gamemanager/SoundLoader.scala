@@ -53,7 +53,6 @@ object SoundLoader {
       clip.open(audioIn)
       audioIn.close()
       clip.start()
-      clip
     })
 
   /** Plays a looping sound.
