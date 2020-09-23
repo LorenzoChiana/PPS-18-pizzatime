@@ -1,7 +1,5 @@
 package utilities
 
-import java.lang.System.getProperty
-
   /** Allows to load the various sounds of the game.
    *  The sounds are for:
    *    Shooting

@@ -348,5 +348,4 @@ object Arena {
 
   /** Returns the [[Arena]]'s center [[Point]]. */
   def center: Point = (arenaWidth / 2, arenaHeight / 2)
-
 }
