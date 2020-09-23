@@ -9,12 +9,10 @@ import scala.util.Random.nextInt
  *  @param position its [[Position]]
  */
 
-case class Obstacle(position: Position, `type`: ObstacleType) extends Entity
+case class Obstacle(position: Position, obstacleType: ObstacleType) extends Entity
 
-object Obstacle{
-
+object Obstacle {
   def apply(pos: Position): Obstacle = Obstacle(pos, randomType)
 
   private def randomType: ObstacleType = allObstacleTypes(nextInt(allObstacleTypes.length))
-
 }

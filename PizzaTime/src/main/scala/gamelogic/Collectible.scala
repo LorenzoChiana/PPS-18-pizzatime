@@ -7,6 +7,5 @@ sealed trait Collectible extends Entity {
   def id: Int
 }
 
-/*case class BonusExtraLife (position: Position, value: Int) extends Collectible */
 case class BonusLife(id: Int, position: Position) extends Collectible
 case class BonusScore(id: Int, position: Position, value: Int) extends Collectible

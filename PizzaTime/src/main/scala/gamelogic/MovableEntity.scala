@@ -23,12 +23,10 @@ trait MovableEntity extends Entity {
    *  @param dir the [[Direction]] of movement
    *  @return true if the movement occurred
    */
-  def move(dir: Direction): MovableEntity = {
-    this match {
+  def move(dir: Direction): MovableEntity = this match {
       case e: EnemyCharacter => Enemy(e.id, Position.changePosition(e.position, dir), e.lives)
       case h: Hero => Hero(Position.changePosition(h.position, dir), h.lives)
       case _ => this
-    }
   }
 
   /** Moves the [[MovableEntity]] to the specified [[Position]].
