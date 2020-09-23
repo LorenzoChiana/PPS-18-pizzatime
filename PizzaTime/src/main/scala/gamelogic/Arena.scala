@@ -74,7 +74,9 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
       if (canMoveIn(h)) {
         hero = h
         lastInjury = None
-      } else hero = hero.changeDirection(movement.get)
+      } else {
+        hero = hero.changeDirection(movement.get)
+      }
 
       hero.position.point match {
         case p if containsCollectible(p) =>
@@ -135,8 +137,9 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
       if (bulletOnEnemy.nonEmpty) {
         newEnemies = newEnemies + en.decreaseLife()
         bullets = bullets -- bulletOnEnemy
-      }else
+      }else {
         newEnemies = newEnemies + en
+      }
 
     })
     newEnemies
@@ -283,10 +286,11 @@ object Arena {
    *  @return true if the [[Point]] is inside the [[Arena]]
    */
   def checkBounds(p: Point, bounds: Boolean = false): Boolean = {
-    if (bounds)
+    if (bounds) {
       (p.x >= 0) && (p.y >= 0) && (p.x < arenaWidth) && (p.y < arenaHeight)
-    else
+    } else {
       (p.x > 0) && (p.y > 0) && (p.x < arenaWidth - 1) && (p.y < arenaHeight - 1)
+    }
   }
 
   /** Checks whether a [[Point]] is clear or not (meaning if it's not occupied by any [[Entity]]).

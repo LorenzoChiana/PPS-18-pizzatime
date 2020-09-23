@@ -7,10 +7,11 @@ case class Player(name: String, score: Int, record: Int)
 
 object Player {
   val initialScore: Int = 0
-  val initialRecord: Int = if (playerRankings.nonEmpty && playerRankings(difficulty.toString).isDefinedAt(playerName))
+  val initialRecord: Int = if (playerRankings.nonEmpty && playerRankings(difficulty.toString).isDefinedAt(playerName)) {
     playerRankings(difficulty.toString)(playerName)
-  else
+  } else {
     0
+  }
 
   def apply(name: String): Player = Player(name, initialScore, initialRecord)
 

@@ -17,7 +17,7 @@ case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity w
   private var disableBehavior: Boolean = false
 
   override def movementBehaviour: Option[EnemyCharacter] =
-    if (!disableBehavior)
+    if (!disableBehavior) {
       nextInt(40) match {
         case 0 => Some(Enemy(id, changePosition(position, Up), lives))
         case 1 => Some(Enemy(id, changePosition(position, Down), lives))
@@ -25,7 +25,7 @@ case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity w
         case 3 => Some(Enemy(id, changePosition(position, Right), lives))
         case _ => None
       }
-    else None
+    } else None
 
   def onTestingMode(): Unit = disableBehavior = true
 
