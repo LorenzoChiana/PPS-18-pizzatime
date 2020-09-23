@@ -3,7 +3,8 @@ lazy val root = (project in file("."))
     scalaVersion := "2.13.2",
     scalacOptions ++= Seq(
       "-deprecation",
-      "-feature"
+      "-feature",
+      "-target:jvm-1.8"
     ),
     javacOptions ++= Seq("-source", "1.8", "-target", "1.8"),
     libraryDependencies ++= Seq(
@@ -21,6 +22,11 @@ lazy val root = (project in file("."))
       "org.testfx" % "testfx-core" % "4.0.16-alpha" % Test,
       "org.testfx" % "testfx-junit" % "4.0.15-alpha" % Test,
     ),
+    assemblyMergeStrategy in assembly := {
+      case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+      case _ => MergeStrategy.first
+    },
+    mainClass in Compile := Some("Main"),
     crossPaths := false, // https://github.com/sbt/junit-interface/issues/35
     Test / parallelExecution := false
   )
