@@ -7,4 +7,5 @@ build/
 out/
 project/
 target/
+META-INF/
 rank.json
