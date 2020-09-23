@@ -16,7 +16,7 @@ object Player {
   def apply(name: String): Player = Player(name, initialScore, initialRecord)
 
   def addScore(p: Player, s: Int): Player = incScore(p.score, s) match {
-    case newScore if newScore > p.record => Player(p.name, newScore, newScore)
+    case newScore if newScore >= p.record => Player(p.name, newScore, newScore)
     case newScore if newScore < p.record => Player(p.name, newScore, p.record)
   }
 
