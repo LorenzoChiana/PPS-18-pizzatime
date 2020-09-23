@@ -1,42 +1,42 @@
 package gamelogic
 
-import utilities.{Down, Left, Point, Position, Right, Up}
+import utilities.IdGenerator.nextId
+import utilities.{Down, Left, Position, Right, Up}
+
 import scala.util.Random.nextInt
-import Arena._
-import GameState.arena
+import utilities.Position.changePosition
 
 /** An enemy character.
  *
- *  @param position its starting position
- *  @param lives its starting lives
+ *  @param position its position
+ *  @param lives its lives
  */
-case class Enemy(var position: Position,  var lives: Int = 5, pointsKilling: Int = 20) extends EnemyCharacter {
-  private var disableBehavior = false
+case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity with EnemyCharacter {
+  val pointsKilling: Int = 20
+  private var disableBehavior: Boolean = false
+  private val cases: Int = 40
 
-  def movementBehaviour: Boolean =
-    if (disableBehavior)
-      false
-    else
-      nextInt(40) match {
-        case 0 => move(Up)
-        case 1 => move(Down)
-        case 2 => move(Left)
-        case 3 => move(Right)
-        case _ => false
+  override def movementBehaviour: Option[EnemyCharacter] = {
+    if (!disableBehavior) {
+      nextInt(cases) match {
+        case 0 => Some(Enemy(id, changePosition(position, Up), lives))
+        case 1 => Some(Enemy(id, changePosition(position, Down), lives))
+        case 2 => Some(Enemy(id, changePosition(position, Left), lives))
+        case 3 => Some(Enemy(id, changePosition(position, Right), lives))
+        case _ => None
       }
-
-  override def canMoveIn(p: Point): Boolean = super.canMoveIn(p) && !containsCollectible(p) && containsEnemy(p).isEmpty
-
-  def decreaseLife(): Unit = if (lives > 0) lives -= 1
-
-  def isLive: Boolean = lives > 0
-
-  def isDead: Boolean = !isLive
-
-  def onTestingMode(): Unit = disableBehavior = true
-
-  override def remove(): Boolean = {
-    arena.get.enemies = arena.get.enemies - copy()
-    !arena.get.enemies.contains(copy())
+    } else {
+      None
+    }
   }
+
+  def onTestingMode(): Unit = {
+    disableBehavior = true
+  }
+}
+
+object Enemy {
+  val maxLife: Int = 5
+
+  def apply(p: Position): Enemy = Enemy(nextId, p, maxLife)
 }

@@ -1,40 +1,24 @@
 package gamelogic
 
-import gamelogic.GameState.{playerRankings, worldRecord}
-import gamelogic.Arena.isDoor
-import gamemanager.handlers.PreferencesHandler.difficulty
-import utilities.{Point, Position}
-import utilities.ImplicitConversions._
+import gamelogic.GameState.playerRankings
+import gamemanager.handlers.PreferencesHandler.{difficulty, playerName}
 
-/** The main character.
- *
- *  @param playerName its name
- *  @param position its starting position
- */
-case class Player(playerName: String, var position: Position) extends MovableEntity {
-  var score: Int = 0
-  var lives: Int = difficulty.maxLife
-  var record: Int = if (playerRankings.nonEmpty && playerRankings(difficulty).isDefinedAt(playerName))
-                      playerRankings(difficulty)(playerName)
-                    else 0
+case class Player(name: String, score: Int, record: Int)
 
-  def addScore(s: Int): Unit = {
-    score += s
-    checkNewOwnRecord()
-    checkNewWorldRecord()
+object Player {
+  val initialScore: Int = 0
+  val initialRecord: Int = if (playerRankings.nonEmpty && playerRankings(difficulty.toString).isDefinedAt(playerName)) {
+    playerRankings(difficulty.toString)(playerName)
+  } else {
+    0
   }
 
-  def checkNewOwnRecord(): Unit = if (score > record) record = score
+  def apply(name: String): Player = Player(name, initialScore, initialRecord)
 
-  def checkNewWorldRecord(): Unit = if (record > worldRecord) worldRecord = record
+  def addScore(p: Player, s: Int): Player = incScore(p.score, s) match {
+    case newScore if newScore > p.record => Player(p.name, newScore, newScore)
+    case newScore if newScore < p.record => Player(p.name, newScore, p.record)
+  }
 
-  def increaseLife(): Unit = if (lives < difficulty.maxLife) lives += 1
-
-  def decreaseLife(): Unit = if (lives > 0) lives -= 1
-
-  def isLive: Boolean = lives > 0
-
-  def isDead: Boolean = !isLive
-
-  override def canMoveIn(p: Point): Boolean = super.canMoveIn(p) || isDoor(p)
+  private def incScore(score: Int, s: Int): Int = score + s
 }

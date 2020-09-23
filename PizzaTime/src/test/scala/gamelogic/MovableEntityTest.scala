@@ -1,88 +1,44 @@
 package gamelogic
 
-import Entity._
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.{Direction, Down, Left, Point, Position, Right, StaticArena, Up}
+import utilities.Position.changePosition
+import utilities.{Down, Left, Position, Right, StaticArena, Up}
 
-/** Test class for [[MovableEntity]] */
+/** Test class for [[MovableEntity]]. */
 class MovableEntityTest extends AnyFlatSpec with Matchers {
-  val staticArena: StaticArena = StaticArena()
+  val staticArena: StaticArena = StaticArena(
+    initialHeroPosition = Position(Arena.center, Some(Down)),
+    initialEnemyPosition = Position(Arena.center, Some(Down))
+  )
   import staticArena.arena._
   import staticArena._
 
-  List(player, enemy, bullet).foreach(entity => {
-    entity moveTo insideArena
-    movableEntityTests(entity)
-    entity moveTo outsideArena
-  })
-
-  private def movableEntityTests(entity: MovableEntity): Unit = entity match {
-    case _: Bullet => basicMovableTests("A Bullet", entity)
-    case _: Player => advancedMovableTests("The player", entity)
-    case _: Enemy => advancedMovableTests("An enemy", entity)
+  "A movable entity" should "move up" in {
+    (hero move Up).position shouldBe changePosition(hero.position, Up)
+    (enemy move Up).position shouldBe changePosition(enemy.position, Up)
   }
 
-  private def basicMovableTests(entityName: String, entity: MovableEntity): Unit = {
-    entityName should "move up" in moveDirectionTest(entity, Up)
-    it should "move down" in moveDirectionTest(entity, Down)
-    it should "move left" in moveDirectionTest(entity, Left)
-    it should "move right" in moveDirectionTest(entity, Right)
-    it should "collide with obstacles" in obstaclesCollisionsTest(entity)
+  it should "move down" in {
+    (hero move Down).position shouldBe changePosition(hero.position, Down)
+    (enemy move Down).position shouldBe changePosition(enemy.position, Down)
   }
 
-  private def advancedMovableTests(entityName: String, entity: MovableEntity): Unit = {
-    basicMovableTests(entityName, entity)
-    entityName should "move around the map" in walkAroundMapTest(entity)
+  it should "move right" in {
+    (hero move Right).position shouldBe changePosition(hero.position, Right)
+    (enemy move Right).position shouldBe changePosition(enemy.position, Right)
   }
 
-  private def moveDirectionTest(entity: MovableEntity, direction: Direction): Unit = {
-    entity moveTo insideArena
-    entity move direction
-    entity.position.point shouldEqual nearPoint(insideArena.point, direction)
+  it should "move left" in {
+    (hero move Left).position shouldBe changePosition(hero.position, Left)
+    (enemy move Left).position shouldBe changePosition(enemy.position, Left)
   }
 
-  private def walkAroundMapTest(entity: MovableEntity): Unit = {
-    val left = walkableWidth._1
-    val right = walkableWidth._2
-    val up = walkableHeight._1
-    val down = walkableHeight._2
-    entity moveTo upperLeftPosition
-
-    for (y <- up to down) {
-      y match {
-        case Odd(y) =>
-          for(x <- left +1 to right) {
-            entity changeDirectionAndMove Right
-            entity.position.point shouldEqual Point(x,y)
-          }
-        case Even(y) =>
-          for(x <- right -1 to left by -1) {
-            entity changeDirectionAndMove Left
-            entity.position.point shouldEqual Point(x,y)
-          }
-      }
-      entity changeDirectionAndMove Down
-    }
-  }
-
-  private def obstaclesCollisionsTest(entity: MovableEntity): Unit = {
-    val obstaclePoint = nearPoint(Arena.center, Down)
-    obstacles = obstacles + Obstacle(Position(obstaclePoint, None))
-
-    entity moveTo Position(Arena.center, Some(Down))
-    entity move Down
-    entity.position.point shouldEqual Arena.center
-
-    obstacles = Set()
-  }
-
-  object Even {
-    def unapply(x: Int): Option[Int] = if (x % 2 == 0) Some(x) else None
-  }
-
-  object Odd {
-    def unapply(x: Int): Option[Int] = if (x % 2 == 1) Some(x) else None
+  it should "change direction" in {
+    List(Up, Down, Right, Left).foreach(direction => {
+      (hero changeDirection direction).position.dir shouldBe Some(direction)
+      (enemy changeDirection direction).position.dir shouldBe Some(direction)
+    })
   }
 }

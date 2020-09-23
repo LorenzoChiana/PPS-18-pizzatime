@@ -1,7 +1,8 @@
 package gamelogic
 
 import Arena._
-import utilities.{Difficulty, Down, Point, Position}
+import utilities.{Difficulty, Down, IdGenerator, Point, Position}
+import IdGenerator.nextId
 import utilities.Difficulty._
 import GameState._
 import Door._
@@ -54,7 +55,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
     for (_ <- 0 to bonusNum) {
       if (checkArenaPopulation()) {
-        val bonus: Collectible = if (nextInt(2) == 0) BonusLife(randomClearPosition) else BonusScore(randomClearPosition, difficulty.bonusScore)
+        val bonus: Collectible = if (nextInt(2) == 0) BonusLife(nextId, randomClearPosition) else BonusScore(nextId, randomClearPosition, difficulty.bonusScore)
         arena.get.collectibles = arena.get.collectibles + bonus
       }
     }
@@ -79,7 +80,7 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     var obstacles: Set[Obstacle] = Set(startingObstacle)
 
     while (obstacles.size < dim) {
-      startingObstacle.surroundings().foreach(p => {
+      surroundings(startingObstacle).foreach(p => {
         if (isClearFloor(p) && (obstacles.size < dim)) {
           obstacles = obstacles + Obstacle(Position(p, Some(Down)))
         }
@@ -104,11 +105,11 @@ case class MapGenerator(difficulty: Difficulty.Value) {
       (x, arenaHeight - 2),
       (arenaWidth - 2, y)
     )
-    arena.get.obstacles.filter(obstacle => floorBorders.contains(obstacle.position.point)).map(_.remove())
+    arena.get.obstacles.filter(obstacle => floorBorders.contains(obstacle.position.point)).foreach(e => arena.get.removeEntity(e))
   }
 
   private def removeVerticalObstacles(): Unit = {
-    arena.get.obstacles.filter(obstacle => obstacle.surroundings(horizontal = false).exists(containsObstacle)).map(_.remove())
+    arena.get.obstacles.filter(obstacle => surroundings(obstacle, horizontal = false).exists(containsObstacle)).foreach(e => arena.get.removeEntity(e))
   }
 
   private def randomClearPosition: Position = {

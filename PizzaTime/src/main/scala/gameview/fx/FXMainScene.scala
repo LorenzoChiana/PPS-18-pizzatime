@@ -5,9 +5,9 @@ import gameview.scene.Scene
 import javafx.fxml.FXML
 import javafx.scene.control.Button
 
-/**
- * Represents the implementation of the main scene that appear to the user when the application starts.
+/** Represents the implementation of the main scene that appear to the user when the application starts.
  * It permits to start game, change settings, look at credits or exit to the desktop.
+ *
  * @param windowManager the window on which the scene is applied
  */
 case class FXMainScene(override val windowManager: Window) extends FXView(Some("MainScene.fxml")) with Scene {

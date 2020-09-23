@@ -16,17 +16,15 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.{BorderPane, GridPane}
 import javafx.stage.Stage
-import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, MessageTypes, Movement, Right, Shoot, Up}
-
-import scala.annotation.elidable.WARNING
+import utilities._
 import scala.collection.immutable
 import scala.collection.immutable.HashSet
 
 /** Represents the game scene made with JavaFX.
- *
- * @param windowManager the window on which the scene is applied
- * @param stage the top level JavaFX container
- */
+*
+* @param windowManager the window on which the scene is applied
+* @param stage the top level JavaFX container
+*/
 case class FXGameScene(override val windowManager: Window, stage: Stage) extends FXView(Some("GameScene.fxml")) with Scene {
   private val LifeBarHeight = 40
   private val LifeBarWight = 208
@@ -65,31 +63,27 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
     case _ => None
   })
 
-  /**
-   * Method called by the controller cyclically to update the view
-   */
+  /** Method called by the controller cyclically to update the view */
   def updateView(): Unit = {
     elements.foreach(e => e.update())
     updateStatsLabel()
     updateLifeBar()
-    if (arena.get.player.isDead) showMessage("OH NO!", "You Lose", MessageTypes.Warning)
+    if (arena.get.hero.isDead) showMessage("OH NO!", "You Lose", MessageTypes.Warning)
   }
 
-  /** Method called by controller when the level ended. */
+  /** Method called by controller when the level ended */
   def endLevel(): Unit = {
     Platform.runLater(() => dungeon.getChildren.clear())
     elements = HashSet(ArenaRoom(), Player(), Enemies(), Collectibles(), Bullets())
   }
 
   /**
-   * Call when [[KeyEvent]] occured
-   * @param event the [[Action]] to be notified to the observers
-   */
+  * Call when [[KeyEvent]] occurred
+  * @param event the [[Action]] to be notified to the observers
+    */
   private def eventOccurred(event: Action): Unit =  FXWindow.observers.foreach(_.notifyAction(event))
 
-  /**
-   *  Updating player's label
-   */
+  /** Updating player's label */
   private def updateStatsLabel(): Unit =
     Platform.runLater(() => {
       statsLabel.setText("Level: " + arena.get.mapGen.currentLevel +
@@ -98,13 +92,11 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
         "   Your record: " + arena.get.player.record)
     })
 
-  /**
-   * Updating lifeBar
-   */
-  var lastLives: Int = arena.get.player.lives
+  /** Updating lifeBar */
+  var lastLives: Int = arena.get.hero.lives
   private def updateLifeBar(): Unit =
-    if (!lastLives.equals(arena.get.player.lives)) {
-      Platform.runLater(() => arena.get.player.lives match {
+    if (!lastLives.equals(arena.get.hero.lives)) {
+      Platform.runLater(() => arena.get.hero.lives match {
         case 5 => lifeBar.setImage(images(LifeBarImage5))
         case 4 => lifeBar.setImage(images(LifeBarImage4))
         case 3 => lifeBar.setImage(images(LifeBarImage3))
@@ -113,7 +105,7 @@ case class FXGameScene(override val windowManager: Window, stage: Stage) extends
         case 0 => lifeBar.setImage(images(LifeBarImage0))
         case _ =>
       })
-      lastLives = arena.get.player.lives
+      lastLives = arena.get.hero.lives
     }
 }
 

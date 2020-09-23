@@ -11,7 +11,6 @@ import utilities.{BonusSound, EnemyInjurySound, FailureSound, InjurySound, Level
 
 import scala.concurrent._
 import ExecutionContext.Implicits.global
-import scala.util.{Failure, Success}
 
 /** Allows to load and play the various sounds of the game.
  *  The sounds are for:

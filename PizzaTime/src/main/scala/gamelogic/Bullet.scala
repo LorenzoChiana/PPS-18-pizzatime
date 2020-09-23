@@ -1,55 +1,31 @@
 package gamelogic
 
-import Entity._
-import utilities.{Direction, Down, Left, Position, Right, Up}
-import GameState.arena
+import utilities.IdGenerator.nextId
+import utilities.Position.changePosition
+import utilities.Position
 
-/** A bullet fired by the [[Player]].
+/** A bullet fired by the [[Hero]].
  *
- *  @param position its initial [[Position]]
+ *  @param position its [[Position]]
  */
-case class Bullet(var position: Position, var unexploded: Boolean = true, range: Int = 5) extends MovableEntity {
-  private var bulletRange: Int = 0
+case class Bullet(id: Int, position: Position, unexploded: Boolean, bulletRange: Int) extends MovableEntity {
 
-  def advance(): Unit = {
-    position.dir.get match {
-      case Up => move(Up)
-      case Down => move(Down)
-      case Left => move(Left)
-      case Right => move(Right)
-    }
-  }
+  def move(): Bullet = Bullet(id, changePosition(position, position.dir.get), checkInRange(bulletRange), incRange(bulletRange))
 
-  override def move(dir: Direction): Boolean = {
-    incRange()
-    if (canMoveIn(nearPoint(position.point, dir)) && checkInRange) {
-      position = Position(nearPoint(position.point, dir), Some(dir))
-      true
-    } else {
-      unexploded = false
-      false
-    }
-  }
+  private def incRange(range: Int): Int = range + 1
 
-  override def canMove: Boolean = canMoveIn(nearPoint(position.point, position.dir.get))
-
-  override def remove(): Boolean = {
-    unexploded = false
-    arena.get.bullets = arena.get.bullets - copy()
-    !arena.get.bullets.contains(copy())
-  }
-
-  private def incRange(): Unit = bulletRange += 1
-
-  private def checkInRange: Boolean = bulletRange < range
+  private def checkInRange(range: Int): Boolean = range < Bullet.range
 }
 
-/** Factory for [[Bullet]] instances. */
 object Bullet {
+  val range: Int = 5
+
   /** Creates a [[Bullet]] with a given [[Position]].
    *
    *  @param position its initial [[Position]]
    *  @return the new [[Bullet]] instance
    */
-  def apply(position: Position): Bullet = new Bullet(position)
+  def apply(position: Position): Bullet = Bullet(nextId, position, unexploded = true, 0)
 }
+
+

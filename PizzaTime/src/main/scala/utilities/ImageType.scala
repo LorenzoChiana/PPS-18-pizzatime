@@ -1,6 +1,21 @@
 package utilities
 
+/** Allows to load the various images of the game.
+ *  The images include:
+ *    Floor
+ *    Wall
+ *    Hero
+ *    Enemy
+ *    Bullet
+ *    Bonus life
+ *    Bonus score
+ *    Life bars
+ *    Table
+ *    Stove
+ *    Sink
+ */
 sealed trait ImageType
+
 case object FloorImage extends ImageType { val path: String = "/images/textures/tile.png" }
 case object WallImage extends ImageType { val path: String = "/images/textures/wallKitchen.png" }
 case object HeroImage extends ImageType { val path: String = "/images/sprites/hero.png" }

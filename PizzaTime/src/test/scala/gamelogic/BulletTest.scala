@@ -1,79 +1,55 @@
 package gamelogic
 
-import Entity._
 import GameState.nextStep
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
-import utilities.{Down, Left, Position, Right, StaticArena, Up}
+import utilities.Position.changePosition
+import utilities.{Direction, Down, Left, Position, Right, StaticArena, Up}
 
-/** Test class for [[Bullet]] */
+/** Test class for [[Bullet]]. */
 class BulletTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
-    initialPlayerPosition = Position(Arena.center, Some(Up))
+    initialHeroPosition = Position(Arena.center, Some(Up)),
+    initialEnemyPosition = changePosition(changePosition(Position(Arena.center, Some(Up)), Up), Up),
+    obstaclePosition = changePosition(changePosition(Position(Arena.center, Some(Up)), Right), Right),
+    wallPosition = changePosition(changePosition(Position(Arena.center, Some(Up)), Down), Down)
   )
   import staticArena.arena._
+  import staticArena._
 
   "A Bullet" should "explode after a while" in {
-    List(Up, Down, Left, Right).foreach(direction => nextStep(None, Some(direction)))
+    nextStep(None, Some(Left))
     bullets.foreach(_.unexploded shouldBe true)
-    while(bullets.exists(_.unexploded) || bullets.exists(_.canMove)) nextStep(None, None)
+    while(bullets.exists(_.unexploded) || bullets.exists(_.bulletRange > 0)) nextStep(None, None)
     bullets.foreach(_.unexploded shouldBe false)
   }
 
-  val entityOfCollisionPosition: Position = Position(nearPoint(nearPoint(Arena.center, Right), Right), Option(Right))
+  it should "always move in the same direction it was shot" in {
+    nextStep(None, Some(Left))
+    while(bullets.exists(_.unexploded)) {
+      bullets.foreach(bullet => bullet.position.dir shouldBe Some(Left))
+      nextStep(None, None)
+    }
+  }
+
+  val entityOfCollisionPosition: Position = changePosition(Position(Arena.center, Some(Up)), Right)
 
   it should "explode if it collides with an obstacle" in {
-    checkExplosionWhenCollides(
-      Obstacle(entityOfCollisionPosition),
-      mustExplode = true
-    )
+    checkExplosionWhenCollides(obstaclePosition, Right)
   }
 
   it should "explode if it collides with an enemy" in {
-    checkExplosionWhenCollides(
-      Enemy(entityOfCollisionPosition),
-      mustExplode = true
-    )
+    checkExplosionWhenCollides(initialEnemyPosition, Up)
   }
 
   it should "explode if it collides with a wall" in {
-    checkExplosionWhenCollides(
-      Wall(entityOfCollisionPosition),
-      mustExplode = true
-    )
+    checkExplosionWhenCollides(wallPosition, Down)
   }
 
-  it should "not explode is it collides with a collectible" in {
-    checkExplosionWhenCollides(
-      BonusScore(entityOfCollisionPosition, 5),
-      mustExplode = false
-    )
-    checkExplosionWhenCollides(
-      BonusLife(entityOfCollisionPosition),
-      mustExplode = false
-    )
-  }
-
-  it should "always move in the same direction it was shot" in {
-    List(Up, Down, Left, Right).foreach(direction => {
-      nextStep(None, Some(direction))
-      while (bullets.exists(_.unexploded)) {
-        bullets.foreach(bullet => bullet.position.dir shouldBe Some(direction))
-        nextStep(None, None)
-      }
-    })
-  }
-
-  private def checkExplosionWhenCollides(entity: Entity, mustExplode: Boolean): Unit = {
-    nextStep(None, Some(Right))
+  private def checkExplosionWhenCollides(position: Position, direction: Direction): Unit = {
+    nextStep(None, Some(direction))
     while(bullets.exists(_.unexploded)) nextStep(None, None)
-    bullets.filter(!_.unexploded).foreach(bullet =>
-      if (mustExplode)
-        bullet.position.point shouldBe entity.position.point
-      else
-        bullet.position.point should not be entity.position.point
-    )
-    entity.remove()
+    bullets.filter(!_.unexploded).foreach(_.position.point shouldBe position.point)
   }
 }

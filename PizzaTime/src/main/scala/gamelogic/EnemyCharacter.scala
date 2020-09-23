@@ -3,16 +3,11 @@ package gamelogic
 /** Represents an enemy character.
  *  Implemented by [[Enemy]].
  */
-trait EnemyCharacter extends MovableEntity {
-  def lives: Int
+trait EnemyCharacter extends LivingEntity with MovableEntity {
+  def id: Int
 
   def pointsKilling: Int
 
-  def movementBehaviour: Boolean
-
-  def isLive: Boolean
-
-  def isDead: Boolean
-
-  def decreaseLife(): Unit
+  def movementBehaviour: Option[EnemyCharacter]
 }
+

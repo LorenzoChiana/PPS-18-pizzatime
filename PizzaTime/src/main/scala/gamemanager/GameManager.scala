@@ -16,7 +16,7 @@ import java.util.concurrent.Executors.newFixedThreadPool
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.fromExecutorService
 import gamelogic.{GameState, MapGenerator}
-import gamelogic.GameState.{arena, playerRankings, worldRecord}
+import gamelogic.GameState.{playerRankings, worldRecord}
 import gamemanager.ImageLoader.loadImage
 import gamemanager.SoundLoader.{play, stopSound}
 import gameview.fx.FXWindow
@@ -25,6 +25,7 @@ import javafx.stage.Stage
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
+import utilities.Logger.log
 
 import scala.io.Source
 import scala.util.{Failure, Success, Using}
@@ -56,7 +57,7 @@ object GameManager extends ViewObserver with GameLogicObserver {
 
     loadImage().onComplete({
       case Success(_) =>  view.scene_(new Intent(MainScene)); view.showView()
-      case Failure(t) => println(t.printStackTrace())
+      case Failure(t) => log(t.getMessage)
     })
   }
 
@@ -72,7 +73,6 @@ object GameManager extends ViewObserver with GameLogicObserver {
   /** Notifies that the game has ended */
   def notifyEndGame(): Unit = {
     endGame = true
-    arena.get.player.checkNewOwnRecord()
     GameState.endGame()
     savePlayerRankings()
     finishGame()
@@ -82,11 +82,9 @@ object GameManager extends ViewObserver with GameLogicObserver {
    *
    *  @param action the [[Action]] notified by the view
    */
-  def notifyAction(action: Action): Unit = {
-    action.actionType match {
-      case Movement => playerMoves = playerMoves :+ action.direction
-      case Shoot => playerShoots = playerShoots :+ action.direction
-    }
+  def notifyAction(action: Action): Unit = action.actionType match {
+    case Movement => playerMoves = playerMoves :+ action.direction
+    case Shoot => playerShoots = playerShoots :+ action.direction
   }
 
   /** Notifies the transition to the game scene. */
@@ -141,11 +139,12 @@ object GameManager extends ViewObserver with GameLogicObserver {
     Using(Source.fromFile("rank.json")){ _.mkString } match {
       case Success(stringRank) =>
         allDifficulty.foreach( difficulty => {
-          playerRankings = playerRankings ++ Map(difficulty.toString() -> ( for {
-            JObject(playerRecord) <- parse(stringRank) \ difficulty
-            JField("PlayerName", JString(name)) <- playerRecord
-            JField("Record", JInt(record)) <- playerRecord
-          } yield name -> record).toMap)
+          playerRankings = playerRankings ++ Map(difficulty.toString() -> (
+            for {
+              JObject(playerRecord) <- parse(stringRank) \ difficulty
+              JField("PlayerName", JString(name)) <- playerRecord
+              JField("Record", JInt(record)) <- playerRecord
+            } yield name -> record).toMap)
         })
       case Failure(_) =>
         allDifficulty.foreach(difficulty => playerRankings = playerRankings ++ Map(difficulty.toString() -> Map()))
@@ -169,8 +168,9 @@ object GameManager extends ViewObserver with GameLogicObserver {
 
   import utilities.ImplicitConversions._
   /** Loads the world record from the ranking */
-  def loadWorldRecord(): Unit =
+  def loadWorldRecord(): Unit = {
     worldRecord = if (playerRankings(difficulty).nonEmpty) playerRankings(difficulty).maxBy(_._2)._2 else 0
+  }
 
   override def startNewLevel(): Unit = GameState.nextLevel()
 
@@ -207,10 +207,10 @@ object GameManager extends ViewObserver with GameLogicObserver {
   override def openDoor(): Unit = play(LevelUpSound)
 
   /** Notifies when the player dies */
-  override def playerDead(): Unit = play(FailureSound);  stopSound()
+  override def playerDead(): Unit = play(FailureSound); stopSound()
 
   /** Notifies when start new level */
-  override def startGame(): Unit = println()//play(LevelMusic)
+  override def startGame(): Unit = play(LevelMusic)
 
   /** Notifies end game */
   override def finishGame(): Unit = stopSound()

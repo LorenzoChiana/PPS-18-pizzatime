@@ -1,6 +1,6 @@
 package utilities
 
-/** Types of dialog messages */
+/** Types of dialog messages. */
 object MessageTypes {
   sealed trait MessageType
   case object Info extends MessageType

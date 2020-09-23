@@ -12,7 +12,7 @@ import org.scalatest.enablers.Emptiness.emptinessOfGenTraversable
 class ArenaTest extends AnyFlatSpec with Matchers {
   startGame("Player1", MapGenerator(Medium))
 
-  val arena: GameMap = GameState.arena.get
+  val arena: Arena = GameState.arena.get
   import arena._
 
   "The Arena" can "be generated for a game" in {

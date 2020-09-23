@@ -7,7 +7,7 @@ import net.liftweb.json.{Formats, compactRender}
 import net.liftweb.json.ext.EnumSerializer
 import utilities.Difficulty
 
-/** Handles the game preferences set by the user */
+/** Handles the game preferences set by the user. */
 object PreferencesHandler {
   private val PLAYER_NAME: String = "PlayerName"
   private val DIFFICULTY: String = "Difficulty"
@@ -39,13 +39,5 @@ object PreferencesHandler {
    * Sets and save the game difficulty
    * @param difficulty the game difficulty
    */
-  def difficulty_(difficulty: Difficulty.Value): Unit = {
-    prefs.put(DIFFICULTY, compactRender(decompose(difficulty)))
-  }
-
-  /** Resets all preferences */
-  def reset(): Unit = {
-    prefs.remove(PLAYER_NAME)
-    prefs.remove(DIFFICULTY)
-  }
+  def difficulty_(difficulty: Difficulty.Value): Unit = prefs.put(DIFFICULTY, compactRender(decompose(difficulty)))
 }

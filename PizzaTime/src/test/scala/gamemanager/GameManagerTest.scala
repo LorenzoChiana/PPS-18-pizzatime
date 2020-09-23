@@ -6,7 +6,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers
 import utilities.{Action, Movement, Shoot, Up}
 
-/**Test class for [[GameManager]]**/
+/** Test class for [[GameManager]]. **/
 class GameManagerTest extends AnyFlatSpec with Matchers {
   "When start game" should "be create a GameMap" in {
     notifyStartGame()

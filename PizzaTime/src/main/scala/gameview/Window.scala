@@ -4,7 +4,7 @@ import gameview.scene.SceneType
 import utilities.Intent
 import utilities.MessageTypes.MessageType
 
-/** A generic window */
+/** A generic window. */
 trait Window {
 
   /** Allows you to show the window */
