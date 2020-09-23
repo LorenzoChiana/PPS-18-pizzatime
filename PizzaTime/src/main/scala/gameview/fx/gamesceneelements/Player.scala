@@ -15,15 +15,23 @@ class Player extends GameElements{
   private val player: ImageView = createElement(images(HeroImage))
   private var currentPosition: Position = arena.get.hero.position
 
+  private val AnimDuration = 25
+  private val AnimCount = 4
+  private val AnimCol = 4
+  private val AnimOffX = 0
+  private val AnimOffY = 0
+  private val AnimWidht = 100
+  private val AnimHeight = 130
+
   val heroAnimation = new SpriteAnimation(
     player,
-    Duration.millis(25),
-    count = 4,
-    col = 4,
-    offsetX = 0,
-    offsetY = 0,
-    width = 100,
-    height = 130
+    Duration.millis(AnimDuration),
+    count = AnimCount,
+    col = AnimCol,
+    offsetX = AnimOffX,
+    offsetY = AnimOffY,
+    width = AnimWidht,
+    height = AnimHeight
   )
 
   /**

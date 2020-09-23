@@ -6,6 +6,4 @@ import utilities.Position
  *
  *  @param position its [[Position]]
  */
-case class Wall(position: Position) extends Entity {
-
-}
+case class Wall(position: Position) extends Entity

@@ -19,12 +19,12 @@ case class FXPlayerRankingsScene(override val windowManager: Window) extends FXV
   @FXML protected var labelDifficulty: Label = _
   import utilities.ImplicitConversions._
   private val recordsList: Map[String, Int] = if (playerRankings.isDefinedAt(difficulty)) playerRankings(difficulty) else Map()
-
+  private val spacing = 20
   labelDifficulty.setText(difficulty)
   recordsList foreach {
     case (name, record) =>
       val hBox = new HBox()
-      hBox.setSpacing(20)
+      hBox.setSpacing(spacing)
       hBox.setAlignment(CENTER)
       hBox.getChildren.add(new Label(name + ": " + record))
       recordsContainer.getChildren.add(hBox)

@@ -25,6 +25,7 @@ import javafx.stage.Stage
 import net.liftweb.json.JsonAST
 import net.liftweb.json.JsonDSL._
 import net.liftweb.json._
+import utilities.Logger.log
 
 import scala.io.Source
 import scala.util.{Failure, Success, Using}
@@ -56,7 +57,7 @@ object GameManager extends ViewObserver with GameLogicObserver {
 
     loadImage().onComplete({
       case Success(_) =>  view.scene_(new Intent(MainScene)); view.showView()
-      case Failure(t) => println(t.printStackTrace())
+      case Failure(t) => log(t.getMessage)
     })
   }
 

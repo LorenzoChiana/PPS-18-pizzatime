@@ -13,22 +13,26 @@ import utilities.Position.changePosition
  */
 case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity with EnemyCharacter {
   val pointsKilling: Int = 20
-
   private var disableBehavior: Boolean = false
+  private val cases: Int = 40
 
-  override def movementBehaviour: Option[EnemyCharacter] =
-    if (!disableBehavior)
-      nextInt(40) match {
+  override def movementBehaviour: Option[EnemyCharacter] = {
+    if (!disableBehavior) {
+      nextInt(cases) match {
         case 0 => Some(Enemy(id, changePosition(position, Up), lives))
         case 1 => Some(Enemy(id, changePosition(position, Down), lives))
         case 2 => Some(Enemy(id, changePosition(position, Left), lives))
         case 3 => Some(Enemy(id, changePosition(position, Right), lives))
         case _ => None
       }
-    else None
+    } else {
+      None
+    }
+  }
 
-  def onTestingMode(): Unit = disableBehavior = true
-
+  def onTestingMode(): Unit = {
+    disableBehavior = true
+  }
 }
 
 object Enemy {

@@ -16,7 +16,7 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.KeyEvent
 import javafx.scene.layout.{BorderPane, GridPane}
 import javafx.stage.Stage
-import utilities.{Action, Down, Left, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, MessageTypes, Movement, Right, Shoot, Up}
+import utilities._
 import scala.collection.immutable
 import scala.collection.immutable.HashSet
 

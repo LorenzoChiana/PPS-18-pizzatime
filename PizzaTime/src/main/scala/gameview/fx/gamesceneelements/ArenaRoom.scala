@@ -43,7 +43,7 @@ class ArenaRoom extends GameElements {
   private def createArena(): Unit = {
     for (f <- arena.get.floor) addToDungeon (f, images(FloorImage))
     for (w <- arena.get.walls) addToDungeon (w, images(WallImage))
-    for (o <- arena.get.obstacles) o.`type` match {
+    for (o <- arena.get.obstacles) o.obstacleType match {
       case Table => addToDungeon (o, images(TableImage))
       case Sink => addToDungeon (o, images(SinkImage))
       case Stove => addToDungeon (o, images(StoveImage))

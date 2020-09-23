@@ -1,8 +1,8 @@
 package utilities
 
 case class Position(point: Point, dir: Option[Direction])
-object Position{
 
+object Position {
   /** Returns the adjacent [[Point]] in a given [[Direction]].
    *
    *  @param dir the [[Direction]] to consider

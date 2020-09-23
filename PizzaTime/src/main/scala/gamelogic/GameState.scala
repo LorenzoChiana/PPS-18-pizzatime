@@ -9,12 +9,13 @@ object GameState {
   var arena: Option[Arena] = None
   var arenaWidth: Int = difficulty.arenaWidth
   var arenaHeight: Int = difficulty.arenaHeight
-  var playerRankings = Map.empty[String, Map[String, Int]]
+  var playerRankings: Map[String, Map[String, Int]] = Map.empty[String, Map[String, Int]]
   var worldRecord: Int = 0
-
   var observers: Set[GameLogicObserver] = Set[GameLogicObserver]()
 
-  def addObserver(obs: GameLogicObserver): Unit = { observers = observers + obs }
+  def addObserver(obs: GameLogicObserver): Unit = {
+    observers = observers + obs
+  }
 
   def startGame(playerName: String, mapGen: MapGenerator): Unit = {
     arena = Some(Arena(playerName, mapGen))

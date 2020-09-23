@@ -9,6 +9,5 @@ trait EnemyCharacter extends LivingEntity with MovableEntity {
   def pointsKilling: Int
 
   def movementBehaviour: Option[EnemyCharacter]
-
 }
 
