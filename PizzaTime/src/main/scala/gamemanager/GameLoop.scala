@@ -6,6 +6,7 @@ import Thread.sleep
 import GameManager._
 import gamelogic.GameState.{arena, checkNewWorldRecord, nextStep, worldRecord}
 import gameview.fx.FXGameScene
+import utilities.Logger.log
 
 class GameLoop() extends Runnable  {
 
@@ -39,6 +40,6 @@ class GameLoop() extends Runnable  {
   }
 
   def finishGame(): Unit = {
-    println("Finish!")
+    log("Finish!")
   }
 }
