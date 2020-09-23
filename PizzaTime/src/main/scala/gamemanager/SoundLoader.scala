@@ -7,6 +7,7 @@ import javax.sound.sampled.{AudioSystem, Clip}
 import scala.language.postfixOps
 import AudioSystem._
 import Clip._
+import gamemanager.ImageLoader.getClass
 import utilities.{BonusSound, EnemyInjurySound, FailureSound, InjurySound, LevelMusic, LevelUpSound, MenuMusic, ShootSound, SoundType}
 
 import scala.concurrent._
@@ -47,7 +48,7 @@ object SoundLoader {
    *  @param path the path of the sound to be played
    */
   private def playSound(path: String): Future[Unit] = Future({
-      val audioIn = getAudioInputStream(new File(path))
+      val audioIn = getAudioInputStream(getClass.getResourceAsStream(path))
       val clip = getClip
       clip.open(audioIn)
       audioIn.close()
@@ -59,7 +60,7 @@ object SoundLoader {
    *  @param path the path of the sound to be played
    */
   private def playMusic(path: String): Future[Unit] = Future {
-    val audioIn = getAudioInputStream(new File(path))
+    val audioIn = getAudioInputStream(getClass.getResourceAsStream(path))
     gameClip = getClip
     gameClip.open(audioIn)
     audioIn.close()
