@@ -48,7 +48,7 @@ object SoundLoader {
    *  @param path the path of the sound to be played
    */
   private def playSound(path: String): Future[Unit] = Future({
-      val audioIn = getAudioInputStream(getClass.getResourceAsStream(path))
+      val audioIn = getAudioInputStream(getClass.getResource(path))
       val clip = getClip
       clip.open(audioIn)
       audioIn.close()
@@ -60,7 +60,7 @@ object SoundLoader {
    *  @param path the path of the sound to be played
    */
   private def playMusic(path: String): Future[Unit] = Future {
-    val audioIn = getAudioInputStream(getClass.getResourceAsStream(path))
+    val audioIn = getAudioInputStream(getClass.getResource(path))
     gameClip = getClip
     gameClip.open(audioIn)
     audioIn.close()
