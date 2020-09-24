@@ -15,7 +15,7 @@ package utilities
   case object FailureSound extends SoundType {val path: String = "/sounds/lose.wav"}
   case object InjurySound extends SoundType {val path: String = "/sounds/die.wav"}
   case object BonusSound extends SoundType {val path: String = "/sounds/bonus.wav"}
-  case object MenuMusic extends SoundType {val path: String = "/sounds/menu.mp3"}
+  case object MenuMusic extends SoundType {val path: String = "/sounds/menu.wav"}
   case object LevelUpSound extends SoundType {val path: String = "/sounds/levelUp.wav"}
   case object EnemyInjurySound extends SoundType {val path: String = "/sounds/enemyDie.wav"}
 
