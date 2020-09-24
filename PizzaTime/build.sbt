@@ -20,6 +20,7 @@ lazy val root = (project in file("."))
       "org.scalatest" % "scalatest_2.13" % "3.1.2" % "test",
       "org.testfx" % "testfx-core" % "4.0.16-alpha" % Test,
       "org.testfx" % "testfx-junit" % "4.0.15-alpha" % Test,
+      "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0"
     ),
     /*assemblyMergeStrategy in assembly := {
       case PathList("META-INF", xs @ _*) => MergeStrategy.discard

@@ -1,13 +1,10 @@
 package gamemanager
 
-import java.io.File
-
 import javax.sound.sampled.{AudioSystem, Clip}
 
 import scala.language.postfixOps
 import AudioSystem._
 import Clip._
-import gamemanager.ImageLoader.getClass
 import utilities.{BonusSound, EnemyInjurySound, FailureSound, InjurySound, LevelMusic, LevelUpSound, MenuMusic, ShootSound, SoundType}
 
 import scala.concurrent._
