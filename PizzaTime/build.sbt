@@ -3,11 +3,10 @@ lazy val root = (project in file("."))
     scalaVersion := "2.13.2",
     scalacOptions ++= Seq(
       "-deprecation",
-      "-feature",
-      "-target:jvm-1.8"
+      "-feature"
     ),
     libraryDependencies ++= Seq(
-      "org.openjfx" % "javafx" % "12.0.2" pomOnly(),
+      "org.scalafx" %% "scalafx" % "14-R19",
       "junit" % "junit" % "4.12" % Test,
       "net.liftweb" %% "lift-json" % "3.4.1",
       "net.liftweb" %% "lift-json-ext" % "3.4.1",
@@ -22,10 +21,10 @@ lazy val root = (project in file("."))
       "org.testfx" % "testfx-core" % "4.0.16-alpha" % Test,
       "org.testfx" % "testfx-junit" % "4.0.15-alpha" % Test,
     ),
-    assemblyMergeStrategy in assembly := {
+    /*assemblyMergeStrategy in assembly := {
       case PathList("META-INF", xs @ _*) => MergeStrategy.discard
       case _ => MergeStrategy.first
-    },
+    },*/
     mainClass in Compile := Some("Main"),
     crossPaths := false, // https://github.com/sbt/junit-interface/issues/35
     Test / parallelExecution := false
@@ -40,6 +39,6 @@ lazy val osName = System.getProperty("os.name") match {
 }
 
 lazy val javaFXModules = Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
-libraryDependencies ++= javaFXModules.map( m=>
-  "org.openjfx" % s"javafx-$m" % "11" classifier osName
+libraryDependencies ++= javaFXModules.map( m =>
+  "org.openjfx" % s"javafx-$m" % "14.0.1" classifier osName
 )
