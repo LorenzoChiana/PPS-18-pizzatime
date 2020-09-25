@@ -21,10 +21,10 @@ lazy val root = (project in file("."))
       "org.testfx" % "testfx-core" % "4.0.16-alpha" % Test,
       "org.testfx" % "testfx-junit" % "4.0.15-alpha" % Test,
     ),
-    /*assemblyMergeStrategy in assembly := {
+    assemblyMergeStrategy in assembly := {
       case PathList("META-INF", xs @ _*) => MergeStrategy.discard
       case _ => MergeStrategy.first
-    },*/
+    },
     mainClass in Compile := Some("Main"),
     crossPaths := false, // https://github.com/sbt/junit-interface/issues/35
     Test / parallelExecution := false
