@@ -6,7 +6,7 @@ import utilities.{Down, Left, Point, Position, Right, Scala2P, Up}
 
 import scala.util.Random.nextInt
 import utilities.Position.changePosition
-import utilities.Scala2P.mkPrologEngine
+import utilities.Scala2P.prolog
 
 /** An enemy character.
  *
@@ -18,18 +18,6 @@ case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity w
   private var disableBehavior: Boolean = false
   private val cases: Int = 40
 
-  def movB: Option[EnemyCharacter] = {
-    import Scala2P._
-    val engine: Term => Stream[Option[Term]] = mkPrologEngine("""
-      move(X1,Y1,X2,Y2) :- X2 is X1+1, Y2 is Y1.
-      move(X1,Y1,X2,Y2) :- X2 is X1-1, Y2 is Y1.
-      move(X1,Y1,X2,Y2) :- Y2 is Y1+1, X2 is X1.
-      move(X1,Y1,X2,Y2) :- Y2 is Y1-1, X2 is X1.
-    """)
-
-    println(engine("move(1,1,X,Y)"))
-    Some(Enemy(id, Position(Point(1,1), position.dir), lives))
-  }
   override def movementBehaviour: Option[EnemyCharacter] = {
     if (!disableBehavior) {
       nextInt(cases) match {
