@@ -1,0 +1,19 @@
+* {
+	/* Some general colors */
+	lightGreen: rgb(146,222,52);
+	darkGreen: #025600;
+    violet: #c9beeb;
+    grey: #a8c0ce
+}
+
+#statsPane {
+    -fx-background-color: linear-gradient(from 25% 25% to 100% 100%, violet, grey);
+    -fx-alignment: center;
+    -fx-padding: 6px, 15px,  6px,  6px;
+}
+
+.label {
+    -fx-font-size: 25;
+    -fx-text-fill: darkGreen;
+    -fx-font-weight: bold;
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<fx:root type="javafx.scene.layout.BorderPane"
+         xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         stylesheets="@../styles/MainStyle.css, @../styles/DialogStyle.css, @../styles/GameStatsStyle.css" >
+    <center>
+            <GridPane fx:id="root">
+                <BorderPane fx:id="statsPane" GridPane.columnIndex="0" GridPane.rowIndex="0" minHeight="50">
+                    <right>
+                        <Button fx:id="endButton" text="Exit" visible="true" />
+                    </right>
+
+                    <center>
+                        <Label fx:id="statsLabel" />
+                    </center>
+
+                    <left>
+                        <ImageView fx:id="lifeBar"/>
+                    </left>
+                </BorderPane>
+            </GridPane>
+    </center>
+</fx:root>
+
