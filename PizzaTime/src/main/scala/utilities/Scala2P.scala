@@ -1,6 +1,7 @@
 package utilities
 
-import alice.tuprolog._
+import alice.tuprolog
+import alice.tuprolog.{NoMoreSolutionException, Prolog, SolveInfo, Struct, Term, Theory}
 
 object Scala2P {
 
@@ -34,6 +35,12 @@ object Scala2P {
   }
 }
 
+object PrologInt {
+  type TuPrologInt = alice.tuprolog.Int
+  def apply(value: Int): TuPrologInt = new TuPrologInt(value)
+}
+
+/*
 object TryScala2P extends App {
   import Scala2P._
 
@@ -45,5 +52,7 @@ object TryScala2P extends App {
   """)
 
   engine("moveAlt(1,1,X,Y)").foreach(a=> println(a))
-}
+}*/
+
+
 
