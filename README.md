@@ -58,6 +58,7 @@ Once all the enemies in a room are defeated, a (randomly positioned) door will a
 <Strong>Commands</Strong>
 
 WASD: Move around
+
 Arrows: Shoot bullets
 
   
