@@ -20,7 +20,7 @@ case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity w
 
   def movB: Option[EnemyCharacter] = {
     import Scala2P._
-    val engine: Term => Stream[Term] = mkPrologEngine("""
+    val engine: Term => Stream[Option[Term]] = mkPrologEngine("""
       move(X1,Y1,X2,Y2) :- X2 is X1+1, Y2 is Y1.
       move(X1,Y1,X2,Y2) :- X2 is X1-1, Y2 is Y1.
       move(X1,Y1,X2,Y2) :- Y2 is Y1+1, X2 is X1.
