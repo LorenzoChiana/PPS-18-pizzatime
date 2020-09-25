@@ -3,21 +3,21 @@
 
 # PizzaTime
 
-This porject is a battle arena game with 2D fixed view graphics written in Scala for educational purpose.
+This project is a Battle Arena game with 2D fixed perspective graphics, written in Scala for educational purpose.
 
   
 
 ## Project description
 
-Gioco di tipo battle arena con grafica 2D a visuale fissa, in cui il giocatore comanda un personaggio che si muove in una mappa generata casualmente, comprendente nemici ed eventuali ostacoli.
+Battle Arena game with 2D fixed perspective graphics. You play a character that moves inside a randomly-generated map, defeating enemies and completing levels.
 
-Il personaggio si muove all'interno di più stanze delle stesse dimensioni, avanzando da una stanza all'altra. Una stanza, generata casualmente, può comprendere un arbitrario numero di nemici, ostacoli, oggetti collezionabili e una porta; l'eliminazione di tutti i nemici presenti in una stanza permette l'attraversamento della porta verso la prossima stanza. Solo una stanza alla volta è visibile a schermo.
+The player moves from one fixed-dimension room to another as it advances levels. A (randomly generated) room can contain an arbitrary number of enemies, obstacles and power-ups; defeating all the enemies grants access through a door to the next level. Only a room at a time is visible on screen.
 
-Lo scopo del gioco può essere il raggiungimento di una certa stanza che contiene un oggetto speciale che determina la fine della partita oppure, in una modalità alternativa, il superamento di un certo numero di stanze. Nel primo caso, probabilità di trovare la stanza finale è anch'essa casuale, ma può aumentare con il raggiungimento di certe condizioni (ad esempio il superamento di una soglia di punteggio o il ritrovamento di oggetti speciali). Un'ulteriore modalità potrebbe essere una partita senza limiti, dove l'obiettivo è semplicemente il miglioramento del proprio record di punteggio, visualizzato in una classifica. La natura casuale del gioco può determinare una curva di difficoltà molto variabile, visto il ruolo che la fortuna ha nel trovare la stanza finale o semplicemente una stanza più semplice da completare.
+The goal of the game could be reaching a final room containing a special object that determines its end, or, alternatively, the completion of a certain number of rooms. In the former case, the probability of finding the special object is also random, but still dependent on some game conditions (like, for example, the reaching of a score threshold). However, the game could be played in a survival-like mode just to achieve a personal highest score related to the user, which is kept saved and shown in the ranking section of the menu. The random nature of the game implies an easily variable difficulty curve, making the gameplay depend also on luck, which can make it fun but also challenging at times.
 
-Il personaggio ha a disposizione come arma principale dei proiettili (pizze) da lanciare ai nemici; certi oggetti collezionabili possono rappresentare ulteriori armi oppure aiuti per proteggersi dai nemici.
+The player's main weapon are bullets (tomatos) to be thrown at enemies; collectibles grant a score-related or life-related bonus.
 
-Il gioco permette di registrare diversi profili con associate tutte le statistiche delle partite del giocatore, per poterle comparare con gli altri e in particolare per poter creare una classifica comprendente i punteggi di ognuno.
+The game allows to register different user profiles to save the game stats and compare them in a ranking.
 
   
 
@@ -49,25 +49,16 @@ java -jar pps-18-pizzatime-1.0.jar
 
 ## How to play
 
-Una volta avviato il .jar vi si presenterà un menù, dove vi è; la possibilità di modificare le impostazioni di gioco accessibili tramite pulsante "Settings"; la possibilità di guardare la classifica di gioco tramite il pulsante "Player rankings"; e infine la possibilità di giocare tramite "Start game".
+Once you've launched the .jar file, the menu will be shown, from where you can start the game, look at the ranking or change the settings (user profile and difficulty).
+Once you've started the game, the game map (arena) will show up, populated with all the entities for the first level.
 
-Una volta avviato il gioco verrete catapultati in un'arena di gioco con diversi ostacoli, bonus da collezionare e nemici da sconfiggere.
+You pick up collectibles by walking on them; obstacles are not transitables.
+Once all the enemies in a room are defeated, a (randomly positioned) door will appear, granting access to the next level. The map size, all the entities' generation, and also the increase in difficulty with level progression, are related to the chosen difficulty.
 
-Per muovervi vi basterà usare i tasti WASD:
+<Strong>Commands</Strong>
 
-- W = movimento in su;
-
-- S = movimento in giù;
-
-- A = movimento a sinistra;
-
-- D = movimento a destra.
-
-I nemici potranno essere sconfitti sparandogli pomodori addosso, questo possibile alle freccie direzionali (ogni freccia corrisponderà ad uno sparo in tale direzione).
-
-I vari bonus sparsi per la mappa si possono raccogliere camminandoci sopra e comporteranno un incremento della vita o del punteggio.
-
-Una volta uccisi tutti i nemici si aprirà una porta in una posizione casuale tra i muri dell'arena di gioco, il passaggio in questa comporterrà l'inizio del livello successivo.
+WASD: Move around
+Arrows: Shoot bullets
 
   
 
