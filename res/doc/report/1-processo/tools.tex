@@ -1,0 +1,34 @@
+\subsection{Versioning}\label{subsec:versioning}
+Il sistema di \textit{versioning} ha ricorperto un ruolo centrale nella realizzazione del progetto e per tale scopo abbiamo scelto di utilizzare \textbf{Git}.
+Per quanto riguarda l'hosting del repository abbiamo optato per la piattaforma \textbf{GitHub}.
+
+Il flusso di lavoro è stato definito secondo le linee guida del metodo di branching \textbf{git-flow}:
+\begin{itemize}
+	\item Il branch \textit{master} contiene il codice relativo a ciascuna release.
+	\item Il branch \textit{development} ospita il codice realizzato durante uno sprint. Tale codice è testato e stabile, ma non ancora giudicato completamente utilizzabile.
+	\item I vari branch \textit{task-*} corrispondono a ciascun task individuato durante i vari sprint. Tale codice è in fase di implementazione e può contenere codice non completamente funzionante, in quanto ancora in sviluppo.
+	\item non sono stati necessari branch di \textit{hotfix}.
+\end{itemize}
+
+\subsection{Dependency management \& buildscript}\label{subsec:build}
+
+Per la gestione delle dipendenze, quali ad esempio librerie o plugin, e la compilazione del codice, come strumento di automazione dello sviluppo si è utilizzato \textbf{sbt}.
+In particolare, sono stati scritti buildscript per automatizzare:
+
+\begin{itemize}
+    \item la gestione delle \textit{dipendenze} provenienti da repository Maven;
+    \item il processo di \textit{testing} tramite ScalaTest e controllo di \textit{qualità del codice} tramite Scalastyle;
+    \item la gestione delle dipendenze dei vari moduli di \textit{JavaFX} per le varie versione di Java.
+    \item generazione dei \textit{Jar} eseguibili.
+\end{itemize}
+
+\subsection{Continuous Integration}\label{subsec:ci}
+
+Per la verifica del codice prodotto e dei reativi test si è optato per \textit{Travis CI}.
+Questo servizio offre la possibilità di registrare un web-hook al repository GitHub su cui è istanziato il progetto, così da provocare l'esecuzione di Travis CI ad ogni commit effettuato sul repository.
+La configurazione di Travis è stata definita utilizzando il formato YAML e in particolare sono stati specificati:
+\begin{itemize}
+	\item il linguaggio (Scala);
+	\item la versione di Scala;
+	\item la JDK da utilizzare.
+\end{itemize}
