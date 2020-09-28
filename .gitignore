@@ -14,4 +14,4 @@ rank.json
 *.toc
 *.xmpdata
 report.txt
-report.pdf
+*.pdf
