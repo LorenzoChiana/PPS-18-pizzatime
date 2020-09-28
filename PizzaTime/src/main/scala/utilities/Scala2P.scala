@@ -1,6 +1,5 @@
 package utilities
 
-import alice.tuprolog
 import alice.tuprolog.{NoMoreSolutionException, Prolog, SolveInfo, Struct, Term, Theory}
 
 object Scala2P {
@@ -33,12 +32,15 @@ object Scala2P {
       }
     }.toSeq
   }
+
+  def prologInt(i: Int): alice.tuprolog.Int = new alice.tuprolog.Int(i)
+
+  def prologTuple(t1: Int, t2: Int): Term =
+    Term createTerm t1 + "," + t2
+
+  def prologSeq(s: Seq[Term]): Term = s.mkString("[",",","]")
 }
 
-object PrologInt {
-  type TuPrologInt = alice.tuprolog.Int
-  def apply(value: Int): TuPrologInt = new TuPrologInt(value)
-}
 
 /*
 object TryScala2P extends App {

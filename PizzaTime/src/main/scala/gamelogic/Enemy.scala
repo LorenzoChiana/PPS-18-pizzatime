@@ -1,6 +1,7 @@
 package gamelogic
 
-import alice.tuprolog.Term
+import alice.tuprolog.{Struct, Term}
+import gamelogic.GameState.arena
 import utilities.IdGenerator.nextId
 import utilities.{Down, Left, Point, Position, Right, Scala2P, Up}
 
@@ -26,9 +27,12 @@ case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity w
     moveAlt(X1,Y1,X2,Y2) :- Y2 is Y1-1, X2 is X1.
   """)
 
+  val nonWalkableTiles: Term = prologSeq(arena.get.walls.map(w => prologTuple(w.position.point.x, w.position.point.y)).toSeq
+                          ++ arena.get.obstacles.map(o => prologTuple(o.position.point.x, o.position.point.y)).toSeq)
+
   override def movementBehaviour: Option[EnemyCharacter] =
     nextInt(movementRate) match {
-      case 0 => Some(Enemy(id, Position(engine("moveAlt(" + position.point.x + "," + position.point.y + ",X,Y)").head.get, position.dir), lives))
+      case 0 => Some(Enemy(id, Position(engine("moveAlt(" + prologTuple(position.point.x, position.point.y) + ",X,Y)").head.get, position.dir), lives))
       case _ => None
     }
 
