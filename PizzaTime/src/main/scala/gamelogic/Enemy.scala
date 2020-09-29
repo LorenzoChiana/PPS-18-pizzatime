@@ -1,13 +1,11 @@
 package gamelogic
 
-import alice.tuprolog.{Struct, Term}
+import alice.tuprolog.Term
 import gamelogic.GameState.arena
 import utilities.IdGenerator.nextId
-import utilities.{Down, Left, Point, Position, Right, Scala2P, Up}
+import utilities.{Point, Position, Scala2P}
 
 import scala.util.Random.nextInt
-import utilities.Position.changePosition
-import utilities.Scala2P.prolog
 
 /** An enemy character.
  *

@@ -1,7 +1,6 @@
 package utilities
 
 import javafx.animation.FadeTransition
-import javafx.application.Platform
 import javafx.scene.Node
 import javafx.util.Duration
 import javafx.application.Platform.runLater
