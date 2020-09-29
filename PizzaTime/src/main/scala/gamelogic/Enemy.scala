@@ -1,7 +1,6 @@
 package gamelogic
 
 import alice.tuprolog.Term
-import gamelogic.GameState.arena
 import utilities.IdGenerator.nextId
 import utilities.{Point, Position, Scala2P}
 
@@ -19,20 +18,27 @@ case class Enemy(id: Int, position: Position, lives: Int) extends LivingEntity w
 
   import Scala2P._
   val engine: Term => Seq[Option[Point]] = prolog("""
-    moveAlt(X1,Y1,X2,Y2) :- X2 is X1+1, Y2 is Y1.
-    moveAlt(X1,Y1,X2,Y2) :- X2 is X1-1, Y2 is Y1.
-    moveAlt(X1,Y1,X2,Y2) :- Y2 is Y1+1, X2 is X1.
-    moveAlt(X1,Y1,X2,Y2) :- Y2 is Y1-1, X2 is X1.
+      move(X1,Y1,X2,Y2) :- X2 is X1+1, Y2 is Y1.
+      move(X1,Y1,X2,Y2) :- X2 is X1-1, Y2 is Y1.
+      move(X1,Y1,X2,Y2) :- Y2 is Y1+1, X2 is X1.
+      move(X1,Y1,X2,Y2) :- Y2 is Y1-1, X2 is X1.
+
+      %search_point(+List, +H, -B) B true if H is present
+      search([H|T], Non_walkable_tiles, XY) :- findall(H, member(H, Non_walkable_tiles), R), member(_, R) -> search(T, Non_walkable_tiles, XY) ; XY = H.
+
+      calc_point(X, Y, Non_walkable_tiles, XY) :- findall((X1,Y1), move(X,Y,X1,Y1), R), search(R, Non_walkable_tiles, XY).
   """)
 
-  val nonWalkableTiles: Term = prologSeq(arena.get.walls.map(w => prologTuple(w.position.point.x, w.position.point.y)).toSeq
-                          ++ arena.get.obstacles.map(o => prologTuple(o.position.point.x, o.position.point.y)).toSeq)
-
-  override def movementBehaviour: Option[EnemyCharacter] =
+  override def movementBehaviour: Option[EnemyCharacter] = {
+    println(engine("calc_point(" + position.point.x + ", " + position.point.y + "," + nonWalkableTiles + ", Point) " ).head.get)
     nextInt(movementRate) match {
-      case 0 => Some(Enemy(id, Position(engine("moveAlt(" + prologTuple(position.point.x, position.point.y) + ",X,Y)").head.get, position.dir), lives))
+      case 0 => { val en = Enemy(id, Position(engine("calc_point(" + position.point.x + ", " + position.point.y + "," + nonWalkableTiles + ", Point) " ).head.get, position.dir), lives)
+        println(en)
+        Some(en)
+      }
       case _ => None
     }
+  }
 
   /*
   override def movementBehaviour: Option[EnemyCharacter] = {

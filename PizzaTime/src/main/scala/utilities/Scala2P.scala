@@ -1,6 +1,9 @@
 package utilities
 
 import alice.tuprolog.{NoMoreSolutionException, Prolog, SolveInfo, Struct, Term, Theory}
+import gamelogic.GameState.arena
+import net.liftweb.json.DefaultFormats
+import net.liftweb.json.JsonAST.JValue
 
 object Scala2P {
 
@@ -8,6 +11,11 @@ object Scala2P {
 
   implicit def stringToTerm(s: String): Term = Term.createTerm(s)
   implicit def seqToTerm[T](s: Seq[T]): Term = s.mkString("[",",","]")
+
+  def nonWalkableTiles: Term = prologSeq(arena.get.walls.map(w => prologTuple(w.position.point.x, w.position.point.y)).toSeq
+    ++ arena.get.obstacles.map(o => prologTuple(o.position.point.x, o.position.point.y)).toSeq
+    ++ arena.get.enemies.map(e => prologTuple(e.position.point.x, e.position.point.y))
+    ++ arena.get.collectibles.map(c => prologTuple(c.position.point.x, c.position.point.y)))
 
   def prolog(clauses: String*): Term => Seq[Option[Point]] = {
     goal => new Iterable[Option[Point]]{
@@ -21,7 +29,13 @@ object Scala2P {
 
         override def next(): Option[Point] =
           try {
-            if(solution.isDefined) Some(Point(solution.get.getTerm("X").toString.toInt, solution.get.getTerm("Y").toString.toInt)) else None
+            if(solution.isDefined) {
+              val obj: JValue = net.liftweb.json.parse(solution.get.getTerm("Point").toJSON)
+              implicit val format = DefaultFormats
+
+              val element = (obj \\ "value").children
+              Some((for(List(a,b) <- element.combinations(2).toList) yield Point(a.extract[Int], b.extract[Int])).head)
+            } else None
           } finally {
             try {
               solution = Some(engine.solveNext)
