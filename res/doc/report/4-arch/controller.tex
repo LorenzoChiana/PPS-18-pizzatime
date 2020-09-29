@@ -5,14 +5,14 @@
     Per gestire gli eventi creati dall'utente vengono utilizzate due queue che tengono traccia degli spari e dei movimenti compiuti dall'utente e non ancora processati dall'event-loop. Gli eventi vengono poi recuperati ad ogni step come riportato in figura \ref{checknewMovement}.
     
     \begin{figure}[H]
-      \includegraphics[width=13cm]{report/res/checkNewMovement.png}
+      \includegraphics[width=13cm]{res/checkNewMovement.png}
       \caption{Recupera un movimento notificato}
       \label{checknewMovement}
     \end{figure}
 
     \item \textbf{ViewObserver}: Interfaccia che rappresenta l'observer della view; è utilizzata per la comunicazione da view a controller, si occupa di notificare le transizioni tra le varie scene; inoltre notifica i \textit{KeyEvent} generati dall'utente e catturati dalla \textit{GameView}. Quando un evento viene notificato viene aggiunto alla relativa coda per essere, successivamente, consumato dal \textit{GameLoop} come riportato in figura \ref{notifyAction}.
     \begin{figure}[H]
-      \includegraphics[width=15cm]{report/res/notifyAction.png}
+      \includegraphics[width=15cm]{res/notifyAction.png}
       \caption{Aggiunge l'azione notificata alla relativa Queue}
       \label{notifyAction}
     \end{figure}
