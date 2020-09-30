@@ -1,6 +1,5 @@
 package gamelogic
 
-import alice.tuprolog.Term
 import utilities.IdGenerator.nextId
 import utilities.{Position, Scala2P, Right, Left}
 
@@ -22,7 +21,7 @@ case class EnemyWithLeftRightMove(id: Int, position: Position, lives: Int) exten
       case Some(Right) | None => result = engineForLeftRightMove("calc_point(" + position.point.x + ", " + position.point.y + "," + nonWalkableTiles + ", right, Point, Dir) ")
       case Some(Left) => result = engineForLeftRightMove("calc_point(" + position.point.x + ", " + position.point.y + "," + nonWalkableTiles + ", left, Point, Dir) ")
     }
-    println("result head" + id + " " + result.head.get)
+
     result.size match {
       case 0 => Some(EnemyWithLeftRightMove(id, position, lives))
       case _ => Some(EnemyWithLeftRightMove(id, result.head.get,lives))

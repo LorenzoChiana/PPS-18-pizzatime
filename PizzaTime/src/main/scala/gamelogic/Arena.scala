@@ -122,18 +122,13 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
 
     bullets = newBullets
     bullets = bullets.filter(_.unexploded)
-    nStepMove = nStepMove + 1
-    if (nStepMove.equals(mapGen.difficulty.rateEnemyMovement)) {
-      enemies = enemiesMovement
-      nStepMove = 0
-    }
+    enemies = enemiesMovement
     enemies.foreach(en => playerInjury(en))
     enemies = checkHitEnemies
 
     if(hero.isDead) {
       observers.foreach(_.playerDead())
     }
-
   }
 
   private def checkHitEnemies: Set[EnemyCharacter] = {
@@ -146,17 +141,20 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
       }else {
         newEnemies = newEnemies + en
       }
-
     })
     newEnemies
   }
 
-
   private def enemiesMovement: Set[EnemyCharacter] = {
     var newEnemies: Set[EnemyCharacter] = Set()
     enemies.foreach(en => {
+        nStepMove = nStepMove + 1
+      if(nStepMove.equals(mapGen.difficulty.rateEnemyMovement)) {
         newEnemies = newEnemies + enemyMovement(en)
         nStepMove = 0
+      }else{
+        newEnemies = newEnemies + en
+      }
     })
     newEnemies
   }
