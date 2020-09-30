@@ -1,7 +1,7 @@
 package gamelogic
 
 /** Represents an enemy character.
- *  Implemented by [[Enemy]].
+ *  Implemented by [[EnemyWithRandomMove]].
  */
 trait EnemyCharacter extends LivingEntity with MovableEntity {
   def id: Int

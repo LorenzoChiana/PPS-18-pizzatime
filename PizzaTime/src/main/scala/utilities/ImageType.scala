@@ -19,7 +19,8 @@ sealed trait ImageType
 case object FloorImage extends ImageType { val path: String = "/images/textures/tile.png" }
 case object WallImage extends ImageType { val path: String = "/images/textures/wallKitchen.png" }
 case object HeroImage extends ImageType { val path: String = "/images/sprites/hero.png" }
-case object EnemyImage extends ImageType { val path: String = "/images/sprites/enemy.png" }
+case object Enemy1Image extends ImageType { val path: String = "/images/sprites/enemy1.png" }
+case object Enemy2Image extends ImageType { val path: String = "/images/sprites/enemy2.png" }
 case object BulletImage extends ImageType { val path: String = "/images/sprites/bullet.png" }
 case object BonusLifeImage extends ImageType { val path: String = "/images/sprites/bonusLife.png" }
 case object BonusScoreImage extends ImageType { val path: String = "/images/sprites/bonusScore.png" }

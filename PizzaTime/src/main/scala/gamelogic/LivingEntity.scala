@@ -3,7 +3,7 @@ package gamelogic
 import gamemanager.handlers.PreferencesHandler.difficulty
 
 /** An entity with variable lives.
- *  Implemented by [[Hero]] and [[Enemy]].
+ *  Implemented by [[Hero]] and [[EnemyWithRandomMove]].
  */
 trait LivingEntity {
   val lives: Int
@@ -20,8 +20,8 @@ trait LivingEntity {
       case lives if lives < difficulty.maxLife => Hero(l.position, lives + 1)
       case _ => l
     }
-    case l: Enemy => l.lives match {
-      case lives if lives < difficulty.maxLife => Enemy(l.id, l.position, lives + 1)
+    case l: EnemyWithRandomMove => l.lives match {
+      case lives if lives < difficulty.maxLife => EnemyWithRandomMove(l.id, l.position, lives + 1)
       case _ => l
     }
   }
@@ -32,8 +32,12 @@ trait LivingEntity {
       case lives if lives > 0 => Hero(l.position, lives - 1)
       case _ => l
     }
-    case l: Enemy => l.lives match {
-      case lives if lives > 0 => Enemy(l.id, l.position, lives - 1)
+    case l: EnemyWithRandomMove => l.lives match {
+      case lives if lives > 0 => EnemyWithRandomMove(l.id, l.position, lives - 1)
+      case _ => l
+    }
+    case l: EnemyWithLeftRightMove => l.lives match {
+      case lives if lives > 0 => EnemyWithLeftRightMove(l.id, l.position, lives - 1)
       case _ => l
     }
   }

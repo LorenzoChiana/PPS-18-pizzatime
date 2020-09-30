@@ -25,6 +25,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
   val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
   var door: Option[Door] = None
   var endedLevel: Boolean = false
+  val rateEnemyMovement = 10
   private var lastInjury: Option[EnemyCharacter] = None
 
   /** Generates a new level. */
@@ -145,10 +146,17 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     newEnemies
   }
 
+  var nStepMove:Int =0
   private def enemiesMovement: Set[EnemyCharacter] = {
+    nStepMove = nStepMove + 1
     var newEnemies: Set[EnemyCharacter] = Set()
     enemies.foreach(en => {
-      newEnemies = newEnemies + enemyMovement(en)
+      if (nStepMove.equals(rateEnemyMovement)) {
+        newEnemies = newEnemies + enemyMovement(en)
+        nStepMove = 0
+      } else {
+        newEnemies = newEnemies + en
+      }
     })
     newEnemies
   }
@@ -241,7 +249,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
    */
   private def canMoveIn(e: MovableEntity): Boolean = e match {
     case _: Hero | _: Bullet => checkBounds(e.position.point, bounds = true) && !containsWall(e.position.point) && !containsObstacle(e.position.point)
-    case e: Enemy => checkBounds(e.position.point) && !containsObstacle(e.position.point) && containsEnemy(e.position.point).isEmpty && !containsCollectible(e.position.point)
+    case e: EnemyCharacter => checkBounds(e.position.point) && !containsObstacle(e.position.point) && containsEnemy(e.position.point).isEmpty && !containsCollectible(e.position.point)
   }
 }
 

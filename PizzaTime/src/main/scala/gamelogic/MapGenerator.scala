@@ -45,7 +45,8 @@ case class MapGenerator(difficulty: Difficulty.Value) {
 
     for (_ <- 0 to enemyNum) {
       if (checkArenaPopulation()) {
-        arena.get.enemies = arena.get.enemies + Enemy(randomClearPosition)
+        val enemy: EnemyCharacter = if(nextInt(2) == 0) EnemyWithLeftRightMove(randomClearPosition) else EnemyWithRandomMove(randomClearPosition)
+        arena.get.enemies = arena.get.enemies + enemy
       }
     }
   }
@@ -120,6 +121,6 @@ case class MapGenerator(difficulty: Difficulty.Value) {
     while (isEntrance(clearPoint)) {
       clearPoint = clearPoints.toVector(nextInt(clearPoints.size))
     }
-    Position(clearPoint, Some(Down))
+    Position(clearPoint, None)
   }
 }

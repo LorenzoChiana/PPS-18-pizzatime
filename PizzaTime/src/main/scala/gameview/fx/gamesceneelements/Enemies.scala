@@ -1,16 +1,19 @@
 package gameview.fx.gamesceneelements
 
+import gamelogic.{EnemyWithLeftRightMove, EnemyWithRandomMove}
 import gamelogic.GameState.arena
 import gamemanager.ImageLoader.images
 import gameview.fx.FXGameScene.dungeon
-import gameview.fx.gamesceneelements.GameElements.{createElement, pointToPixel}
+import gameview.fx.gamesceneelements.GameElements.{addToDungeon, pointToPixel}
 import javafx.application.Platform
 import javafx.scene.image.ImageView
-import utilities.EnemyImage
+import utilities.{Enemy1Image, Enemy2Image}
+
+import scala.collection.immutable
 
 /** Set of [[ImageView]] representing [[Enemies]]. */
 class Enemies extends GameElements{
-  var enemies: Map[Int, ImageView] = arena.get.enemies.map(a => a.id -> createElement(images(EnemyImage))).toMap
+  var enemies: Map[Int, ImageView] = new immutable.HashMap[Int, ImageView]()
 
   /**
    * Updating position enemy
@@ -33,8 +36,11 @@ object Enemies{
    *  @return the new [[Enemies]] instance
    */
   def apply(): Enemies = {
-    val e: Enemies = new Enemies()
-    Platform.runLater(() => e.enemies.foreach(enemy => dungeon.getChildren.add(enemy._2)))
-    e
+    val enemy: Enemies = new Enemies()
+    arena.get.enemies.foreach {
+      case e: EnemyWithRandomMove => enemy.enemies += (e.id -> addToDungeon(e, images(Enemy1Image)))
+      case e: EnemyWithLeftRightMove => enemy.enemies += (e.id -> addToDungeon(e, images(Enemy2Image)))
+    }
+    enemy
   }
 }

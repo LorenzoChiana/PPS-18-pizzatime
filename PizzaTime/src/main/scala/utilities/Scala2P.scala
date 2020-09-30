@@ -17,7 +17,7 @@ object Scala2P {
     ++ arena.get.enemies.map(e => prologTuple(e.position.point.x, e.position.point.y))
     ++ arena.get.collectibles.map(c => prologTuple(c.position.point.x, c.position.point.y)))
 
-  def prolog(clauses: String*): Term => Seq[Option[Point]] = {
+  def prologGetPoint(clauses: String*): Term => Seq[Option[Point]] = {
     goal => new Iterable[Option[Point]]{
       val engine = new Prolog
       engine.setTheory(new Theory(clauses mkString " "))
@@ -35,6 +35,41 @@ object Scala2P {
 
               val element = (obj \\ "value").children
               Some((for(List(a,b) <- element.combinations(2).toList) yield Point(a.extract[Int], b.extract[Int])).head)
+            } else None
+          } finally {
+            try {
+              solution = Some(engine.solveNext)
+            } catch {
+              case _: NoMoreSolutionException => solution = None
+            }
+          }
+      }
+    }.toSeq
+  }
+
+  def prologGetPosition(clauses: String*): Term => Seq[Option[Position]] = {
+    goal => new Iterable[Option[Position]]{
+      val engine = new Prolog
+      engine.setTheory(new Theory(clauses mkString " "))
+
+      override def iterator: Iterator[Option[Position]] = new Iterator[Option[Position]]{
+        var solution: Option[SolveInfo] = Some(engine.solve(goal))
+
+        override def hasNext: Boolean = solution.isDefined && (solution.get.isSuccess || solution.get.hasOpenAlternatives)
+
+        override def next(): Option[Position] =
+          try {
+            if(solution.isDefined) {
+              val obj: JValue = net.liftweb.json.parse(solution.get.getTerm("Point").toJSON)
+              implicit val format = DefaultFormats
+
+              val element = (obj \\ "value").children
+              val point = (for(List(a,b) <- element.combinations(2).toList) yield Point(a.extract[Int], b.extract[Int])).head
+
+              solution.get.getTerm("Dir").toString match {
+                case "right" => Some(Position(point, Some(Right)))
+                case "left" => Some(Position(point, Some(Left)))
+              }
             } else None
           } finally {
             try {

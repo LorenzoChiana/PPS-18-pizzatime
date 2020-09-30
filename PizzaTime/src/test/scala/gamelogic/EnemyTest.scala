@@ -7,7 +7,7 @@ import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import utilities.Position.changePosition
 import utilities.{Down, Left, Position, Right, StaticArena, Up}
 
-/** Test class for [[Enemy]]. */
+/** Test class for [[EnemyWithRandomMove]]. */
 class EnemyTest extends AnyFlatSpec with Matchers {
   val staticArena: StaticArena = StaticArena(
     initialEnemyPosition = Position(Arena.center, Some(Down)),
@@ -24,8 +24,8 @@ class EnemyTest extends AnyFlatSpec with Matchers {
   }
 
   it should "lose his life when he collides with a bullet" in {
-    enemy.lives shouldBe Enemy.maxLife
+    enemy.lives shouldBe EnemyWithRandomMove.maxLife
     nextStep(None, Some(Down))
-    enemies.last.lives shouldBe (Enemy.maxLife - 1)
+    enemies.last.lives shouldBe (EnemyWithRandomMove.maxLife - 1)
   }
 }

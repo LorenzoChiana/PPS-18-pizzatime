@@ -1,6 +1,6 @@
 package utilities
 
-import gamelogic.{Enemy, Hero, LivingEntity, MovableEntity}
+import gamelogic.{EnemyCharacter, EnemyWithRandomMove, Hero, LivingEntity, MovableEntity}
 import utilities.Difficulty.DifficultyVal
 
 import scala.language.implicitConversions
@@ -61,12 +61,12 @@ object ImplicitConversions {
     case hero: Hero => hero
   }
 
-  /** Implicit conversion from [[LivingEntity]] to [[Enemy]].
+  /** Implicit conversion from [[LivingEntity]] to [[EnemyWithRandomMove]].
    *
    *  @param l the [[LivingEntity]] to convert
-   *  @return the converted [[Enemy]]
+   *  @return the converted [[EnemyCharacter]]
    */
-  implicit def castLivingEntityToEnemy(l: LivingEntity): Enemy = l match {
-    case enemy: Enemy => enemy
+  implicit def castLivingEntityToEnemy(l: LivingEntity): EnemyCharacter = l match {
+    case enemy: EnemyCharacter => enemy
   }
 }

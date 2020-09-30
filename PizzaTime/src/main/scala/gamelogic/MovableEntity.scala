@@ -13,7 +13,7 @@ trait MovableEntity extends Entity {
    *  @return new [[MovableEntity]] with new [[Direction]]
    */
   def changeDirection(dir: Direction): MovableEntity = this match {
-    case e: EnemyCharacter => Enemy(e.id, Position.changeDirection(e.position, dir), e.lives)
+    case e: EnemyCharacter => EnemyWithRandomMove(e.id, Position.changeDirection(e.position, dir), e.lives)
     case h: Hero => Hero(Position.changeDirection(h.position, dir), h.lives)
     case _ => this
   }
@@ -24,7 +24,8 @@ trait MovableEntity extends Entity {
    *  @return true if the movement occurred
    */
   def move(dir: Direction): MovableEntity = this match {
-      case e: EnemyCharacter => Enemy(e.id, Position.changePosition(e.position, dir), e.lives)
+      case e: EnemyWithRandomMove => EnemyWithRandomMove(e.id, Position.changePosition(e.position, dir), e.lives)
+      case e: EnemyWithLeftRightMove => EnemyWithLeftRightMove(e.id, Position.changePosition(e.position, dir), e.lives)
       case h: Hero => Hero(Position.changePosition(h.position, dir), h.lives)
       case _ => this
   }
@@ -35,7 +36,7 @@ trait MovableEntity extends Entity {
    *  @return true if the movement occurred
    */
   def moveTo(pos: Position): MovableEntity = this match {
-    case e: EnemyCharacter => Enemy(e.id, pos, e.lives)
+    case e: EnemyCharacter => EnemyWithRandomMove(e.id, pos, e.lives)
     case h: Hero => Hero(pos, h.lives)
     case _ => this
   }

@@ -1,8 +1,7 @@
 package gamemanager
 
 import javafx.scene.image.Image
-import utilities.{FloorImage, HeroImage, ImageType, BonusLifeImage, BonusScoreImage, BulletImage, EnemyImage}
-import utilities.{LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, TableImage, StoveImage, SinkImage, WallImage}
+import utilities.{BonusLifeImage, BonusScoreImage, BulletImage, Enemy1Image, Enemy2Image, FloorImage, HeroImage, ImageType, LifeBarImage0, LifeBarImage1, LifeBarImage2, LifeBarImage3, LifeBarImage4, LifeBarImage5, SinkImage, StoveImage, TableImage, WallImage}
 
 import scala.collection.immutable
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,7 +35,8 @@ object ImageLoader {
      BonusLifeImage -> generateImage(BonusLifeImage.path),
      BonusScoreImage -> generateImage(BonusScoreImage.path),
      HeroImage -> generateImage(HeroImage.path),
-     EnemyImage -> generateImage(EnemyImage.path),
+     Enemy1Image -> generateImage(Enemy1Image.path),
+     Enemy2Image -> generateImage(Enemy2Image.path),
      BulletImage -> generateImage(BulletImage.path),
      LifeBarImage5 -> generateImage(LifeBarImage5.path),
      LifeBarImage4 -> generateImage(LifeBarImage4.path),

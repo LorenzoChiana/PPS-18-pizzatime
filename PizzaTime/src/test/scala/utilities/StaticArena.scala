@@ -9,14 +9,14 @@ import ImplicitConversions._
 
 /** Builder class used to create a custom [[Arena]].
  *
- * @param playerName            the [[Player]]'s name
- * @param initialHeroPosition   the [[Hero]]'s starting [[Position]]
- * @param scoreToIncrease       the score given by the score-related [[Collectible]]s
- * @param obstaclePosition      the [[Obstacle]]'s [[Position]]
- * @param wallPosition          the [[Wall]]'s [[Position]]
- * @param bonusLifePosition     the life-related [[Collectible]]'s [[Position]]
- * @param bonusScorePosition    the score-related [[Collectible]]'s [[Position]]
- * @param initialEnemyPosition  the [[Enemy]]'s starting [[Position]]
+ * @param playerName           the [[Player]]'s name
+ * @param initialHeroPosition  the [[Hero]]'s starting [[Position]]
+ * @param scoreToIncrease      the score given by the score-related [[Collectible]]s
+ * @param obstaclePosition     the [[Obstacle]]'s [[Position]]
+ * @param wallPosition         the [[Wall]]'s [[Position]]
+ * @param bonusLifePosition    the life-related [[Collectible]]'s [[Position]]
+ * @param bonusScorePosition   the score-related [[Collectible]]'s [[Position]]
+ * @param initialEnemyPosition the [[EnemyWithRandomMove]]'s starting [[Position]]
  */
 case class StaticArena(
   playerName: String = "PlayerName",
@@ -34,7 +34,7 @@ case class StaticArena(
   val arena: Arena = GameState.arena.get
   import arena._
 
-  val enemy: Enemy = Enemy(initialEnemyPosition)
+  val enemy: EnemyWithRandomMove = EnemyWithRandomMove(initialEnemyPosition)
   enemy.onTestingMode()
 
   initMap()
