@@ -7,6 +7,7 @@ import gamelogic.Player.addScore
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 import utilities.ImplicitConversions._
 import utilities.Position.changePosition
+
 import scala.annotation.tailrec
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -25,7 +26,6 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
   val floor: Set[Floor] = for (p <- tiles) yield Floor(Position(p, None))
   var door: Option[Door] = None
   var endedLevel: Boolean = false
-  val rateEnemyMovement = 10
   private var lastInjury: Option[EnemyCharacter] = None
 
   /** Generates a new level. */
@@ -109,6 +109,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     }
   }
 
+  var nStepMove:Int = 0
   private def checkBullets(): Unit = {
     var newBullets: Set[Bullet] = Set()
 
@@ -121,8 +122,11 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
 
     bullets = newBullets
     bullets = bullets.filter(_.unexploded)
-
-    enemies = enemiesMovement
+    nStepMove = nStepMove + 1
+    if (nStepMove.equals(mapGen.difficulty.rateEnemyMovement)) {
+      enemies = enemiesMovement
+      nStepMove = 0
+    }
     enemies.foreach(en => playerInjury(en))
     enemies = checkHitEnemies
 
@@ -147,17 +151,12 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     newEnemies
   }
 
-  var nStepMove:Int =0
+
   private def enemiesMovement: Set[EnemyCharacter] = {
-    nStepMove = nStepMove + 1
     var newEnemies: Set[EnemyCharacter] = Set()
     enemies.foreach(en => {
-      if (nStepMove.equals(rateEnemyMovement)) {
         newEnemies = newEnemies + enemyMovement(en)
         nStepMove = 0
-      } else {
-        newEnemies = newEnemies + en
-      }
     })
     newEnemies
   }

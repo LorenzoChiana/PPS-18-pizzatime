@@ -14,7 +14,8 @@ object Difficulty extends Enumeration {
     obstaclesRange = Range(1, 3),
     bonusScore = 40,
     obstacleDimension = Range(1, 2),
-    levelThreshold = 8
+    levelThreshold = 8,
+    rateEnemyMovement = 15
   )
   val Medium: DifficultyVal = DifficultyVal(
     arenaWidth = 18,
@@ -25,29 +26,32 @@ object Difficulty extends Enumeration {
     maxLife = 5,
     bonusScore = 30,
     obstacleDimension = Range(1, 3),
-    levelThreshold = 5
+    levelThreshold = 5,
+    rateEnemyMovement = 10
   )
   val Hard: DifficultyVal = DifficultyVal(
     arenaWidth = 27,
     arenaHeight = 18,
-    enemiesRange = Range(10, 20),
+    enemiesRange = Range(8, 12),
     collectiblesRange = Range(3, 5),
     obstaclesRange = Range(8, 12),
     maxLife = 5,
     bonusScore = 20,
     obstacleDimension = Range(1, 4),
-    levelThreshold = 3
+    levelThreshold = 3,
+    rateEnemyMovement = 8
   )
   val Extreme: DifficultyVal = DifficultyVal(
     arenaWidth = 27,
     arenaHeight = 18,
-    enemiesRange = Range(20, 30),
+    enemiesRange = Range(10, 15),
     collectiblesRange = Range(1, 3),
     obstaclesRange = Range(12, 16),
     maxLife = 5,
     bonusScore = 10,
     obstacleDimension = Range(1, 5),
-    levelThreshold = 1
+    levelThreshold = 1,
+    rateEnemyMovement = 6
   )
   val allDifficulty: Seq[DifficultyVal] = Seq(Easy, Medium, Hard, Extreme)
 
@@ -71,7 +75,8 @@ object Difficulty extends Enumeration {
                            maxLife: Int,
                            bonusScore: Int,
                            obstacleDimension: Range,
-                           levelThreshold: Int) extends super.Val
+                           levelThreshold: Int,
+                           rateEnemyMovement: Int) extends super.Val
 
   /** Implicit conversion from [[Value]] to [[DifficultyVal]].
    *
