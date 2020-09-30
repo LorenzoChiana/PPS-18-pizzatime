@@ -210,7 +210,7 @@ object GameManager extends ViewObserver with GameLogicObserver {
   override def playerDead(): Unit = play(FailureSound); stopSound()
 
   /** Notifies when start new level */
-  override def startGame(): Unit = play(LevelMusic)
+  override def startGame(): Unit = println()//play(LevelMusic)
 
   /** Notifies end game */
   override def finishGame(): Unit = stopSound()
