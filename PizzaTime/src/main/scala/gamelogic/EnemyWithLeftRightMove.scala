@@ -1,0 +1,5 @@
+package gamelogic
+
+class EnemyWithLeftRightMove {
+
+}
