@@ -121,6 +121,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
 
     bullets = newBullets
     bullets = bullets.filter(_.unexploded)
+
     enemies = enemiesMovement
     enemies.foreach(en => playerInjury(en))
     enemies = checkHitEnemies

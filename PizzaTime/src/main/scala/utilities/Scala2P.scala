@@ -88,6 +88,25 @@ object Scala2P {
     Term createTerm t1 + "," + t2
 
   def prologSeq(s: Seq[Term]): Term = s.mkString("[",",","]")
+
+  val engineForLeftRightMove: Term => Seq[Option[Position]] = prologGetPosition("""
+      move(X1, Y1, right, XY) :- X2 is X1+1, XY = (X2,Y1).
+      move(X1, Y1, left, XY) :- X2 is X1-1, XY = (X2,Y1).
+
+      calc_point(X, Y, Non_walkable_tiles, right, Point, Dir) :- move(X,Y, right, XY), (member(XY, Non_walkable_tiles) -> calc_point(X, Y, Non_walkable_tiles,left, Point, Dir); (Point = XY, Dir = right)).
+			calc_point(X, Y, Non_walkable_tiles, left, Point, Dir) :- move(X,Y, left, XY), (member(XY, Non_walkable_tiles) -> calc_point(X, Y, Non_walkable_tiles,right, Point, Dir); (Point = XY, Dir = left)).
+			""")
+
+  val engineForRandomMove: Term => Seq[Option[Point]] = prologGetPoint("""
+	    move(X1, Y1, 0, XY) :- X2 is X1+1, XY = (X2,Y1).
+      move(X1, Y1, 1, XY) :- X2 is X1-1, XY = (X2,Y1).
+      move(X1, Y1, 2, XY) :- Y2 is Y1+1, XY = (X1,Y2).
+      move(X1, Y1, 3, XY) :- Y2 is Y1-1, XY = (X1,Y2).
+
+      calc_point(X, Y, Non_walkable_tiles, Point) :- rand_int(4, Rnd), move(X,Y, Rnd, XY), (member(XY, Non_walkable_tiles) -> calc_point(X, Y, Non_walkable_tiles, XY); Point = XY).
+""")
+
+
 }
 
 
