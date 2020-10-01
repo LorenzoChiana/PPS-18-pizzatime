@@ -1,21 +1,20 @@
 package utilities
 
-import alice.tuprolog.{NoMoreSolutionException, Prolog, SolveInfo, Struct, Term, Theory}
+import alice.tuprolog.{NoMoreSolutionException, Prolog, SolveInfo, Term, Theory}
 import gamelogic.GameState.arena
 import net.liftweb.json.DefaultFormats
 import net.liftweb.json.JsonAST.JValue
 
 object Scala2P {
 
-  def extractTerm(t:Term, i:Integer): Term = t.asInstanceOf[Struct].getArg(i).getTerm
-
   implicit def stringToTerm(s: String): Term = Term.createTerm(s)
   implicit def seqToTerm[T](s: Seq[T]): Term = s.mkString("[",",","]")
+  implicit def tupleToTerm(t1: Int, t2: Int): Term = Term createTerm t1 + "," + t2
 
-  def nonWalkableTiles: Term = prologSeq(arena.get.walls.map(w => prologTuple(w.position.point.x, w.position.point.y)).toSeq
-    ++ arena.get.obstacles.map(o => prologTuple(o.position.point.x, o.position.point.y)).toSeq
-    ++ arena.get.enemies.map(e => prologTuple(e.position.point.x, e.position.point.y))
-    ++ arena.get.collectibles.map(c => prologTuple(c.position.point.x, c.position.point.y)))
+  def nonWalkableTiles: Term = (arena.get.walls.map(w => (w.position.point.x, w.position.point.y)).toSeq
+    ++ arena.get.obstacles.map(o => (o.position.point.x, o.position.point.y)).toSeq
+    ++ arena.get.enemies.map(e => (e.position.point.x, e.position.point.y))
+    ++ arena.get.collectibles.map(c => (c.position.point.x, c.position.point.y)))
 
   def prologGetPoint(clauses: String*): Term => Seq[Option[Point]] = {
     goal => new Iterable[Option[Point]]{
@@ -35,7 +34,9 @@ object Scala2P {
 
               val element = (obj \\ "value").children
               Some((for(List(a,b) <- element.combinations(2).toList) yield Point(a.extract[Int], b.extract[Int])).head)
-            } else None
+            } else {
+              None
+            }
           } finally {
             try {
               solution = Some(engine.solveNext)
@@ -70,7 +71,9 @@ object Scala2P {
                 case "right" => Some(Position(point, Some(Right)))
                 case "left" => Some(Position(point, Some(Left)))
               }
-            } else None
+            } else {
+              None
+            }
           } finally {
             try {
               solution = Some(engine.solveNext)
@@ -81,13 +84,6 @@ object Scala2P {
       }
     }.toSeq
   }
-
-  def prologInt(i: Int): alice.tuprolog.Int = new alice.tuprolog.Int(i)
-
-  def prologTuple(t1: Int, t2: Int): Term =
-    Term createTerm t1 + "," + t2
-
-  def prologSeq(s: Seq[Term]): Term = s.mkString("[",",","]")
 
   val engineForLeftRightMove: Term => Seq[Option[Position]] = prologGetPosition("""
       move(X1, Y1, right, XY) :- X2 is X1+1, XY = (X2,Y1).
@@ -105,6 +101,5 @@ object Scala2P {
 
       calc_point(X, Y, Non_walkable_tiles, Point) :- rand_int(4, Rnd), move(X,Y, Rnd, XY), (member(XY, Non_walkable_tiles) -> calc_point(X, Y, Non_walkable_tiles, XY); Point = XY).
 """)
-
 }
 
