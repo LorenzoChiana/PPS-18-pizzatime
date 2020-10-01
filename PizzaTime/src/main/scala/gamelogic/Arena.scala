@@ -53,7 +53,7 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     obstacles = Set()
   }
 
-  /** Insert a new record on playerRancking map*/
+  /** Adding the new record to the ranking */
   def addRecord(): Unit = {
     playerRankings = playerRankings ++ Map(difficulty.toString -> (
       playerRankings(difficulty.toString) ++ Map(arena.get.player.name -> arena.get.player.record)))
@@ -249,7 +249,10 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
    */
   private def canMoveIn(e: MovableEntity): Boolean = e match {
     case _: Hero | _: Bullet => checkBounds(e.position.point, bounds = true) && !containsWall(e.position.point) && !containsObstacle(e.position.point)
-    case e: Enemy => checkBounds(e.position.point) && !containsObstacle(e.position.point) && containsEnemy(e.position.point).isEmpty && !containsCollectible(e.position.point)
+    case e: Enemy => checkBounds(e.position.point) &&
+                    !containsObstacle(e.position.point) &&
+                    containsEnemy(e.position.point).isEmpty &&
+                    !containsCollectible(e.position.point)
   }
 }
 
