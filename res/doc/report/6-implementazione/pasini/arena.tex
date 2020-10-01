@@ -8,7 +8,7 @@ Insieme alla entità del gioco, ho iniziato a realizzare un semplice sistema di 
     \item le coordinate possono essere solo numeri interi positivi.
 \end{itemize}
 
-Successivamente ho implementato la classe \textit{Arena}, contenente tutte le entità che popolano la mappa durante il gioco. Si noti la differenza tra \textit{Player}, che rappresenta l'utente, e \textit{Hero}, che invece rappresenta il personaggio giocabile. Alcuni componenti dell'arena, vista la loro natura statica, vengono inizializzati con le loro posizioni in fase di creazione, mentre il resto viene gestito dalle funzioni \textit{generateMap()} e \textit{updateMap()}. La classe ha come parametri il nome del profilo associato alla partita corrente ed un \textit{MapGenerator}, a sua volta inizializzato con la difficoltà della partita.
+Ho poi partecipato all'implementazione della classe \textit{Arena}, contenente tutte le entità che popolano la mappa durante il gioco. Alcuni componenti, vista la loro natura statica, vengono inizializzati con le loro posizioni in fase di creazione, mentre il resto viene gestito dalle funzioni \textit{generateMap()} e \textit{updateMap()}. Si noti la differenza tra \textit{Player}, che rappresenta l'utente, e \textit{Hero}, che invece rappresenta il personaggio giocabile. La classe ha come parametri il nome del profilo associato alla partita corrente ed un \textit{MapGenerator}, a sua volta inizializzato con la difficoltà della partita.
 
 \begin{figure}[H]
   \includegraphics[width=14cm]{res/arenaClass.png}
@@ -16,7 +16,7 @@ Successivamente ho implementato la classe \textit{Arena}, contenente tutte le en
   \label{arenaCLass}
 \end{figure}
 
-Vista l'importanza logica di \textit{Arena}, è anche necessario fornire metodi per permettere a classi esterne di lavorare con l'area di gioco. Per lo scopo, il companion object della classe contiene tutti i metodi che possono essere utili alle entità esterne per controllare lo stato del gioco, nonchè per il testing. Una parte fondamentale dello sviluppo è stata la scelta del tipo di funzioni da implementare in questo caso, che ha portato a refactoring in parti diverse dell'implementazione, dovuto soprattutto alla separazione tra funzioni della classe e del companion object e a scelte legate alle strutture dati utilizzate.
+Vista l'importanza logica di \textit{Arena}, è anche necessario fornire metodi esterni generici per permettere alle altre classi di lavorare con l'area di gioco. Per lo scopo, un companion object contiene tutti i metodi che possono essere utili alle entità esterne per controllare lo stato del gioco, nonchè per il testing. Una parte fondamentale dello sviluppo è stata la scelta del tipo di funzioni da implementare in questo caso, che ha portato a refactoring in parti diverse dell'implementazione, dovuto soprattutto alla separazione tra funzioni della classe e del companion object e a scelte legate alle strutture dati utilizzate.
 
 \begin{figure}[H]
   \includegraphics[width=14cm]{res/arenaObject.png}

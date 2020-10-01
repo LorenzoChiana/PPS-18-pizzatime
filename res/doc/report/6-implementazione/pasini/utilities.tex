@@ -1,6 +1,5 @@
 Nello sviluppare le cose sopracitate ho dovuto creare classi di utilità facenti parte del package \textit{utilities}, tra cui:
 \begin{itemize}
-    \item \textbf{Difficulty}: Enumerazione che rappresenta le difficoltà da scegliere e i relativi parametri. L'implementazione dell'enumerazione e la compilazione dei parametri sono comunque state oggetto di refactoring insieme agli altri membri durante lo sviluppo.
     \item \textbf{Direction}: Combinazione di sealed trait e case object per enumerare le possibili direzioni in cui un'entità può muoversi o essere rivolta.
     \item \textbf{Position}: La case class \textit{Position(point: Point, dir: Option[Direction])} rappresenta la posizione di un'entità nell'arena;
     \item \textbf{Point}: La case class \textit{Point(x: Int, y: Int)} rappresenta un punto in 2D e serve anche a comporre Position.
