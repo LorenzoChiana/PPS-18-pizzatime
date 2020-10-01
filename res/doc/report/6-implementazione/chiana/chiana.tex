@@ -87,12 +87,10 @@ La classifica di gioco viene salvata in un file JSON tramite la \textit{PrintWri
 \end{figure}
 
 Questo file viene letto tramite il metodo \textit{loadPlayerRankings()} di \textit{GameManager} andando a creare una mappa che come chiave presenta il nome della difficoltà e come valore un'altra mappa che, a sua volta, come chiave ha il nome del giocatore e come valore il suo record.
-
-<<qualcosa per farlo capire>>
-
 Questa mappa viene salvata in \textit{GameState} (all'interno di gamelogic) e aggiornata dinamicamente durante il gioco.
-
 Alla fine di ogni partita la mappa viene salvata nel file JSON attraverso il metodo \textit{savePlayerRankings()}.
+
+Durante il task relativo alla creazione della classifica ho scelto di adottare la libreria lift-json del framework Lift, perché una delle più utilizzate e consigliate per i progetti Scala.
 
 \subsection{Utilities}
 Nei vari sprint a seconda dell'esigenza sono andato a creare:
