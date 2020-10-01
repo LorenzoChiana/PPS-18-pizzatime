@@ -4,9 +4,11 @@ import GameState._
 import Arena._
 import Door._
 import gamelogic.Player.addScore
+import gamemanager.handlers.PreferencesHandler.difficulty
 import utilities.{Direction, Down, Left, Point, Position, Right, Up}
 import utilities.ImplicitConversions._
 import utilities.Position.changePosition
+
 import scala.annotation.tailrec
 
 /** The playable area, populated with all the [[Entity]]s.
@@ -49,6 +51,12 @@ class Arena(val playerName: String, val mapGen: MapGenerator) {
     bullets = Set()
     collectibles = Set()
     obstacles = Set()
+  }
+
+  /** Adding the new record to the ranking */
+  def addRecord(): Unit = {
+    playerRankings = playerRankings ++ Map(difficulty.toString -> (
+      playerRankings(difficulty.toString) ++ Map(arena.get.player.name -> arena.get.player.record)))
   }
 
   private def movePlayerOnDoor(): Unit = {
