@@ -1,6 +1,7 @@
 
-\subsubsection{GameManager} Principale elemento relativo al controller ed ha varie funzionalità, una di queste è \textit{initializeGame}, per l'inizializzazione del gioco: questo metodo permette di inizializzare la parte di \textit{GameView}, inoltre permette il caricamento di tutte le sprites utilizzate successivamente nella partita.
-    \textit{GameManager} rappresenta un ponte tra la \textit{GameView} e \textit{GameLogic}, in quanto ascolta gli eventi compiuti dall'utente lato \textit{GameView} e li comunica al \textit{GameLogic}. 
+\subsubsection{GameManager} Principale elemento relativo al controller ed ha varie funzionalità. Una di queste è \textit{initializeGame}. per l'inizializzazione del gioco: questo metodo permette di inizializzare la parte di \textit{GameView}, inoltre permette il caricamento di tutte le sprites utilizzate successivamente nella partita.
+    
+\textit{GameManager} rappresenta un ponte tra la \textit{GameView} e il \textit{GameLogic}, in quanto ascolta gli eventi compiuti dall'utente lato \textit{GameView} e li comunica al \textit{GameLogic}. 
     Per osservare gli eventi della view il \textit{GameManager} implementa il \textit{ViewObserver}, che verrà approfondito in un'altra sezione.
     inoltre il \textit{GameManager} implementa il \textit{GameLogicObserver}, si è scelto di usare il pattern observer per permettere al \textit{GameLogic} di notificare ogni qual volta viene eseguita un azione. Questo viene poi sfruttato dal GameManager per la riproduzione dei suoni.
     

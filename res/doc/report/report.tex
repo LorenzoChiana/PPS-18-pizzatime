@@ -175,12 +175,18 @@
 
     \chapter{Design di dettaglio}\label{ch:details}
         \input{5-design/preamble.tex}
-        \section{Organizzazione del codice}\label{sec:organizations}
-         \input{5-design/codeorganization.tex}
-         \section{Pattern utilizzati}\label{sec:pattern}
-          \input{5-design/patterns.tex}
+        \section{Organizzazione del codice}\label{sec:organization}
+            \input{5-design/codeorganization.tex}
+            \subsection{Package gamelogic}\label{subsec:organization:gamelogic}
+                \input{5-design/gamelogic.tex}
+            \subsection{Package gameview}\label{subsec:organization:gameview}
+                \input{5-design/gameview.tex}
+            \subsection{Package gamemanager}\label{subsec:organization:gamemanager}
+                \input{5-design/gamemanager.tex}
+        \section{Pattern utilizzati}\label{sec:pattern}
+            \input{5-design/patterns.tex}
         \section{Scelte rilevanti}\label{sec:choices}
-           \input{5-design/choices.tex}
+            \input{5-design/choices.tex}
            
     \clearpage
 
@@ -214,8 +220,8 @@
         
         \section{Giacomo Pasini}\label{sec:pasini}
             \input{6-implementazione/pasini/intro.tex}
-            \subsection{Entità}\label{subsec:pasini:entità}
-                \input{6-implementazione/pasini/entita.tex}
+            \subsection{Entity}\label{subsec:pasini:entity}
+                \input{6-implementazione/pasini/entity.tex}
             \subsection{Arena}\label{subsec:pasini:arena}
                 \input{6-implementazione/pasini/arena.tex}
             \subsection{Utilities}\label{subsec:pasini:utilities}
@@ -223,9 +229,8 @@
             \subsection{Testing}\label{subsec:pasini:testing}
                 \input{6-implementazione/pasini/testing.tex}
         
-        \section{Pair Programming}\label{sec:pairprogramming}
+        \section{Pair Programming - Meshua Galassi, Giada Gibertoni}\label{sec:pairprogramming}
             \input{6-implementazione/pairprogramming/galassigibertoni.tex}
-            \subsection{Meshua Galassi, Giada Gibertoni}\label{subsec:galassi:sviluup}
             
     \clearpage
 
