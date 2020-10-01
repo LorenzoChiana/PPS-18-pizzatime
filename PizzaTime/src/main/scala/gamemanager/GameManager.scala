@@ -174,25 +174,21 @@ object GameManager extends ViewObserver with GameLogicObserver {
 
   override def startNewLevel(): Unit = GameState.nextLevel()
 
-  def checkNewMovement(): Option[Direction] = {
-    playerMoves.length match {
+  def checkNewMovement(): Option[Direction] = playerMoves.length match {
       case 0 => None
       case _ =>
         val direction = playerMoves.dequeue._1
         playerMoves = playerMoves.dequeue._2
         direction
     }
-  }
 
-  def checkNewShoot(): Option[Direction] = {
-    playerShoots.length match {
+  def checkNewShoot(): Option[Direction] = playerShoots.length match {
       case 0 => None
       case _ =>
         val direction = playerShoots.dequeue._1
         playerShoots = playerShoots.dequeue._2
         direction
     }
-  }
 
   /** Notifies player shoot */
   override def shoot(): Unit = play(ShootSound)

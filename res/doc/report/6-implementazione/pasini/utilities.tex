@@ -1,0 +1,8 @@
+Nello sviluppare le cose sopracitate ho dovuto creare classi di utilità facenti parte del package \textit{utilities}, tra cui:
+\begin{itemize}
+    \item \textbf{Direction}: Combinazione di sealed trait e case object per enumerare le possibili direzioni in cui un'entità può muoversi o essere rivolta.
+    \item \textbf{Position}: La case class \textit{Position(point: Point, dir: Option[Direction])} rappresenta la posizione di un'entità nell'arena;
+    \item \textbf{Point}: La case class \textit{Point(x: Int, y: Int)} rappresenta un punto in 2D e serve anche a comporre Position.
+    \item \textbf{Range}: La case class \textit{Range(min: Int, max: Int)} rappresenta i range di valori ammissibili per la generazione delle entità in \textit{MapGenerator}.
+    \item \textbf{ImplicitConversions}: Object che contiene i metodi di conversione impliciti per semplificare la scrittura del codice. Il più importante ed utilizzato permette di poter instanziare un \textit{Point} scrivendo una semplice tupla (x, y).
+\end{itemize}

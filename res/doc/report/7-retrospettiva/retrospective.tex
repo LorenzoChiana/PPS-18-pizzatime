@@ -1,0 +1,10 @@
+Analizzando il nostro percorso di sviluppo, ci siamo accorti che si potrebbero introdurre migliorie sia per quanto riguarda la parte implementativa che per quanto riguarda quella organizzativa.
+
+\subsubsection{Punto di vista organizzativo}
+Nonostante abbiamo fatto una buona pianificazione, seguendo la metodologia scrum ed utilizzando Trello, qualche volta non sono state rispettate le linee guida previste per la sprint. Ovvero, a volte non sono state rispettate le urgenze indicate nei task in quanto venivano svolti prima task con un grado di urgenza inferiore.
+
+Inoltre, sarebbe stato più appropriato utilizzare una metodologia git-flow basata su fork/pull request poichè, in questo modo si sarebbe introdotto un ulteriore controllo sulla qualità del codice caricato all'interno del repository.
+
+\subsubsection{Punto di vista implementativo}
+Avendo inizialmente sottovalutato la complessità dei calcoli presenti all'interno del gamelogic, è stato scelto un approccio di tipo single thread. Guardando lo stato finale del progetto, la complessità del gameLogic è salita, quindi sarebbe stato meglio se le computazioni al suo interno fossero state sviluppate concorretemente. In questo modo, si sarebbero evitati, probabilmente, anche i problemi nati con l'introduzione del codice Prolog.
+

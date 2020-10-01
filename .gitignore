@@ -8,3 +8,9 @@ out/
 target/
 META-INF/
 rank.json
+*.aux
+*.gz
+*.toc
+*.xmpdata
+report.txt
+*.pdf

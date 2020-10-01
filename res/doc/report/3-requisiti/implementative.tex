@@ -1,0 +1,13 @@
+I requisiti implementativi comprendono:
+\begin{itemize}
+    \item la necessità di definire una gerarchia di entità che sia sufficientemente rappresentativa del dominio del gioco in questione; è quindi opportuno scegliere la giusta separazione di concetti per il tipo di \textit{gameplay} che si vuole implementare;
+    \item la necessità di garantire che il gioco si svolga ad un ritmo costante, ovvero di definire una struttura logica coerente per rappresentare il flusso logico del gioco, che rispetti la visualizzazione a schermo, che gestisca per tempo la reazione ai comandi inseriti dall'utente e che garantisca la coerenza delle strutture dati utilizzate, nell'ambito degli step logici che dovranno essere definiti per controllare lo svolgimento della partita;
+    \item In modo da ragionare sul problema da un punto di vista in parte funzionale, il codice creato dovrà fare uso delle proprietà che caratterizzano Scala, che comprendono:
+    \begin{itemize}
+	    \item unione di programmazione ad oggetti e funzionale;
+	    \item utilizzo di strutture dati immutabili per evitare side-effect;
+	    \item possibilità di scrivere codice più coinciso;
+	    \item possibilità di alzare ulteriormente il livello di astrazione.
+    \end{itemize}
+    Queste proprietà permettono di creare del codice più facilmente scalabile. Inoltre, il codice dovrà rispettare tutti i requisiti di stile del caso, ed ogni funzionalità del gioco dovrà essere adeguatamente testata con Scalatest.
+\end{itemize}
