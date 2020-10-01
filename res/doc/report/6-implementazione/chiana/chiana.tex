@@ -10,7 +10,7 @@ Inoltre in vari task sono andato a toccare e rifattorizzare il metodo \textit{ch
 \subsubsection{Enemy e MovableEntity}
 Durante il terzo sprint mi sono occupato insieme a Meshua Galassi della generazione dei nemici, in particolare mi sono occupato della rifattorizzazione del vecchio metodo \textit{canMove()}.
 
-\subsection{MapGenerator}
+\subsubsection{MapGenerator}
 Mi sono occupato della rifattorizzazione dei metodi \textit{generateEnemies()}, \textit{generateCollectibles()} e \textit{generateObstacles()}.
 
 \subsubsection{Obstacle e ObstacleTypes}
@@ -54,7 +54,7 @@ Data questa incertezza iniziale sulla scelta della libreria grafica, sono andato
 Una volta definite le funzionalità di base nell'interfaccia \textit{Window}, questa sarà implementata da \textit{FXWindow} che va a creare una finestra conforme agli standard di JavaFX.
 
 \begin{figure}[H]
-  \includegraphics[width=15cm]{../res/6-implementazione/chiana/UML_Window.png}
+  \includegraphics[width=15cm]{res/6-implementazione/chiana/UML_Window.png}
   \caption{Interfaccia Window e FXWindow che la implementa.}
   \label{windowClass}
 \end{figure}
@@ -81,7 +81,7 @@ Il salvataggio e la serializzazione di queste impostazioni vengono fatte attrave
 La classifica di gioco viene salvata in un file JSON tramite la \textit{PrintWriter} di \textit{java.io} con la seguente struttura: \ref{json}
 
 \begin{figure}[H]
-  \includegraphics[width=5cm]{../res/6-implementazione/chiana/json.png}
+  \includegraphics[width=5cm]{res/6-implementazione/chiana/json.png}
   \caption{Struttura del file rank.json}
   \label{json}
 \end{figure}
