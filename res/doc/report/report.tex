@@ -170,60 +170,63 @@
         
         \section[Architettura]{Architettura complessiva}\label{sec:architecture}
         \input{4-arch/mvc.tex}
-            \subsection{Model}\label{subsec:architecture:model}
-                \input{4-arch/model.tex}
-             \subsection{View}\label{subsec:architecture:view}
-                \input{4-arch/view.tex}
-             \subsection{Controller}\label{subsec:architecture:controller}
-                \input{4-arch/controller.tex}
 
     \clearpage
 
     \chapter{Design di dettaglio}\label{ch:details}
         \input{5-design/preamble.tex}
-        \section{Organizzazione del codice}\label{sec:organization}
-            \input{5-design/codeorganization.tex}
-            \subsection{Package gamelogic}\label{subsec:organization:gamelogic}
-                \input{5-design/gamelogic.tex}
-            \subsection{Package gameview}\label{subsec:organization:gameview}
-                \input{5-design/gameview.tex}
-            \subsection{Package gamemanager}\label{subsec:organization:gamemanager}
-                \input{5-design/gamemanager.tex}
-        \section{Pattern utilizzati}\label{sec:pattern}
-            \input{5-design/patterns.tex}
+        \section{Organizzazione del codice}\label{sec:organizations}
+         \input{5-design/codeorganization.tex}
+         \section{Pattern utilizzati}\label{sec:pattern}
+          \input{5-design/patterns.tex}
         \section{Scelte rilevanti}\label{sec:choices}
-            \input{5-design/choices.tex}
+           \input{5-design/choices.tex}
            
     \clearpage
 
     \chapter{Implementazione}\label{ch:implementation}
-        \input{6-implementazione/preamble.tex}
+        
         \section{Lorenzo Chiana}\label{sec:chiana}
             \input{6-implementazione/chiana/chiana.tex}
     
         %\clearpage
         
         \section{Meshua Galassi}\label{sec:galassi}
-            \input{6-implementazione/galassi/galassi.tex}
-
+            \input{6-implementazione/galassi/intro.tex}
+            \subsection{Sviluppo}\label{subsec:galassi:sviluup}
+                \input{6-implementazione/galassi/sviluppo.tex}
+            \subsection{Refactor}\label{subsec:galassi:refactor}
+                \input{6-implementazione/galassi/refactor.tex}
         \clearpage
     
         \section{Giada Gibertoni}\label{sec:gibertoni}
             \input{6-implementazione/gibertoni/gibertoni.tex}
+            \subsection{GameManager}
+            \input{6-implementazione/gibertoni/controller.tex}
+            \subsection{GameView}
+            \input{6-implementazione/gibertoni/view.tex}
+            \subsection{GameLogic}
+            \input{6-implementazione/gibertoni/model.tex}
+            \subsection{Utilities}
+            \input{6-implementazione/gibertoni/utilities}
         
         %\clearpage
         
         \section{Giacomo Pasini}\label{sec:pasini}
             \input{6-implementazione/pasini/intro.tex}
-            \subsection{Arena}\label{subsec:pasini:arena}
-                \input{6-implementazione/pasini/arena.tex}
             \subsection{Entità}\label{subsec:pasini:entità}
                 \input{6-implementazione/pasini/entita.tex}
+            \subsection{Arena}\label{subsec:pasini:arena}
+                \input{6-implementazione/pasini/arena.tex}
             \subsection{Utilities}\label{subsec:pasini:utilities}
                 \input{6-implementazione/pasini/utilities.tex}
             \subsection{Testing}\label{subsec:pasini:testing}
                 \input{6-implementazione/pasini/testing.tex}
-
+        
+        \section{Pair Programming}\label{sec:pairprogramming}
+            \input{6-implementazione/pairprogramming/galassigibertoni.tex}
+            \subsection{Meshua Galassi, Giada Gibertoni}\label{subsec:galassi:sviluup}
+            
     \clearpage
 
     \chapter{Retrospettiva e commenti finali}\label{ch:retrospective}
