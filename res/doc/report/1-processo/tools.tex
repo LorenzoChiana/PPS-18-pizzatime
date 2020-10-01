@@ -7,7 +7,7 @@ Il flusso di lavoro è stato definito secondo le linee guida del metodo di branc
 	\item Il branch \textit{master} contiene il codice relativo a ciascuna release.
 	\item Il branch \textit{development} ospita il codice realizzato durante uno sprint. Tale codice è testato e stabile, ma non ancora giudicato completamente utilizzabile.
 	\item I vari branch \textit{task-*} corrispondono a ciascun task individuato durante i vari sprint. Tale codice è in fase di implementazione e può contenere codice non completamente funzionante, in quanto ancora in sviluppo.
-	\item non sono stati necessari branch di \textit{hotfix}.
+	\item è stato necessario creare un branch di \textit{hotfix} per risolvere un bug presente nella release v1.0.
 \end{itemize}
 
 \subsection{Dependency management \& buildscript}\label{subsec:build}
@@ -18,7 +18,6 @@ In particolare, sono stati scritti buildscript per automatizzare:
 \begin{itemize}
     \item la gestione delle \textit{dipendenze} provenienti da repository Maven;
     \item il processo di \textit{testing} tramite ScalaTest e controllo di \textit{qualità del codice} tramite Scalastyle;
-    \item la gestione delle dipendenze dei vari moduli di \textit{JavaFX} per le varie versione di Java.
     \item generazione dei \textit{Jar} eseguibili.
 \end{itemize}
 
