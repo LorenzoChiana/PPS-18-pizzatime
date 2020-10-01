@@ -1,8 +1,26 @@
 \subsection{Gamelogic}
-La parte di progettazione dei vari componenti di base non è spettata a me, ma ho contribuito, dal secondo sprint in poi, con diverse modifiche e rifattorizzazioni a metodi del model, a volte anche in pair programming con Meshua Galassi (come per il task "Creazione nemici lato model" nel terzo sprint).
+La parte di progettazione dei vari componenti di base non è spettata a me, ma ho contribuito lo stesso, dal secondo sprint in poi, con diverse modifiche e rifattorizzazioni a classi e metodi del model, a volte anche in pair programming con Meshua Galassi (come per il task "Creazione nemici lato model" nel terzo sprint).
 Inoltre, contributo significativo all'interno della parte di model sono stati diversi bugfixing nel corso degli sprint.
 Le varie classi che ho toccato maggiormente sono: \textit{Arena}, \textit{Enemy}, \textit{MapGenerator}, \textit{MovableEntity}, \textit{Obstacle}, \textit{ObstacleTypes} e \textit{Player}.
 
+\subsubsection{Arena}
+In Arena mi sono occuppato dei vari metodi che vanno a controllare se un punto contiene una certa entità come \textit{containsCollectible()}, \textit{containsObstacle()} e così via.
+Inoltre in vari task sono andato a toccare e rifattorizzare il metodo \textit{checkMovement()} per introdurre la collezione dei bonus e controllo della collisione con nemici e conseguente pardita di vita dell'eroe.
+
+\subsubsection{Enemy e MovableEntity}
+Durante il terzo sprint mi sono occupato insieme a Meshua Galassi della generazione dei nemici, in particolare mi sono occupato della rifattorizzazione del vecchio metodo \textit{canMove()}.
+
+\subsection{MapGenerator}
+Mi sono occupato della rifattorizzazione dei metodi \textit{generateEnemies()}, \textit{generateCollectibles()} e \textit{generateObstacles()}.
+
+\subsubsection{Obstacle e ObstacleTypes}
+Inizialmente gli ostacoli non avevano un tipo e non era possibile distirguerli per associargli sprite diverse.
+Per ovviare a questa problematica ho implementato la possibilità di avere tre diverse tipologie di ostacoli in maniera casuale rifattorizzando il tutto.
+
+\subsubsection{Player}
+Rifattorizzato introducendo la possibilità di avere un record personale.
+
+\subsubsection{Dopo le varie rifattorizzazioni}
 Dopo varie rifattorizzazioni susseguite nei vari sprint del mio contributo più significativo rimane:
 \begin{itemize}
 	\item la rifattorizzazione ai metodi \textit{generateEnemies()}, \textit{generateCollectibles()} e \textit{generateObstacles()} all'interno di \textit{MapGenerator};
