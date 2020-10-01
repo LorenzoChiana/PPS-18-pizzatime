@@ -1,0 +1,24 @@
+\subsubsection{Refactor view observer}
+
+Durante un primo refactor mi sono occupata di unire in un unico object \textit{GameManager} e nella relativa trait \textit{ViewObserver}, tutte le funzionalità relative al settaggio delle diverse scene ed i metodi che permettono l'interazione tra le classi appartenenti al package di view e quelle appartenenti al controller. 
+
+In questo modo ho potuto ottenere un unico punto d'ingresso al controller che avviene attraverso la notifica degli eventi agli observers.
+
+Inoltre, ho riunito all'interno di un unico trait \textit{Scene} la gerarchia composta delle diverse scene che in precedenza estendevano ognuna un diverso trait.
+
+Ho scelto di rifattorizzare il codice in questo modo al fine di ottenere un accesso più uniforme alle diverse classi.
+
+\subsubsection{Refactor gamelogic}
+
+Una volta raggiunta una composizione del progetto contenente tutte le funzionalità che ci eravamo prefissati, osservando il quadro generale della logica di gioco ho notato la presenza di diverse interrelazioni tra le entità che la componevano e lo scarso utilizzo dell'immutabilità all'interno delle entità.
+
+Ho, quindi, comiciato una fase di refactor che ha interessato tutto il package relativo al model sfruttando il principio di immutabilità e il meccanismo di match case all'interno degli elementi di base. Successivamente, insieme a Giada Gibertoni ci siamo occupate dell'integrazione di queste nuove entità nel resto dell'applicazione.
+
+Questo refactor ha portato a diversi cambiamenti:
+\begin{itemize}
+    \item Si è introdotto un nuovo elemento nella gerarchia di entità che riguarda le entità con una vita (\textit{LivingEntity}). Si tratta di un decorator che permette di introdurre il concetto di vita, con il conseguente incremento e decremento, nelle entità relative ai nemici ed all'eroe.
+    \item Si è creata una separazione tra i due concetti principali che erano contenuti all'interno della classe \textit{Player} generando così due diverse classi: \textit{Hero} contenente i dati relativi alla specifica partita (vita, punteggio e posizione del personaggio) e \textit{Player} contenente invece i dati relativi al particolare giocatore (nome e record).
+    \item I controlli relativi alla possibilità per un'entità di muoversi o meno sono stati spostati all'interno della classe \textit{Arena} che è l'unica che ha la visione completa delle posizioni in cui sono collocate tutte le entità.
+    \item Nel tentativo di rendere le entità più immutabili possibile, l'individuazione di una nuova posizione è stata spostata all'interno della classe di utility \textit{Position}, la quale restituirà direttamente una nuova posizione ad ogni richiesta di cambiamento.
+    \item Seguendo la stessa logica di immutabilità, per ogni classe base del game logic, ogni volta che ne deve cambiare lo stato, viene restituito un nuovo oggetto della medesima classe con lo stato modificato.
+\end{itemize}
