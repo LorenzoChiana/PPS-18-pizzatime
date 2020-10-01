@@ -23,7 +23,7 @@ object GameState {
     observers.foreach(_.startGame())
   }
 
-  def endGame(): Unit = addRecord()
+  def endGame(): Unit = arena.get.addRecord()
 
   def checkNewWorldRecord(): Option[Int] = arena.get.player.record match {
     case r if r > worldRecord => Some(arena.get.player.record)
@@ -34,9 +34,5 @@ object GameState {
 
   def nextLevel(): Unit = arena.get.generateMap()
 
-  def addRecord(): Unit = {
-    playerRankings = playerRankings ++ Map(difficulty.toString -> (
-        playerRankings(difficulty.toString) ++ Map(arena.get.player.name -> arena.get.player.record)))
-  }
 }
 
