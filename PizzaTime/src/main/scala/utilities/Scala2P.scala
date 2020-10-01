@@ -106,23 +106,5 @@ object Scala2P {
       calc_point(X, Y, Non_walkable_tiles, Point) :- rand_int(4, Rnd), move(X,Y, Rnd, XY), (member(XY, Non_walkable_tiles) -> calc_point(X, Y, Non_walkable_tiles, XY); Point = XY).
 """)
 
-
 }
-
-
-/*
-object TryScala2P extends App {
-  import Scala2P._
-
-  val engine: Term => Seq[Option[Point]] = prolog("""
-    moveAlt(X1,Y1,X2,Y2) :- X2 is X1+1, Y2 is Y1.
-    moveAlt(X1,Y1,X2,Y2) :- X2 is X1-1, Y2 is Y1.
-    moveAlt(X1,Y1,X2,Y2) :- Y2 is Y1+1, X2 is X1.
-    moveAlt(X1,Y1,X2,Y2) :- Y2 is Y1-1, X2 is X1.
-  """)
-
-  engine("moveAlt(1,1,X,Y)").foreach(a=> println(a))
-}*/
-
-
 

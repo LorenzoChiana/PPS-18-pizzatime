@@ -1,8 +1,7 @@
 package gamelogic
 
-import alice.tuprolog.Term
 import utilities.IdGenerator.nextId
-import utilities.{Point, Position, Scala2P}
+import utilities.{Position, Scala2P}
 
 /** An enemy character.
  *
