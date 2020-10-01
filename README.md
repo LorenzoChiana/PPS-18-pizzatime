@@ -23,7 +23,7 @@ The game allows to register different user profiles to save the game stats and c
 
 ## Continuous Integration
 
-[![Build Status](https://travis-ci.com/giacomopasini5/PPS-18-pizzatime.svg?branch=master)](https://travis-ci.com/giacomopasini5/PPS-18-pizzatime)
+[![Build Status](https://travis-ci.com/giacomopasini5/PPS-18-pizzatime.svg)](https://travis-ci.com/giacomopasini5/PPS-18-pizzatime)
 
   
 
@@ -31,7 +31,7 @@ The game allows to register different user profiles to save the game stats and c
 
 <Strong>Requirements</Strong>
 
-In order to play the game you need to have any version of Java between 8 and 14 installed and Scala 2.13.2.
+In order to play the game you need to have Java8 and Scala 2.13.2.
 
   
 
@@ -41,7 +41,7 @@ After the requirements are met, to play simply run the client .jar file provided
 
 ```
 
-java -jar pps-18-pizzatime-1.0.jar
+java -jar pps-18-pizzatime-1.1.jar
 
 ```
 

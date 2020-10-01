@@ -39,14 +39,5 @@ trait MovableEntity extends Entity {
     case h: Hero => Hero(pos, h.lives)
     case _ => this
   }
-
-  /** Changes the [[Direction]] of the [[MovableEntity]] and moves it one step forward in the same [[Direction]]
-   *
-   *  @param dir the [[Direction]] of movement
-   */
-  def changeDirectionAndMove(dir: Direction): MovableEntity = {
-    val entity = changeDirection(dir)
-    entity.move(dir)
-  }
 }
 

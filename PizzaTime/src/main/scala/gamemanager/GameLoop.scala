@@ -6,7 +6,6 @@ import Thread.sleep
 import GameManager._
 import gamelogic.GameState.{arena, checkNewWorldRecord, nextStep, worldRecord}
 import gameview.fx.FXGameScene
-import utilities.Logger.log
 
 class GameLoop() extends Runnable  {
 
@@ -37,9 +36,5 @@ class GameLoop() extends Runnable  {
     if (checkNewWorldRecord().isDefined) worldRecord = checkNewWorldRecord().get
     if(arena.get.hero.isDead) notifyEndGame()
 
-  }
-
-  def finishGame(): Unit = {
-    log("Finish!")
   }
 }
